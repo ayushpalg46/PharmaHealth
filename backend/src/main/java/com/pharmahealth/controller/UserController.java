@@ -83,7 +83,7 @@ public class UserController {
             map.put("address", c.getAddress());
             map.put("createdAt", c.getCreatedAt());
 
-            long orderCount = orderRepository.findByUserId(c.getId()).size();
+            long orderCount = orderRepository.countByUserId(c.getId());
             map.put("totalOrders", orderCount);
 
             response.add(map);
