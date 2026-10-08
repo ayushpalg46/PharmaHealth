@@ -29,7 +29,7 @@ public class Order {
     private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(length = 30)
     private OrderStatus status = OrderStatus.PENDING;
 
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -44,6 +44,12 @@ public class Order {
     @Column(length = 20)
     private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
+    private String trackingNumber;
+
+    private String deliveryNotes;
+
+    private LocalDateTime estimatedDeliveryDate;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<OrderItem> items = new ArrayList<>();
@@ -55,6 +61,7 @@ public class Order {
         PENDING,
         PROCESSING,
         SHIPPED,
+        OUT_FOR_DELIVERY,
         DELIVERED,
         CANCELLED
     }
@@ -62,7 +69,8 @@ public class Order {
     public enum PaymentStatus {
         PENDING,
         PAID,
-        FAILED
+        FAILED,
+        REFUNDED
     }
 
     public Order() {}
@@ -137,6 +145,30 @@ public class Order {
 
     public void setPaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public String getTrackingNumber() {
+        return trackingNumber;
+    }
+
+    public void setTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
+    }
+
+    public String getDeliveryNotes() {
+        return deliveryNotes;
+    }
+
+    public void setDeliveryNotes(String deliveryNotes) {
+        this.deliveryNotes = deliveryNotes;
+    }
+
+    public LocalDateTime getEstimatedDeliveryDate() {
+        return estimatedDeliveryDate;
+    }
+
+    public void setEstimatedDeliveryDate(LocalDateTime estimatedDeliveryDate) {
+        this.estimatedDeliveryDate = estimatedDeliveryDate;
     }
 
     public List<OrderItem> getItems() {

@@ -2,21 +2,26 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MedicineList from './components/MedicineList';
+import DeliveryTracker from './components/DeliveryTracker';
+import CustomerOrders from './components/CustomerOrders';
+import CustomerSupport from './components/CustomerSupport';
+import UserProfile from './components/UserProfile';
+import AdminDashboard from './components/AdminDashboard';
 import LoginModal from './components/LoginModal';
 import RegisterModal from './components/RegisterModal';
 import CartModal from './components/CartModal';
 import PrescriptionUploadModal from './components/PrescriptionUploadModal';
-import AdminDashboard from './components/AdminDashboard';
 import { authService, medicineService, orderService, prescriptionService } from './services/api';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
-  const [currentView, setCurrentView] = useState('store'); // 'store' | 'admin'
+  const [currentView, setCurrentView] = useState('store'); // 'store' | 'tracker' | 'orders' | 'support' | 'admin' | 'profile'
   const [medicines, setMedicines] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [cart, setCart] = useState([]);
+  const [myOrders, setMyOrders] = useState([]);
 
   // Modals
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -24,8 +29,8 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isPrescriptionOpen, setIsPrescriptionOpen] = useState(false);
 
-  // Load Initial Data
-  const fetchData = async () => {
+  // Load Catalog Data
+  const fetchCatalog = async () => {
     try {
       const [medRes, catRes] = await Promise.all([
         medicineService.getMedicines(selectedCategory, searchTerm),
@@ -38,9 +43,24 @@ export default function App() {
     }
   };
 
+  const fetchUserOrders = async () => {
+    if (currentUser) {
+      try {
+        const res = await orderService.getMyOrders();
+        setMyOrders(res.data);
+      } catch (err) {
+        console.error('Error fetching user orders:', err);
+      }
+    }
+  };
+
   useEffect(() => {
-    fetchData();
+    fetchCatalog();
   }, [selectedCategory, searchTerm]);
+
+  useEffect(() => {
+    fetchUserOrders();
+  }, [currentUser]);
 
   // Auth Handlers
   const handleLogin = async (username, password) => {
@@ -49,6 +69,13 @@ export default function App() {
     localStorage.setItem('pharma_token', data.accessToken);
     localStorage.setItem('pharma_user', JSON.stringify(data));
     setCurrentUser(data);
+
+    // Auto-navigate to respective POV
+    if (data.roles?.includes('ROLE_ADMIN') || data.roles?.includes('ROLE_PHARMACIST')) {
+      setCurrentView('admin');
+    } else {
+      setCurrentView('store');
+    }
   };
 
   const handleRegister = async (formData) => {
@@ -59,6 +86,7 @@ export default function App() {
     authService.logout();
     setCurrentUser(null);
     setCurrentView('store');
+    setMyOrders([]);
   };
 
   // Cart Handlers
@@ -93,9 +121,12 @@ export default function App() {
   };
 
   const handleCheckout = async (orderPayload) => {
-    await orderService.placeOrder(orderPayload);
+    const res = await orderService.placeOrder(orderPayload);
     setCart([]);
-    fetchData(); // refresh stock
+    fetchCatalog(); // refresh stock
+    fetchUserOrders();
+    // Prompt to track the new order
+    setCurrentView('tracker');
   };
 
   const handlePrescriptionUpload = async (payload) => {
@@ -120,12 +151,12 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-grow-1">
-        {currentView === 'store' ? (
+        {/* VIEW 1: MEDICINES STORE */}
+        {currentView === 'store' && (
           <>
-            {/* Hero Banner for Pharmacy */}
             <div className="bg-primary text-white py-5 text-center shadow-sm">
               <div className="container">
-                <span className="badge bg-white text-primary mb-2 px-3 py-1 fw-bold">ONLINE PHARMACY</span>
+                <span className="badge bg-white text-primary mb-2 px-3 py-1 fw-bold">ONLINE PHARMACY & SUPPLIES</span>
                 <h1 className="fw-bolder display-5 mb-2">Authentic Medicines & Clinical Care</h1>
                 <p className="lead mb-0 text-white-50">
                   Search through thousands of laboratory-tested medications, vitamins, and healthcare supplies.
@@ -143,17 +174,53 @@ export default function App() {
               onSearchChange={setSearchTerm}
             />
           </>
-        ) : (
+        )}
+
+        {/* VIEW 2: DELIVERY TRACKER */}
+        {currentView === 'tracker' && (
+          <DeliveryTracker
+            orders={myOrders}
+            onSelectOrder={() => {}}
+          />
+        )}
+
+        {/* VIEW 3: CUSTOMER ORDERS & BILLS */}
+        {currentView === 'orders' && (
+          <CustomerOrders
+            currentUser={currentUser}
+            onTrackOrder={() => setCurrentView('tracker')}
+            onOpenLogin={() => setIsLoginOpen(true)}
+          />
+        )}
+
+        {/* VIEW 4: CUSTOMER SUPPORT */}
+        {currentView === 'support' && (
+          <CustomerSupport
+            currentUser={currentUser}
+            onOpenLogin={() => setIsLoginOpen(true)}
+          />
+        )}
+
+        {/* VIEW 5: USER PROFILE (FOR BOTH ADMIN AND CUSTOMER) */}
+        {currentView === 'profile' && (
+          <UserProfile
+            currentUser={currentUser}
+            onLogout={handleLogout}
+          />
+        )}
+
+        {/* VIEW 6: ADMIN CONTROL CENTER */}
+        {currentView === 'admin' && (
           <AdminDashboard
             categories={categories}
-            onRefreshMedicines={fetchData}
+            onRefreshMedicines={fetchCatalog}
           />
         )}
       </main>
 
       <Footer />
 
-      {/* Modals */}
+      {/* Unified Modals */}
       <LoginModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}

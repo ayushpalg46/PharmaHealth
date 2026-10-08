@@ -30,6 +30,12 @@ export const authService = {
   }
 };
 
+export const userService = {
+  getMyProfile: () => api.get('/users/me'),
+  updateProfile: (params) => api.put('/users/profile', null, { params }),
+  getActiveCustomers: () => api.get('/users/customers'),
+};
+
 export const medicineService = {
   getMedicines: (categoryId, search) => api.get('/public/medicines', { params: { categoryId, search } }),
   getCategories: () => api.get('/public/categories'),
@@ -43,7 +49,21 @@ export const orderService = {
   placeOrder: (orderData) => api.post('/orders', orderData),
   getMyOrders: () => api.get('/orders/my'),
   getAllOrders: () => api.get('/orders'),
-  updateStatus: (id, status) => api.patch(`/orders/${id}/status`, null, { params: { status } }),
+  trackDelivery: (trackingNumber) => api.get(`/orders/track/${trackingNumber}`),
+  updateStatus: (id, status, deliveryNotes) => api.patch(`/orders/${id}/status`, null, { params: { status, deliveryNotes } }),
+};
+
+export const billService = {
+  getAllBills: () => api.get('/bills'),
+  getMyBills: () => api.get('/bills/my'),
+  updateBillStatus: (id, status) => api.patch(`/bills/${id}/status`, null, { params: { status } }),
+};
+
+export const supportService = {
+  getAllTickets: () => api.get('/support'),
+  getMyTickets: () => api.get('/support/my'),
+  createTicket: (subject, category, message) => api.post('/support', null, { params: { subject, category, message } }),
+  respondToTicket: (id, response, status) => api.patch(`/support/${id}/respond`, null, { params: { response, status } }),
 };
 
 export const prescriptionService = {

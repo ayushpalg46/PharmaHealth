@@ -6,6 +6,8 @@ CREATE DATABASE IF NOT EXISTS pharmahealth_db;
 USE pharmahealth_db;
 
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS bills;
+DROP TABLE IF EXISTS support_tickets;
 DROP TABLE IF EXISTS order_items;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS prescriptions;
@@ -61,8 +63,8 @@ CREATE TABLE medicines (
     category_id BIGINT,
     price DECIMAL(10, 2) NOT NULL,
     stock_quantity INT NOT NULL DEFAULT 0,
-    dosage_form VARCHAR(50), -- e.g., Tablet, Capsule, Syrup, Injection
-    strength VARCHAR(50),    -- e.g., 500mg, 10ml
+    dosage_form VARCHAR(50),
+    strength VARCHAR(50),
     prescription_required BOOLEAN DEFAULT FALSE,
     expiry_date DATE,
     description TEXT,
@@ -90,11 +92,14 @@ CREATE TABLE orders (
     user_id BIGINT NOT NULL,
     prescription_id BIGINT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
-    status ENUM('PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED') DEFAULT 'PENDING',
+    status ENUM('PENDING', 'PROCESSING', 'SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED') DEFAULT 'PENDING',
     shipping_address TEXT NOT NULL,
     contact_phone VARCHAR(20) NOT NULL,
     payment_method VARCHAR(50) DEFAULT 'CARD',
-    payment_status ENUM('PENDING', 'PAID', 'FAILED') DEFAULT 'PENDING',
+    payment_status ENUM('PENDING', 'PAID', 'FAILED', 'REFUNDED') DEFAULT 'PENDING',
+    tracking_number VARCHAR(50),
+    delivery_notes VARCHAR(255),
+    estimated_delivery_date TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
@@ -113,6 +118,38 @@ CREATE TABLE order_items (
     CONSTRAINT fk_items_medicine FOREIGN KEY (medicine_id) REFERENCES medicines (id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- 9. Bills & Invoices Table
+CREATE TABLE bills (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL UNIQUE,
+    user_id BIGINT NOT NULL,
+    invoice_number VARCHAR(50) NOT NULL UNIQUE,
+    subtotal DECIMAL(10, 2) NOT NULL,
+    tax_amount DECIMAL(10, 2) DEFAULT 0.00,
+    discount_amount DECIMAL(10, 2) DEFAULT 0.00,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    payment_status ENUM('PAID', 'PENDING', 'FAILED', 'REFUNDED') DEFAULT 'PAID',
+    payment_method VARCHAR(50) DEFAULT 'CARD',
+    transaction_id VARCHAR(100),
+    bill_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_bill_order FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
+    CONSTRAINT fk_bill_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 10. Support Tickets Table
+CREATE TABLE support_tickets (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    subject VARCHAR(150) NOT NULL,
+    category VARCHAR(50) DEFAULT 'GENERAL',
+    message TEXT NOT NULL,
+    status ENUM('OPEN', 'IN_PROGRESS', 'RESOLVED') DEFAULT 'OPEN',
+    admin_response TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_ticket_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- ========================================================
 -- Initial Seed Data
 -- ========================================================
@@ -123,7 +160,7 @@ INSERT INTO roles (id, name) VALUES
 (2, 'ROLE_PHARMACIST'),
 (3, 'ROLE_CUSTOMER');
 
--- Users (Password is bcrypt for 'password123': $2a$10$wKqK69h9K3z1jAeknL513uRk2q04yH.kM0DkmH0Z0Q2d9mCgR3q9q)
+-- Users (Password: 'password123')
 INSERT INTO users (id, username, email, password, full_name, phone, address) VALUES
 (1, 'admin', 'admin@pharmahealth.com', '$2a$10$wKqK69h9K3z1jAeknL513uRk2q04yH.kM0DkmH0Z0Q2d9mCgR3q9q', 'System Administrator', '+1-800-555-0100', '100 Health Way, Suite 400, New York, NY'),
 (2, 'pharmacist1', 'pharmacist@pharmahealth.com', '$2a$10$wKqK69h9K3z1jAeknL513uRk2q04yH.kM0DkmH0Z0Q2d9mCgR3q9q', 'Dr. Sarah Connor', '+1-800-555-0101', '742 Evergreen Terrace, Springfield, OR'),
@@ -155,3 +192,20 @@ INSERT INTO medicines (id, name, generic_name, manufacturer, category_id, price,
 (6, 'Vitamin C + Zinc Immune Boost', 'Ascorbic Acid & Zinc', 'NatureMade Labs', 4, 15.99, 600, 'Chewable', '1000mg', FALSE, '2029-04-12', 'Comprehensive immune system booster for daily wellness.'),
 (7, 'Salbutamol Inhaler', 'Albuterol', 'Cipla Health', 5, 18.75, 140, 'Inhaler', '100mcg', TRUE, '2028-08-30', 'Bronchodilator for rapid relief of asthma and bronchospasm.'),
 (8, 'Omega-3 Fish Oil Ultra Pure', 'Fish Oil EPA/DHA', 'Nordic Naturals', 4, 24.50, 310, 'Softgel', '1200mg', FALSE, '2028-10-15', 'Supports heart, brain, and joint function with concentrated EPA/DHA.');
+
+-- Sample Order for John Doe
+INSERT INTO orders (id, user_id, prescription_id, total_amount, status, shipping_address, contact_phone, payment_method, payment_status, tracking_number, delivery_notes, estimated_delivery_date) VALUES
+(1, 3, NULL, 30.49, 'OUT_FOR_DELIVERY', '123 Elm Street, Austin, TX', '+1-800-555-0199', 'CARD', 'PAID', 'PH-TRK-784912', 'Courier van in neighborhood. Estimated delivery by 4 PM.', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY));
+
+-- Order Items
+INSERT INTO order_items (id, order_id, medicine_id, quantity, unit_price, total_price) VALUES
+(1, 1, 2, 2, 6.99, 13.98),
+(2, 1, 6, 1, 15.99, 15.99);
+
+-- Bill
+INSERT INTO bills (id, order_id, user_id, invoice_number, subtotal, tax_amount, discount_amount, total_amount, payment_status, payment_method, transaction_id) VALUES
+(1, 1, 3, 'INV-PH-1042', 29.97, 1.50, 0.00, 31.47, 'PAID', 'CARD', 'TXN-984321948');
+
+-- Support Ticket
+INSERT INTO support_tickets (id, user_id, subject, category, message, status, admin_response) VALUES
+(1, 3, 'Delivery estimate confirmation', 'DELIVERY', 'Hello, can you confirm if my package requires temperature control?', 'RESOLVED', 'Yes, our cold-chain courier maintains 2-8°C with insulated packaging.');
