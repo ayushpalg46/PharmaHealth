@@ -97,6 +97,40 @@ Visit [http://localhost:5173](http://localhost:5173).
 
 ---
 
+## ☁️ Deploying on Render with Aiven MySQL Database
+
+### 1. Set up Aiven MySQL Database
+1. Go to [Aiven Console](https://console.aiven.io/) and create a free MySQL service (e.g., `mysql-pharmahealth`).
+2. Once the service is running, open the **Overview** tab:
+   - Note down **Host**, **Port**, **User** (`avnadmin`), and **Password**.
+   - Note down the **Service URI**.
+3. Initialize the schema & seed data:
+   - Open Aiven's web **Query Editor** (or connect via MySQL Workbench / DBeaver / CLI using the Service URI).
+   - Run the script contents from [`database.sql`](file:///c:/PharmaHealth/database.sql).
+
+### 2. Connect Backend to Aiven on Render
+When deploying the blueprint via `render.yaml` or setting environment variables on the Render Dashboard for `pharmahealth-backend`:
+
+| Environment Variable | Example Value | Description |
+|---|---|---|
+| `SPRING_DATASOURCE_URL` | `jdbc:mysql://<AIVEN_HOST>:<AIVEN_PORT>/defaultdb?sslMode=REQUIRED` | Aiven JDBC URL with SSL enabled |
+| `SPRING_DATASOURCE_USERNAME` | `avnadmin` | Default Aiven administrative user |
+| `SPRING_DATASOURCE_PASSWORD` | `<your-aiven-password>` | Generated Aiven password |
+| `JWT_SECRET` | *(Auto-generated or custom 64-char key)* | Secret for signing auth tokens |
+| `SPRING_PROFILES_ACTIVE` | `prod` | Production Spring profile |
+
+### 3. Deploy via Blueprint on Render
+1. Go to [Render Dashboard](https://dashboard.render.com/) -> **New** -> **Blueprint**.
+2. Connect your repository: `https://github.com/ayushpalg46/PharmaHealth.git`.
+3. Render reads [`render.yaml`](file:///c:/PharmaHealth/render.yaml) automatically:
+   - Sets up the Spring Boot Web Service (`pharmahealth-backend`).
+   - Sets up the React Frontend (`pharmahealth-frontend`).
+   - Sets up the Static landing showcase (`pharmahealth-static`).
+4. Enter your Aiven credentials when prompted for `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD`.
+5. Click **Apply** to deploy!
+
+---
+
 ## 🔐 Default Seed Credentials
 
 | Role | Username | Password |
