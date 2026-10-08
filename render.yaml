@@ -11,15 +11,13 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      # Aiven MySQL Database Connection Variables
+      # Aiven Cloud MySQL Database Configuration
       - key: SPRING_DATASOURCE_URL
-        sync: false
-        # Format: jdbc:mysql://<AIVEN_HOST>:<AIVEN_PORT>/defaultdb?sslMode=REQUIRED
+        value: jdbc:mysql://mysql-21-ayushpal-2c43.a.aivencloud.com:20661/defaultdb?sslMode=REQUIRED
       - key: SPRING_DATASOURCE_USERNAME
-        sync: false
-        # Example: avnadmin
+        value: avnadmin
       - key: SPRING_DATASOURCE_PASSWORD
-        sync: false
+        sync: false # Set securely in Render dashboard
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRATION
@@ -37,7 +35,6 @@ services:
           type: web
           name: pharmahealth-backend
           property: host
-          # Will append /api during runtime or build
     routes:
       - type: rewrite
         source: /*

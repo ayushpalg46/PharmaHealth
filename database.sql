@@ -2,8 +2,8 @@
 -- PharmaHealth Database Schema & Seed Data (MySQL)
 -- ========================================================
 
-CREATE DATABASE IF NOT EXISTS pharmahealth_db;
-USE pharmahealth_db;
+CREATE DATABASE IF NOT EXISTS defaultdb;
+USE defaultdb;
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS bills;
