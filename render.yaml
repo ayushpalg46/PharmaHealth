@@ -1,0 +1,49 @@
+services:
+  # Spring Boot Backend API
+  - type: web
+    name: pharmahealth-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    healthCheckPath: /api/public/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: pharmahealth-mysql
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: "86400000"
+
+  # React Frontend Single Page App
+  - type: web
+    name: pharmahealth-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # Static Marketing & Documentation Page
+  - type: web
+    name: pharmahealth-static
+    env: static
+    staticPublishPath: ./static-page
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  - name: pharmahealth-mysql
+    databaseName: pharmahealth_db
+    user: pharma_user
+    plan: free
+    region: oregon

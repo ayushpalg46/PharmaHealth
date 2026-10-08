@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: pharmahealth_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: pharmahealth_db
+      MYSQL_USER: pharma_user
+      MYSQL_PASSWORD: pharma_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pharmahealth_backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/pharmahealth_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: pharma_user
+      SPRING_DATASOURCE_PASSWORD: pharma_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: 9a618248b64db62d15b300a07b0058e10b43631ff1ac15d1b777e7b92dec68d9
+      JWT_EXPIRATION: 86400000
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pharmahealth_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  static-page:
+    image: nginx:alpine
+    container_name: pharmahealth_static
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - ./static-page:/usr/share/nginx/html:ro
+
+volumes:
+  mysql_data:
