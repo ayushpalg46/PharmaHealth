@@ -154,23 +154,12 @@ public class OrderController {
                 order.setDeliveryNotes(deliveryNotes);
             } else {
                 switch (status) {
-                    case PROCESSING:
-                        order.setDeliveryNotes("Pharmacist verifying and packing pharmaceuticals.");
-                        break;
-                    case SHIPPED:
-                        order.setDeliveryNotes("Dispatched via Cold-Chain Express Courier.");
-                        break;
-                    case OUT_FOR_DELIVERY:
-                        order.setDeliveryNotes("Out for delivery with courier agent.");
-                        break;
-                    case DELIVERED:
-                        order.setDeliveryNotes("Delivered and received at customer destination.");
-                        break;
-                    case CANCELLED:
-                        order.setDeliveryNotes("Order cancelled.");
-                        break;
-                    default:
-                        break;
+                    case PROCESSING -> order.setDeliveryNotes("Pharmacist verifying and packing pharmaceuticals.");
+                    case SHIPPED -> order.setDeliveryNotes("Dispatched via Cold-Chain Express Courier.");
+                    case OUT_FOR_DELIVERY -> order.setDeliveryNotes("Out for delivery with courier agent.");
+                    case DELIVERED -> order.setDeliveryNotes("Delivered and received at customer destination.");
+                    case CANCELLED -> order.setDeliveryNotes("Order cancelled.");
+                    default -> {}
                 }
             }
             order.setUpdatedAt(LocalDateTime.now());
