@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { medicineService, orderService, prescriptionService, billService, supportService, userService } from '../services/api';
 
-export default function AdminDashboard({ categories, onRefreshMedicines, activeTab = 'deliveries', onTabChange }) {
+export default function AdminDashboard({ categories, onRefreshMedicines, activeTab = 'customers', onTabChange }) {
   const [internalTab, setInternalTab] = useState(activeTab);
   const tab = onTabChange ? activeTab : internalTab;
   const setTab = onTabChange ? onTabChange : setInternalTab;
 
   const [medicines, setMedicines] = useState([]);
-  const [orders, setOrders] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [bills, setBills] = useState([]);
   const [tickets, setTickets] = useState([]);
@@ -20,11 +19,6 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
 
   // Selected Bill receipt view
   const [selectedBill, setSelectedBill] = useState(null);
-
-  // Status update notes modal
-  const [editingOrder, setEditingOrder] = useState(null);
-  const [deliveryNotes, setDeliveryNotes] = useState('');
-  const [newStatus, setNewStatus] = useState('PROCESSING');
 
   // New Medicine Form State
   const [newMed, setNewMed] = useState({
@@ -43,10 +37,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
   const loadData = async () => {
     setLoading(true);
     try {
-      if (tab === 'deliveries') {
-        const res = await orderService.getAllOrders();
-        setOrders(res.data);
-      } else if (tab === 'customers') {
+      if (tab === 'customers') {
         const res = await userService.getActiveCustomers();
         setCustomers(res.data);
       } else if (tab === 'inventory') {
@@ -113,18 +104,6 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
     }
   };
 
-  const handleUpdateDelivery = async (e) => {
-    e.preventDefault();
-    if (!editingOrder) return;
-    try {
-      await orderService.updateStatus(editingOrder.id, newStatus, deliveryNotes);
-      setEditingOrder(null);
-      loadData();
-    } catch (err) {
-      alert('Failed to update delivery milestone.');
-    }
-  };
-
   const handleUpdateBillStatus = async (id, status) => {
     try {
       await billService.updateBillStatus(id, status);
@@ -171,12 +150,11 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
             <h3 className="fw-bold mb-1 text-white">
               Pharmacy Control Center
             </h3>
-            <p className="text-secondary small mb-0">Full oversight of customer orders, medicine inventory, billing records, and clinical inquiries.</p>
+            <p className="text-secondary small mb-0">Full oversight of active customers, medicine inventory, billing records, and clinical inquiries.</p>
           </div>
 
           <div className="d-flex flex-wrap gap-2">
             {[
-              { key: 'deliveries', icon: 'bi-truck', label: 'Deliveries' },
               { key: 'customers', icon: 'bi-people', label: 'Active Customers' },
               { key: 'inventory', icon: 'bi-boxes', label: 'Inventory' },
               { key: 'billing', icon: 'bi-cash-coin', label: 'Bills & Payments' },
@@ -206,80 +184,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
         </div>
       ) : (
         <>
-          {/* TAB 1: DELIVERIES */}
-          {tab === 'deliveries' && (
-            <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
-              <div className="card-header bg-white p-3 d-flex justify-content-between align-items-center">
-                <h6 className="fw-bold mb-0">Customer Shipments & Delivery Milestones ({orders.length})</h6>
-                <button className="btn btn-sm btn-outline-secondary" onClick={loadData}>
-                  <i className="bi bi-arrow-clockwise me-1"></i>Refresh
-                </button>
-              </div>
-              <div className="table-responsive">
-                <table className="table table-hover align-middle mb-0">
-                  <thead className="table-light small">
-                    <tr>
-                      <th>Order ID</th>
-                      <th>Customer Details</th>
-                      <th>Destination Address</th>
-                      <th>Tracking Number</th>
-                      <th>Current Stage</th>
-                      <th>Courier Notes</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orders.length === 0 ? (
-                      <tr><td colSpan="7" className="text-center py-4 text-muted">No orders found.</td></tr>
-                    ) : (
-                      orders.map(order => (
-                        <tr key={order.id}>
-                          <td><strong>#{order.id}</strong></td>
-                          <td>
-                            <div className="fw-semibold">{order.user?.fullName || order.user?.username}</div>
-                            <div className="small text-muted">{order.contactPhone}</div>
-                          </td>
-                          <td className="small" style={{ maxWidth: '220px' }}>
-                            {order.shippingAddress}
-                          </td>
-                          <td>
-                            <code className="fw-bold text-primary">{order.trackingNumber || 'Pending'}</code>
-                          </td>
-                          <td>
-                            <span className={`badge ${
-                              order.status === 'DELIVERED' ? 'bg-success' :
-                              order.status === 'OUT_FOR_DELIVERY' ? 'bg-warning text-dark' :
-                              order.status === 'SHIPPED' ? 'bg-info text-white' :
-                              order.status === 'PROCESSING' ? 'bg-primary' : 'bg-secondary'
-                            }`}>
-                              {order.status.replace('_', ' ')}
-                            </span>
-                          </td>
-                          <td className="small text-muted fst-italic" style={{ maxWidth: '200px' }}>
-                            {order.deliveryNotes || 'None'}
-                          </td>
-                          <td>
-                            <button 
-                              className="btn btn-outline-primary btn-sm rounded-pill"
-                              onClick={() => {
-                                setEditingOrder(order);
-                                setNewStatus(order.status);
-                                setDeliveryNotes(order.deliveryNotes || '');
-                              }}
-                            >
-                              <i className="bi bi-pencil-square me-1"></i>Update Delivery
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 2: ACTIVE CUSTOMERS */}
+          {/* TAB 1: ACTIVE CUSTOMERS */}
           {tab === 'customers' && (
             <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
               <div className="card-header bg-white p-3">
@@ -625,59 +530,6 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
             </div>
           )}
         </>
-      )}
-
-      {/* Modal: Update Delivery Status & Courier Notes */}
-      {editingOrder && (
-        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content border-0 shadow-lg rounded-4">
-              <div className="modal-header bg-primary text-white">
-                <h5 className="modal-title fw-bold">
-                  <i className="bi bi-truck me-2"></i>Update Delivery for Order #{editingOrder.id}
-                </h5>
-                <button type="button" className="btn-close btn-close-white" onClick={() => setEditingOrder(null)}></button>
-              </div>
-              <form onSubmit={handleUpdateDelivery}>
-                <div className="modal-body p-4">
-                  <div className="mb-3">
-                    <label className="form-label small fw-semibold">Tracking Number</label>
-                    <input type="text" className="form-control" value={editingOrder.trackingNumber || 'Pending'} disabled />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label small fw-semibold">Delivery Milestone Status</label>
-                    <select 
-                      className="form-select"
-                      value={newStatus}
-                      onChange={(e) => setNewStatus(e.target.value)}
-                    >
-                      <option value="PENDING">PENDING (Order Placed)</option>
-                      <option value="PROCESSING">PROCESSING (Packed & Verified)</option>
-                      <option value="SHIPPED">SHIPPED (Dispatched from Dispensary)</option>
-                      <option value="OUT_FOR_DELIVERY">OUT FOR DELIVERY (With Courier Van)</option>
-                      <option value="DELIVERED">DELIVERED (Completed)</option>
-                      <option value="CANCELLED">CANCELLED</option>
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label small fw-semibold">Courier Status Update Notes</label>
-                    <textarea 
-                      className="form-control" 
-                      rows="3" 
-                      value={deliveryNotes}
-                      onChange={(e) => setDeliveryNotes(e.target.value)}
-                      placeholder="e.g. Courier van is on route. Package stored in temperature-controlled cooler."
-                    ></textarea>
-                    <div className="form-text small">This message will appear directly on the customer's live tracking screen.</div>
-                  </div>
-                  <button type="submit" className="btn btn-primary w-100 py-2 fw-semibold">
-                    Save Delivery Update
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
       )}
 
       {/* Modal: Support Ticket Response */}

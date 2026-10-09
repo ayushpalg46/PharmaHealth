@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MedicineList from './components/MedicineList';
-import DeliveryTracker from './components/DeliveryTracker';
 import CustomerOrders from './components/CustomerOrders';
 import CustomerSupport from './components/CustomerSupport';
 import UserProfile from './components/UserProfile';
@@ -16,8 +15,8 @@ import { authService, medicineService, orderService, prescriptionService } from 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
   const isAdmin = currentUser?.roles?.includes('ROLE_ADMIN') || currentUser?.roles?.includes('ROLE_PHARMACIST');
-  const [currentView, setCurrentView] = useState(isAdmin ? 'admin' : 'store'); // 'store' | 'tracker' | 'orders' | 'support' | 'admin' | 'profile'
-  const [adminTab, setAdminTab] = useState('deliveries');
+  const [currentView, setCurrentView] = useState(isAdmin ? 'admin' : 'store'); // 'store' | 'orders' | 'support' | 'admin' | 'profile'
+  const [adminTab, setAdminTab] = useState('customers');
   const [medicines, setMedicines] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -123,12 +122,12 @@ export default function App() {
   };
 
   const handleCheckout = async (orderPayload) => {
-    const res = await orderService.placeOrder(orderPayload);
+    await orderService.placeOrder(orderPayload);
     setCart([]);
     fetchCatalog(); // refresh stock
     fetchUserOrders();
-    // Prompt to track the new order
-    setCurrentView('tracker');
+    // Navigate to orders history view
+    setCurrentView('orders');
   };
 
   const handlePrescriptionUpload = async (payload) => {
@@ -180,24 +179,15 @@ export default function App() {
           </>
         )}
 
-        {/* VIEW 2: DELIVERY TRACKER */}
-        {currentView === 'tracker' && (
-          <DeliveryTracker
-            orders={myOrders}
-            onSelectOrder={() => {}}
-          />
-        )}
-
-        {/* VIEW 3: CUSTOMER ORDERS & BILLS */}
+        {/* VIEW 2: CUSTOMER ORDERS & BILLS */}
         {currentView === 'orders' && (
           <CustomerOrders
             currentUser={currentUser}
-            onTrackOrder={() => setCurrentView('tracker')}
             onOpenLogin={() => setIsLoginOpen(true)}
           />
         )}
 
-        {/* VIEW 4: CUSTOMER SUPPORT */}
+        {/* VIEW 3: CUSTOMER SUPPORT */}
         {currentView === 'support' && (
           <CustomerSupport
             currentUser={currentUser}
@@ -205,7 +195,7 @@ export default function App() {
           />
         )}
 
-        {/* VIEW 5: USER PROFILE (FOR BOTH ADMIN AND CUSTOMER) */}
+        {/* VIEW 4: USER PROFILE (FOR BOTH ADMIN AND CUSTOMER) */}
         {currentView === 'profile' && (
           <UserProfile
             currentUser={currentUser}
@@ -213,7 +203,7 @@ export default function App() {
           />
         )}
 
-        {/* VIEW 6: ADMIN CONTROL CENTER */}
+        {/* VIEW 5: ADMIN CONTROL CENTER */}
         {currentView === 'admin' && (
           <AdminDashboard
             categories={categories}

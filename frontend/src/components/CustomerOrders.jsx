@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { orderService, billService } from '../services/api';
 
-export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin }) {
+export default function CustomerOrders({ currentUser, onOpenLogin }) {
   const [orders, setOrders] = useState([]);
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin 
           <h3 className="fw-bold mb-1 text-white">
             <i className="bi bi-bag-check text-info me-2"></i>My Orders & Invoices
           </h3>
-          <p className="text-muted small mb-0">View order status, download invoice receipts, or track deliveries.</p>
+          <p className="text-muted small mb-0">View medication order history and download official tax receipts.</p>
         </div>
         <button className="btn btn-primary btn-sm" onClick={loadData}>
           <i className="bi bi-arrow-clockwise me-1"></i>Refresh
@@ -59,7 +59,7 @@ export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin 
         <div className="text-center py-5 text-muted card rounded-4 shadow-sm p-5">
           <i className="bi bi-cart-x display-3 mb-3 d-block text-info"></i>
           <h5 className="text-white">No Orders Placed Yet</h5>
-          <p>Browse our pharmacy catalog and order medications with express delivery.</p>
+          <p>Browse our pharmacy catalog and order prescription or OTC medications.</p>
         </div>
       ) : (
         <div className="row g-4">
@@ -75,8 +75,8 @@ export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin 
                       <strong className="d-block text-white">#{order.id}</strong>
                     </div>
                     <div>
-                      <span className="text-muted small">Tracking</span>
-                      <strong className="d-block text-info">{order.trackingNumber || 'Pending'}</strong>
+                      <span className="text-muted small">Date</span>
+                      <strong className="d-block text-secondary">{new Date(order.orderDate).toLocaleDateString()}</strong>
                     </div>
                     <div>
                       <span className={`badge ${order.status === 'DELIVERED' ? 'bg-success' : 'bg-primary'}`}>
@@ -105,23 +105,16 @@ export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin 
 
                     <div className="small text-secondary mb-3">
                       <i className="bi bi-geo-alt me-1 text-info"></i>
-                      <span>{order.shippingAddress}</span>
+                      <span>{order.shippingAddress || 'Address on file'}</span>
                     </div>
 
                     <div className="d-flex gap-2">
-                      <button 
-                        className="btn btn-outline-primary btn-sm flex-grow-1"
-                        onClick={() => onTrackOrder(order)}
-                      >
-                        <i className="bi bi-truck me-1"></i> Live Tracking
-                      </button>
-
                       {matchingBill && (
                         <button 
-                          className="btn btn-outline-secondary btn-sm flex-grow-1"
+                          className="btn btn-outline-primary btn-sm w-100"
                           onClick={() => setSelectedBill(matchingBill)}
                         >
-                          <i className="bi bi-receipt me-1"></i> View Receipt
+                          <i className="bi bi-receipt me-1"></i> View Official Invoice Receipt
                         </button>
                       )}
                     </div>

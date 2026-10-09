@@ -30,7 +30,7 @@ export default function Navbar({
           onClick={(e) => { 
             e.preventDefault(); 
             if (isAdmin) {
-              handleAdminNav('deliveries');
+              handleAdminNav('customers');
             } else {
               onViewChange('store'); 
             }
@@ -60,14 +60,6 @@ export default function Navbar({
             {/* ADMIN-ONLY NAVIGATION */}
             {isAdmin ? (
               <>
-                <li className="nav-item">
-                  <button 
-                    className={`btn btn-link nav-link ${currentView === 'admin' && adminTab === 'deliveries' ? 'active text-info fw-bold border-bottom border-info border-2' : 'text-light text-opacity-75'}`}
-                    onClick={() => handleAdminNav('deliveries')}
-                  >
-                    <i className="bi bi-truck me-1"></i> Deliveries
-                  </button>
-                </li>
                 <li className="nav-item">
                   <button 
                     className={`btn btn-link nav-link ${currentView === 'admin' && adminTab === 'customers' ? 'active text-info fw-bold border-bottom border-info border-2' : 'text-light text-opacity-75'}`}
@@ -118,15 +110,6 @@ export default function Navbar({
                     onClick={() => onViewChange('store')}
                   >
                     <i className="bi bi-shop me-1"></i> Medicines & Supplies
-                  </button>
-                </li>
-
-                <li className="nav-item">
-                  <button 
-                    className={`btn btn-link nav-link ${currentView === 'tracker' ? 'active text-info fw-semibold' : 'text-light text-opacity-75'}`}
-                    onClick={() => onViewChange('tracker')}
-                  >
-                    <i className="bi bi-truck me-1"></i> Track Delivery
                   </button>
                 </li>
 
