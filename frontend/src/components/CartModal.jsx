@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onRemove, onCheckout, currentUser }) {
+export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onRemove, onCheckout, currentUser, onNavigateToOrders }) {
   const [shippingAddress, setShippingAddress] = useState(currentUser?.address || '123 Health Ave, Springfield');
   const [contactPhone, setContactPhone] = useState(currentUser?.phone || '+91 98765 43210');
   const [paymentMethod, setPaymentMethod] = useState('UPI');
@@ -49,11 +49,23 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
             {success ? (
               <div className="text-center py-4">
                 <i className="bi bi-check-circle-fill text-success display-3 mb-3"></i>
-                <h4>Order Placed Successfully!</h4>
-                <p className="text-muted">Your prescription and medicines have been registered for fulfillment.</p>
-                <button className="btn btn-primary mt-3" onClick={() => { setSuccess(false); onClose(); }}>
-                  Continue Shopping
-                </button>
+                <h4 className="text-white">Order Placed Successfully!</h4>
+                <p className="text-muted">Your order and invoice have been generated and sent to fulfillment.</p>
+                <div className="d-flex justify-content-center gap-2 mt-3">
+                  <button className="btn btn-outline-light" onClick={() => { setSuccess(false); onClose(); }}>
+                    Continue Shopping
+                  </button>
+                  <button 
+                    className="btn btn-primary fw-semibold" 
+                    onClick={() => { 
+                      setSuccess(false); 
+                      onClose(); 
+                      if (onNavigateToOrders) onNavigateToOrders(); 
+                    }}
+                  >
+                    <i className="bi bi-receipt-cutoff me-1"></i> View In My Orders
+                  </button>
+                </div>
               </div>
             ) : cart.length === 0 ? (
               <div className="text-center py-4 text-muted">

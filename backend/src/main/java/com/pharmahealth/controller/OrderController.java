@@ -45,6 +45,7 @@ public class OrderController {
     private BillRepository billRepository;
 
     @GetMapping
+    @Transactional(readOnly = true)
     @PreAuthorize("hasRole('ADMIN') or hasRole('PHARMACIST')")
     @Operation(summary = "List all customer orders with delivery status (Admin view)")
     public ResponseEntity<List<Order>> getAllOrders() {
@@ -52,6 +53,7 @@ public class OrderController {
     }
 
     @GetMapping("/my")
+    @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List current user orders (Customer view)")
     public ResponseEntity<List<Order>> getMyOrders(Authentication authentication) {
@@ -60,6 +62,7 @@ public class OrderController {
     }
 
     @GetMapping("/track/{trackingNumber}")
+    @Transactional(readOnly = true)
     @Operation(summary = "Track delivery by tracking number")
     public ResponseEntity<?> trackDelivery(@PathVariable String trackingNumber) {
         List<Order> allOrders = orderRepository.findAll();

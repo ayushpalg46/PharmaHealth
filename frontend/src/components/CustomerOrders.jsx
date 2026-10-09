@@ -76,7 +76,7 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                     </div>
                     <div>
                       <span className="text-muted small">Date</span>
-                      <strong className="d-block text-secondary">{new Date(order.orderDate).toLocaleDateString()}</strong>
+                      <strong className="d-block text-secondary">{new Date(order.createdAt || order.orderDate || Date.now()).toLocaleDateString()}</strong>
                     </div>
                     <div>
                       <span className={`badge ${order.status === 'DELIVERED' ? 'bg-success' : 'bg-primary'}`}>

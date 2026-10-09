@@ -239,6 +239,7 @@ export default function App() {
         onRemove={handleRemoveFromCart}
         onCheckout={handleCheckout}
         currentUser={currentUser}
+        onNavigateToOrders={() => setCurrentView('orders')}
       />
 
       <PrescriptionUploadModal
