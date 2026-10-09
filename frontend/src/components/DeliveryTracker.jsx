@@ -50,7 +50,7 @@ export default function DeliveryTracker({ orders, onSelectOrder }) {
       {/* Header */}
       <div className="text-center mb-5">
         <span className="badge bg-info-subtle text-info fw-semibold px-3 py-1 rounded-pill mb-2">LIVE TRACKING</span>
-        <h2 className="fw-bold">Track Your Pharmaceutical Delivery</h2>
+        <h2 className="fw-bold text-white">Track Your Pharmaceutical Delivery</h2>
         <p className="text-muted">Enter your tracking code or choose from your recent orders below.</p>
 
         {/* Tracking Search Form */}
@@ -75,7 +75,7 @@ export default function DeliveryTracker({ orders, onSelectOrder }) {
 
       {displayOrder ? (
         <div className="card shadow border-0 rounded-4 overflow-hidden mb-5">
-          <div className="card-header bg-dark text-white p-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+          <div className="card-header p-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
               <span className="text-muted small d-block">Tracking ID</span>
               <h5 className="mb-0 fw-bold text-info">{displayOrder.trackingNumber || `ORD-${displayOrder.id}`}</h5>
@@ -88,7 +88,7 @@ export default function DeliveryTracker({ orders, onSelectOrder }) {
             </div>
             <div>
               <span className="text-muted small d-block">Estimated Arrival</span>
-              <span className="fw-semibold">
+              <span className="fw-semibold text-white">
                 {displayOrder.estimatedDeliveryDate 
                   ? new Date(displayOrder.estimatedDeliveryDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
                   : 'Within 24-48 Hours'}
@@ -108,13 +108,19 @@ export default function DeliveryTracker({ orders, onSelectOrder }) {
                     <div key={stg.key} className="text-center" style={{ width: '18%' }}>
                       <div 
                         className={`rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 shadow-sm ${
-                          isCompleted ? 'bg-primary text-white' : 'bg-light text-muted border'
+                          isCompleted ? 'bg-primary text-white' : 'text-muted border'
                         }`}
-                        style={{ width: '48px', height: '48px', fontSize: '1.25rem' }}
+                        style={{ 
+                          width: '48px', 
+                          height: '48px', 
+                          fontSize: '1.25rem',
+                          backgroundColor: isCompleted ? 'var(--accent-blue)' : 'rgba(4, 26, 20, 0.7)',
+                          borderColor: isCompleted ? 'var(--accent-blue-light)' : 'rgba(255, 255, 255, 0.15)'
+                        }}
                       >
                         <i className={`bi ${stg.icon}`}></i>
                       </div>
-                      <div className={`small fw-bold ${isCurrent ? 'text-primary' : isCompleted ? 'text-dark' : 'text-muted'}`}>
+                      <div className={`small fw-bold ${isCurrent ? 'text-info' : isCompleted ? 'text-white' : 'text-muted'}`}>
                         {stg.label}
                       </div>
                     </div>
@@ -124,19 +130,19 @@ export default function DeliveryTracker({ orders, onSelectOrder }) {
             </div>
 
             {/* Courier & Delivery Details Box */}
-            <div className="row g-4 bg-light p-4 rounded-4">
+            <div className="row g-4 p-4 rounded-4" style={{ backgroundColor: 'rgba(4, 26, 20, 0.6)', border: '1px solid var(--border-color)' }}>
               <div className="col-md-6">
-                <h6 className="fw-bold text-secondary mb-2">
-                  <i className="bi bi-geo-alt me-1 text-primary"></i> Shipping Destination
+                <h6 className="fw-bold text-info mb-2">
+                  <i className="bi bi-geo-alt me-1"></i> Shipping Destination
                 </h6>
-                <p className="mb-1 text-dark fw-medium">{displayOrder.shippingAddress}</p>
+                <p className="mb-1 text-white fw-medium">{displayOrder.shippingAddress}</p>
                 <p className="small text-muted mb-0">Recipient Contact: {displayOrder.contactPhone}</p>
               </div>
-              <div className="col-md-6 border-start-md">
-                <h6 className="fw-bold text-secondary mb-2">
-                  <i className="bi bi-info-circle me-1 text-primary"></i> Courier Updates & Notes
+              <div className="col-md-6">
+                <h6 className="fw-bold text-info mb-2">
+                  <i className="bi bi-info-circle me-1"></i> Courier Updates & Notes
                 </h6>
-                <p className="mb-1 text-dark fst-italic">
+                <p className="mb-1 text-white fst-italic">
                   "{displayOrder.deliveryNotes || 'Pharmaceutical order packaged in temperature-controlled bag.'}"
                 </p>
                 <p className="small text-muted mb-0">Carrier: PharmaHealth Cold-Chain Logistics</p>
@@ -145,15 +151,15 @@ export default function DeliveryTracker({ orders, onSelectOrder }) {
 
             {/* Itemized Contents */}
             <div className="mt-4">
-              <h6 className="fw-bold mb-3">Package Contents</h6>
+              <h6 className="fw-bold text-white mb-3">Package Contents</h6>
               <div className="list-group list-group-flush border rounded-3">
                 {displayOrder.items?.map(it => (
                   <div key={it.id} className="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                      <strong>{it.medicine?.name}</strong>
+                      <strong className="text-white">{it.medicine?.name}</strong>
                       <span className="text-muted small ms-2">x {it.quantity}</span>
                     </div>
-                    <span className="fw-bold text-dark">${it.totalPrice?.toFixed(2)}</span>
+                    <span className="fw-bold text-info">${it.totalPrice?.toFixed(2)}</span>
                   </div>
                 ))}
               </div>
@@ -162,8 +168,8 @@ export default function DeliveryTracker({ orders, onSelectOrder }) {
         </div>
       ) : (
         <div className="text-center py-5 text-muted">
-          <i className="bi bi-box2 display-3 d-block mb-3"></i>
-          <h5>No Active Delivery to Display</h5>
+          <i className="bi bi-box2 display-3 d-block mb-3 text-info"></i>
+          <h5 className="text-white">No Active Delivery to Display</h5>
           <p>Place an order or enter your tracking code above to follow your medicine shipment in real time.</p>
         </div>
       )}
@@ -171,7 +177,7 @@ export default function DeliveryTracker({ orders, onSelectOrder }) {
       {/* Recent Orders Quick Select for Logged-In Customers */}
       {orders && orders.length > 0 && (
         <div className="mt-4">
-          <h5 className="fw-bold mb-3">Your Recent Shipments</h5>
+          <h5 className="fw-bold text-white mb-3">Your Recent Shipments</h5>
           <div className="row g-3">
             {orders.map(o => (
               <div key={o.id} className="col-md-6 col-lg-4">
@@ -181,12 +187,12 @@ export default function DeliveryTracker({ orders, onSelectOrder }) {
                   onClick={() => setTrackedOrder(o)}
                 >
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="fw-bold text-primary">{o.trackingNumber || `ORD-${o.id}`}</span>
-                    <span className="badge bg-secondary-subtle text-secondary small">{o.status}</span>
+                    <span className="fw-bold text-info">{o.trackingNumber || `ORD-${o.id}`}</span>
+                    <span className="badge bg-secondary-subtle small">{o.status}</span>
                   </div>
-                  <div className="small text-muted mb-2">Total: ${o.totalAmount.toFixed(2)}</div>
+                  <div className="small text-muted mb-2">Total: <span className="text-white fw-semibold">${o.totalAmount.toFixed(2)}</span></div>
                   <div className="small text-truncate text-secondary">
-                    <i className="bi bi-geo-alt me-1"></i>{o.shippingAddress}
+                    <i className="bi bi-geo-alt me-1 text-info"></i>{o.shippingAddress}
                   </div>
                 </div>
               </div>

@@ -57,20 +57,20 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
         <div className="bg-primary text-white p-4 p-md-5 position-relative">
           <div className="d-flex flex-column flex-md-row align-items-md-center gap-4">
             <div 
-              className="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg"
-              style={{ width: '90px', height: '90px', fontSize: '2.5rem' }}
+              className="rounded-circle d-flex align-items-center justify-content-center shadow-lg border border-2 border-info"
+              style={{ width: '90px', height: '90px', fontSize: '2.5rem', backgroundColor: '#07271e', color: '#38bdf8' }}
             >
               <i className={isAdmin ? 'bi bi-shield-check' : 'bi bi-person'}></i>
             </div>
             <div>
               <div className="d-flex align-items-center gap-2 mb-1">
-                <h3 className="fw-bold mb-0">{profile?.fullName || currentUser.username}</h3>
+                <h3 className="fw-bold mb-0 text-white">{profile?.fullName || currentUser.username}</h3>
                 <span className={`badge ${isAdmin ? 'bg-warning text-dark' : 'bg-info text-white'}`}>
                   {isAdmin ? 'Staff / Administrator' : 'Verified Patient / Customer'}
                 </span>
               </div>
               <p className="mb-0 text-white-50 small">
-                <i className="bi bi-envelope me-1"></i>{profile?.email || currentUser.email} • 
+                <i className="bi bi-envelope me-1 text-info"></i>{profile?.email || currentUser.email} • 
                 <span className="ms-2">Member since {new Date(profile?.createdAt || Date.now()).toLocaleDateString()}</span>
               </p>
             </div>
@@ -78,16 +78,16 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
         </div>
 
         {/* Role Quick Statistics */}
-        <div className="card-body bg-light border-top p-4">
+        <div className="card-body p-4" style={{ backgroundColor: 'rgba(4, 26, 20, 0.7)' }}>
           <div className="row g-3 text-center">
             {isAdmin ? (
               <>
-                <div className="col-4 border-end">
-                  <div className="fw-bold fs-4 text-dark">Enterprise</div>
+                <div className="col-4 border-end border-secondary border-opacity-25">
+                  <div className="fw-bold fs-4 text-info">Enterprise</div>
                   <div className="small text-muted">Role Permission Level</div>
                 </div>
-                <div className="col-4 border-end">
-                  <div className="fw-bold fs-4 text-primary">Full Access</div>
+                <div className="col-4 border-end border-secondary border-opacity-25">
+                  <div className="fw-bold fs-4 text-white">Full Access</div>
                   <div className="small text-muted">Inventory & Dispatch</div>
                 </div>
                 <div className="col-4">
@@ -97,11 +97,11 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
               </>
             ) : (
               <>
-                <div className="col-4 border-end">
-                  <div className="fw-bold fs-4 text-primary">Active</div>
+                <div className="col-4 border-end border-secondary border-opacity-25">
+                  <div className="fw-bold fs-4 text-info">Active</div>
                   <div className="small text-muted">Prescription Account</div>
                 </div>
-                <div className="col-4 border-end">
+                <div className="col-4 border-end border-secondary border-opacity-25">
                   <div className="fw-bold fs-4 text-success">Verified</div>
                   <div className="small text-muted">Delivery Address</div>
                 </div>
@@ -119,8 +119,8 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
       <div className="row g-4">
         <div className="col-lg-8">
           <div className="card border-0 shadow-sm rounded-4 p-4">
-            <h5 className="fw-bold mb-3">
-              <i className="bi bi-gear text-primary me-2"></i>Account & Contact Information
+            <h5 className="fw-bold mb-3 text-white">
+              <i className="bi bi-gear text-info me-2"></i>Account & Contact Information
             </h5>
 
             {message && <div className="alert alert-success py-2 small">{message}</div>}
@@ -129,19 +129,19 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             <form onSubmit={handleSave}>
               <div className="row g-3 mb-3">
                 <div className="col-md-6">
-                  <label className="form-label small fw-semibold">Username</label>
+                  <label className="form-label small fw-semibold text-white">Username</label>
                   <input type="text" className="form-control" value={currentUser.username} disabled />
                   <div className="form-text small">System username cannot be modified.</div>
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label small fw-semibold">Email Address</label>
+                  <label className="form-label small fw-semibold text-white">Email Address</label>
                   <input type="email" className="form-control" value={currentUser.email} disabled />
                   <div className="form-text small">Registered login email identifier.</div>
                 </div>
               </div>
 
               <div className="mb-3">
-                <label className="form-label small fw-semibold">Full Legal Name</label>
+                <label className="form-label small fw-semibold text-white">Full Legal Name</label>
                 <input 
                   type="text" 
                   className="form-control" 
@@ -153,7 +153,7 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
 
               <div className="row g-3 mb-3">
                 <div className="col-md-6">
-                  <label className="form-label small fw-semibold">Primary Contact Phone</label>
+                  <label className="form-label small fw-semibold text-white">Primary Contact Phone</label>
                   <input 
                     type="text" 
                     className="form-control" 
@@ -163,17 +163,17 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label small fw-semibold">Role Badges</label>
+                  <label className="form-label small fw-semibold text-white">Role Badges</label>
                   <div className="pt-2">
                     {currentUser.roles?.map(r => (
-                      <span key={r} className="badge bg-secondary me-1">{r}</span>
+                      <span key={r} className="badge bg-info-subtle text-info me-1">{r}</span>
                     ))}
                   </div>
                 </div>
               </div>
 
               <div className="mb-4">
-                <label className="form-label small fw-semibold">Default Shipping / Clinical Address</label>
+                <label className="form-label small fw-semibold text-white">Default Shipping / Clinical Address</label>
                 <textarea 
                   className="form-control" 
                   rows="3" 
@@ -195,11 +195,11 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
         {/* Security & Action Card */}
         <div className="col-lg-4">
           <div className="card border-0 shadow-sm rounded-4 p-4 mb-4">
-            <h6 className="fw-bold mb-3">
-              <i className="bi bi-shield-lock text-success me-2"></i>Security & Session
+            <h6 className="fw-bold mb-3 text-white">
+              <i className="bi bi-shield-lock text-info me-2"></i>Security & Session
             </h6>
             <div className="small text-muted mb-3">
-              Your session is authenticated via <strong>JSON Web Token (JWT)</strong> with stateless verification.
+              Your session is authenticated via <strong className="text-white">JSON Web Token (JWT)</strong> with stateless verification.
             </div>
             <div className="d-grid gap-2">
               <button className="btn btn-outline-danger btn-sm" onClick={onLogout}>
@@ -208,11 +208,11 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             </div>
           </div>
 
-          <div className="card border-0 shadow-sm rounded-4 p-4 bg-primary-subtle text-primary">
-            <h6 className="fw-bold mb-2">
+          <div className="card border-0 shadow-sm rounded-4 p-4" style={{ backgroundColor: 'rgba(2, 132, 199, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+            <h6 className="fw-bold mb-2 text-info">
               <i className="bi bi-patch-check-fill me-1"></i>Compliance & Privacy
             </h6>
-            <p className="small mb-0 text-secondary">
+            <p className="small mb-0 text-white">
               PharmaHealth is compliant with electronic medical records and pharmaceutical traceability guidelines. All patient data is encrypted.
             </p>
           </div>

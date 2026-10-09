@@ -31,8 +31,8 @@ export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin 
   if (!currentUser) {
     return (
       <div className="container py-5 text-center">
-        <i className="bi bi-person-lock display-3 text-muted mb-3 d-block"></i>
-        <h4>Authentication Required</h4>
+        <i className="bi bi-person-lock display-3 text-info mb-3 d-block"></i>
+        <h4 className="text-white">Authentication Required</h4>
         <p className="text-muted">Please sign in to view your orders and billing records.</p>
         <button className="btn btn-primary" onClick={onOpenLogin}>Sign In</button>
       </div>
@@ -41,24 +41,24 @@ export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin 
 
   return (
     <div className="container py-4">
-      <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+      <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
         <div>
-          <h3 className="fw-bold mb-1">
-            <i className="bi bi-bag-check text-primary me-2"></i>My Orders & Invoices
+          <h3 className="fw-bold mb-1 text-white">
+            <i className="bi bi-bag-check text-info me-2"></i>My Orders & Invoices
           </h3>
           <p className="text-muted small mb-0">View order status, download invoice receipts, or track deliveries.</p>
         </div>
-        <button className="btn btn-outline-primary btn-sm" onClick={loadData}>
+        <button className="btn btn-primary btn-sm" onClick={loadData}>
           <i className="bi bi-arrow-clockwise me-1"></i>Refresh
         </button>
       </div>
 
       {loading ? (
-        <div className="text-center py-5">Loading orders...</div>
+        <div className="text-center py-5 text-muted">Loading orders...</div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-5 text-muted bg-white rounded-4 shadow-sm p-5">
-          <i className="bi bi-cart-x display-3 mb-3 d-block"></i>
-          <h5>No Orders Placed Yet</h5>
+        <div className="text-center py-5 text-muted card rounded-4 shadow-sm p-5">
+          <i className="bi bi-cart-x display-3 mb-3 d-block text-info"></i>
+          <h5 className="text-white">No Orders Placed Yet</h5>
           <p>Browse our pharmacy catalog and order medications with express delivery.</p>
         </div>
       ) : (
@@ -69,14 +69,14 @@ export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin 
             return (
               <div key={order.id} className="col-lg-6">
                 <div className="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
-                  <div className="card-header bg-light p-3 d-flex justify-content-between align-items-center">
+                  <div className="card-header p-3 d-flex justify-content-between align-items-center">
                     <div>
                       <span className="text-muted small">Order ID</span>
-                      <strong className="d-block text-dark">#{order.id}</strong>
+                      <strong className="d-block text-white">#{order.id}</strong>
                     </div>
                     <div>
                       <span className="text-muted small">Tracking</span>
-                      <strong className="d-block text-primary">{order.trackingNumber || 'Pending'}</strong>
+                      <strong className="d-block text-info">{order.trackingNumber || 'Pending'}</strong>
                     </div>
                     <div>
                       <span className={`badge ${order.status === 'DELIVERED' ? 'bg-success' : 'bg-primary'}`}>
@@ -91,20 +91,20 @@ export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin 
                       <div className="list-group list-group-flush border rounded-3">
                         {order.items?.map(it => (
                           <div key={it.id} className="list-group-item py-2 d-flex justify-content-between small">
-                            <span>{it.medicine?.name} <span className="text-muted">x{it.quantity}</span></span>
-                            <span className="fw-semibold">${it.totalPrice?.toFixed(2)}</span>
+                            <span className="text-white">{it.medicine?.name} <span className="text-muted">x{it.quantity}</span></span>
+                            <span className="fw-semibold text-info">${it.totalPrice?.toFixed(2)}</span>
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="d-flex justify-content-between align-items-center bg-light p-2 rounded mb-3">
+                    <div className="d-flex justify-content-between align-items-center p-2 rounded mb-3" style={{ backgroundColor: 'rgba(4, 26, 20, 0.6)', border: '1px solid var(--border-color)' }}>
                       <span className="small text-muted">Grand Total:</span>
-                      <span className="fw-bold text-dark fs-5">${order.totalAmount.toFixed(2)}</span>
+                      <span className="fw-bold text-white fs-5">${order.totalAmount.toFixed(2)}</span>
                     </div>
 
                     <div className="small text-secondary mb-3">
-                      <i className="bi bi-geo-alt me-1 text-primary"></i>
+                      <i className="bi bi-geo-alt me-1 text-info"></i>
                       <span>{order.shippingAddress}</span>
                     </div>
 
@@ -135,30 +135,30 @@ export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin 
 
       {/* Bill Receipt Modal */}
       {selectedBill && (
-        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.65)' }}>
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-              <div className="modal-header bg-dark text-white">
+              <div className="modal-header text-white">
                 <h5 className="modal-title fw-bold">
                   <i className="bi bi-receipt text-info me-2"></i>Invoice #{selectedBill.invoiceNumber}
                 </h5>
                 <button type="button" className="btn-close btn-close-white" onClick={() => setSelectedBill(null)}></button>
               </div>
               <div className="modal-body p-4">
-                <div className="text-center mb-4 pb-2 border-bottom">
-                  <h4 className="fw-bold text-primary mb-0">PharmaHealth Dispensary</h4>
+                <div className="text-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+                  <h4 className="fw-bold text-info mb-0">PharmaHealth Dispensary</h4>
                   <p className="text-muted small">Certified Clinical & Pharmaceutical Services</p>
                 </div>
 
                 <div className="row g-2 small mb-3">
                   <div className="col-6">
                     <span className="text-muted">Billed To:</span>
-                    <strong className="d-block">{selectedBill.user?.fullName || selectedBill.user?.username}</strong>
-                    <span>{selectedBill.user?.email}</span>
+                    <strong className="d-block text-white">{selectedBill.user?.fullName || selectedBill.user?.username}</strong>
+                    <span className="text-muted">{selectedBill.user?.email}</span>
                   </div>
                   <div className="col-6 text-end">
                     <span className="text-muted">Date:</span>
-                    <strong className="d-block">{new Date(selectedBill.billDate).toLocaleDateString()}</strong>
+                    <strong className="d-block text-white">{new Date(selectedBill.billDate).toLocaleDateString()}</strong>
                     <span className="badge bg-success-subtle text-success">{selectedBill.paymentStatus}</span>
                   </div>
                 </div>
@@ -166,35 +166,35 @@ export default function CustomerOrders({ currentUser, onTrackOrder, onOpenLogin 
                 <div className="table-responsive mb-3">
                   <table className="table table-sm">
                     <thead>
-                      <tr className="table-light small">
+                      <tr className="small text-info">
                         <th>Description</th>
                         <th className="text-end">Amount</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td>Order #{selectedBill.order?.id} Pharmaceuticals</td>
-                        <td className="text-end">${selectedBill.subtotal?.toFixed(2)}</td>
+                        <td className="text-white">Order #{selectedBill.order?.id} Pharmaceuticals</td>
+                        <td className="text-end text-white">${selectedBill.subtotal?.toFixed(2)}</td>
                       </tr>
                       <tr>
-                        <td>Pharmacy Tax & Handling (5%)</td>
-                        <td className="text-end">${selectedBill.taxAmount?.toFixed(2)}</td>
+                        <td className="text-white">Pharmacy Tax & Handling (5%)</td>
+                        <td className="text-end text-white">${selectedBill.taxAmount?.toFixed(2)}</td>
                       </tr>
-                      <tr className="fw-bold border-top">
-                        <td>Total Paid</td>
-                        <td className="text-end text-primary">${selectedBill.totalAmount?.toFixed(2)}</td>
+                      <tr className="fw-bold border-top border-secondary border-opacity-50">
+                        <td className="text-white">Total Paid</td>
+                        <td className="text-end text-info fs-5">${selectedBill.totalAmount?.toFixed(2)}</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
 
-                <div className="bg-light p-2 rounded small text-muted">
+                <div className="p-2 rounded small text-muted" style={{ backgroundColor: 'rgba(4, 26, 20, 0.6)', border: '1px solid var(--border-color)' }}>
                   Transaction Reference: <code>{selectedBill.transactionId || 'N/A'}</code><br/>
-                  Payment Method: {selectedBill.paymentMethod}
+                  Payment Method: <span className="text-white">{selectedBill.paymentMethod}</span>
                 </div>
               </div>
-              <div className="modal-footer bg-light justify-content-between">
-                <button className="btn btn-outline-secondary btn-sm" onClick={() => window.print()}>
+              <div className="modal-footer justify-content-between">
+                <button className="btn btn-outline-light btn-sm" onClick={() => window.print()}>
                   <i className="bi bi-printer me-1"></i> Print Receipt
                 </button>
                 <button className="btn btn-primary btn-sm" onClick={() => setSelectedBill(null)}>
