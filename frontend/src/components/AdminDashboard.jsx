@@ -137,46 +137,6 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
 
   return (
     <div className="container py-4">
-      {/* Admin Subheader & Navigation */}
-      <div className="card border-0 mb-4 p-4 shadow-sm" style={{ background: 'linear-gradient(135deg, rgba(6, 35, 26, 0.95) 0%, rgba(13, 74, 57, 0.85) 100%)', border: '1px solid var(--border-color)' }}>
-        <div className="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
-          <div>
-            <div className="d-flex align-items-center gap-2 mb-1">
-              <span className="badge bg-warning text-dark fw-bold px-2 py-1">
-                <i className="bi bi-shield-fill-check me-1"></i>ADMINISTRATOR CONSOLE
-              </span>
-              <span className="badge bg-primary-subtle text-info small">Secure Portal</span>
-            </div>
-            <h3 className="fw-bold mb-1 text-white">
-              Pharmacy Control Center
-            </h3>
-            <p className="text-secondary small mb-0">Full oversight of active customers, medicine inventory, billing records, and clinical inquiries.</p>
-          </div>
-
-          <div className="d-flex flex-wrap gap-2">
-            {[
-              { key: 'customers', icon: 'bi-people', label: 'Active Customers' },
-              { key: 'inventory', icon: 'bi-boxes', label: 'Inventory' },
-              { key: 'billing', icon: 'bi-cash-coin', label: 'Bills & Payments' },
-              { key: 'support', icon: 'bi-chat-heart', label: 'Support Inquiries' },
-              { key: 'prescriptions', icon: 'bi-file-earmark-medical', label: 'Prescriptions' },
-            ].map(item => (
-              <button 
-                key={item.key}
-                className={`btn btn-sm px-3 py-2 rounded-pill fw-semibold transition-all ${
-                  tab === item.key 
-                    ? 'btn-primary shadow' 
-                    : 'btn-outline-secondary text-light'
-                }`} 
-                onClick={() => setTab(item.key)}
-              >
-                <i className={`bi ${item.icon} me-1.5`}></i> {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {loading ? (
         <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status"></div>

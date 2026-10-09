@@ -56,13 +56,13 @@ export default function Navbar({
         </button>
 
         <div className="collapse navbar-collapse" id="pharmaNavbar">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
             {/* ADMIN-ONLY NAVIGATION */}
             {isAdmin ? (
               <>
                 <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link ${currentView === 'admin' && adminTab === 'customers' ? 'active text-info fw-bold border-bottom border-info border-2' : 'text-light text-opacity-75'}`}
+                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'admin' && adminTab === 'customers' ? 'active text-info fw-bold bg-primary-subtle' : 'text-light text-opacity-75'}`}
                     onClick={() => handleAdminNav('customers')}
                   >
                     <i className="bi bi-people me-1"></i> Active Customers
@@ -70,7 +70,7 @@ export default function Navbar({
                 </li>
                 <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link ${currentView === 'admin' && adminTab === 'inventory' ? 'active text-info fw-bold border-bottom border-info border-2' : 'text-light text-opacity-75'}`}
+                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'admin' && adminTab === 'inventory' ? 'active text-info fw-bold bg-primary-subtle' : 'text-light text-opacity-75'}`}
                     onClick={() => handleAdminNav('inventory')}
                   >
                     <i className="bi bi-boxes me-1"></i> Inventory Stock
@@ -78,7 +78,7 @@ export default function Navbar({
                 </li>
                 <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link ${currentView === 'admin' && adminTab === 'billing' ? 'active text-info fw-bold border-bottom border-info border-2' : 'text-light text-opacity-75'}`}
+                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'admin' && adminTab === 'billing' ? 'active text-info fw-bold bg-primary-subtle' : 'text-light text-opacity-75'}`}
                     onClick={() => handleAdminNav('billing')}
                   >
                     <i className="bi bi-cash-coin me-1"></i> Bills & Payments
@@ -86,7 +86,7 @@ export default function Navbar({
                 </li>
                 <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link ${currentView === 'admin' && adminTab === 'support' ? 'active text-info fw-bold border-bottom border-info border-2' : 'text-light text-opacity-75'}`}
+                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'admin' && adminTab === 'support' ? 'active text-info fw-bold bg-primary-subtle' : 'text-light text-opacity-75'}`}
                     onClick={() => handleAdminNav('support')}
                   >
                     <i className="bi bi-chat-heart me-1"></i> Support Inquiries
@@ -94,7 +94,7 @@ export default function Navbar({
                 </li>
                 <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link ${currentView === 'admin' && adminTab === 'prescriptions' ? 'active text-info fw-bold border-bottom border-info border-2' : 'text-light text-opacity-75'}`}
+                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'admin' && adminTab === 'prescriptions' ? 'active text-info fw-bold bg-primary-subtle' : 'text-light text-opacity-75'}`}
                     onClick={() => handleAdminNav('prescriptions')}
                   >
                     <i className="bi bi-file-earmark-medical me-1"></i> Prescriptions
@@ -106,7 +106,7 @@ export default function Navbar({
               <>
                 <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link ${currentView === 'store' ? 'active text-info fw-semibold' : 'text-light text-opacity-75'}`}
+                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'store' ? 'active text-info fw-semibold bg-primary-subtle' : 'text-light text-opacity-75'}`}
                     onClick={() => onViewChange('store')}
                   >
                     <i className="bi bi-shop me-1"></i> Medicines & Supplies
@@ -116,7 +116,7 @@ export default function Navbar({
                 {currentUser && (
                   <li className="nav-item">
                     <button 
-                      className={`btn btn-link nav-link ${currentView === 'orders' ? 'active text-info fw-semibold' : 'text-light text-opacity-75'}`}
+                      className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'orders' ? 'active text-info fw-semibold bg-primary-subtle' : 'text-light text-opacity-75'}`}
                       onClick={() => onViewChange('orders')}
                     >
                       <i className="bi bi-receipt-cutoff me-1"></i> My Orders & Bills
@@ -126,7 +126,7 @@ export default function Navbar({
 
                 <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link ${currentView === 'support' ? 'active text-info fw-semibold' : 'text-light text-opacity-75'}`}
+                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'support' ? 'active text-info fw-semibold bg-primary-subtle' : 'text-light text-opacity-75'}`}
                     onClick={() => onViewChange('support')}
                   >
                     <i className="bi bi-chat-heart me-1"></i> Customer Support
@@ -135,7 +135,7 @@ export default function Navbar({
 
                 <li className="nav-item">
                   <button 
-                    className="btn btn-link nav-link text-light text-opacity-75"
+                    className="btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 text-light text-opacity-75"
                     onClick={onOpenPrescription}
                   >
                     <i className="bi bi-file-earmark-medical me-1"></i> Upload Rx
