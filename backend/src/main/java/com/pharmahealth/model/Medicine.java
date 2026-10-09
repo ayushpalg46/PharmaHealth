@@ -38,6 +38,8 @@ public class Medicine {
 
     private Boolean prescriptionRequired = false;
 
+    private LocalDate expiryDate;
+
     @Column(columnDefinition = "TEXT")
     private String description;
 
