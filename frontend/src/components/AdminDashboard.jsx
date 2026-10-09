@@ -226,7 +226,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                       </div>
                       <div className="row g-2 mb-2">
                         <div className="col-6">
-                          <label className="form-label small fw-semibold">Price ($)</label>
+                          <label className="form-label small fw-semibold">Price (₹)</label>
                           <input type="number" step="0.01" className="form-control form-control-sm" required value={newMed.price} onChange={e => setNewMed({...newMed, price: e.target.value})} />
                         </div>
                         <div className="col-6">
@@ -279,7 +279,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                               <div className="small text-muted">{m.genericName} • {m.dosageForm}</div>
                             </td>
                             <td>{m.category?.name || 'General'}</td>
-                            <td><strong>${m.price.toFixed(2)}</strong></td>
+                            <td><strong>₹{m.price.toFixed(2)}</strong></td>
                             <td>
                               <span className={`badge ${m.stockQuantity > 50 ? 'bg-success' : m.stockQuantity > 10 ? 'bg-warning text-dark' : 'bg-danger'}`}>
                                 {m.stockQuantity} units
@@ -338,9 +338,9 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                             <div>{b.user?.fullName || b.user?.username}</div>
                             <div className="small text-muted">{b.user?.email}</div>
                           </td>
-                          <td>${b.subtotal?.toFixed(2)}</td>
-                          <td>${b.taxAmount?.toFixed(2)}</td>
-                          <td className="fw-bold text-primary">${b.totalAmount?.toFixed(2)}</td>
+                          <td>₹{b.subtotal?.toFixed(2)}</td>
+                          <td>₹{b.taxAmount?.toFixed(2)}</td>
+                          <td className="fw-bold text-primary">₹{b.totalAmount?.toFixed(2)}</td>
                           <td><span className="badge bg-light text-dark border">{b.paymentMethod}</span></td>
                           <td>
                             <select 
@@ -562,15 +562,15 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                 <div className="border-top pt-2 mb-3">
                   <div className="d-flex justify-content-between small mb-1">
                     <span>Subtotal:</span>
-                    <span>${selectedBill.subtotal?.toFixed(2)}</span>
+                    <span>₹{selectedBill.subtotal?.toFixed(2)}</span>
                   </div>
                   <div className="d-flex justify-content-between small mb-1">
                     <span>Tax (5%):</span>
-                    <span>${selectedBill.taxAmount?.toFixed(2)}</span>
+                    <span>₹{selectedBill.taxAmount?.toFixed(2)}</span>
                   </div>
                   <div className="d-flex justify-content-between fw-bold fs-5 border-top pt-1">
                     <span>Total Amount:</span>
-                    <span className="text-primary">${selectedBill.totalAmount?.toFixed(2)}</span>
+                    <span className="text-primary">₹{selectedBill.totalAmount?.toFixed(2)}</span>
                   </div>
                 </div>
 

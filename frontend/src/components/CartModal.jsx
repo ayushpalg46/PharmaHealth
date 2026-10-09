@@ -79,7 +79,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                             <strong>{item.medicine.name}</strong>
                             <div className="small text-muted">{item.medicine.strength}</div>
                           </td>
-                          <td>${item.medicine.price.toFixed(2)}</td>
+                          <td>₹{item.medicine.price.toFixed(2)}</td>
                           <td>
                             <div className="input-group input-group-sm">
                               <button 
@@ -93,7 +93,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                               >+</button>
                             </div>
                           </td>
-                          <td className="fw-bold">${(item.medicine.price * item.quantity).toFixed(2)}</td>
+                          <td className="fw-bold">₹{(item.medicine.price * item.quantity).toFixed(2)}</td>
                           <td>
                             <button className="btn btn-outline-danger btn-sm" onClick={() => onRemove(item.medicine.id)}>
                               <i className="bi bi-trash"></i>
@@ -131,7 +131,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
 
                 <div className="d-flex justify-content-between align-items-center bg-light p-3 rounded">
                   <span className="fs-5">Total Amount:</span>
-                  <span className="fs-4 fw-bold text-primary">${totalAmount.toFixed(2)}</span>
+                  <span className="fs-4 fw-bold text-primary">₹{totalAmount.toFixed(2)}</span>
                 </div>
 
                 <div className="mt-4">

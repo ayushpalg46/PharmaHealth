@@ -70,7 +70,7 @@ export default function MedicineList({ medicines, categories, selectedCategory, 
                   </p>
                   <div className="d-flex align-items-center justify-content-between mt-auto pt-2 border-top border-secondary border-opacity-25">
                     <div>
-                      <span className="fs-5 fw-bold text-white">${med.price.toFixed(2)}</span>
+                      <span className="fs-5 fw-bold text-white">₹{med.price.toFixed(2)}</span>
                     </div>
                     <button 
                       className="btn btn-primary btn-sm rounded-pill px-3"

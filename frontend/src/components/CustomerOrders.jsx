@@ -92,7 +92,7 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                         {order.items?.map(it => (
                           <div key={it.id} className="list-group-item py-2 d-flex justify-content-between small">
                             <span className="text-white">{it.medicine?.name} <span className="text-muted">x{it.quantity}</span></span>
-                            <span className="fw-semibold text-info">${it.totalPrice?.toFixed(2)}</span>
+                            <span className="fw-semibold text-info">₹{it.totalPrice?.toFixed(2)}</span>
                           </div>
                         ))}
                       </div>
@@ -100,7 +100,7 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
 
                     <div className="d-flex justify-content-between align-items-center p-2 rounded mb-3" style={{ backgroundColor: 'rgba(4, 26, 20, 0.6)', border: '1px solid var(--border-color)' }}>
                       <span className="small text-muted">Grand Total:</span>
-                      <span className="fw-bold text-white fs-5">${order.totalAmount.toFixed(2)}</span>
+                      <span className="fw-bold text-white fs-5">₹{order.totalAmount.toFixed(2)}</span>
                     </div>
 
                     <div className="small text-secondary mb-3">
@@ -167,15 +167,15 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                     <tbody>
                       <tr>
                         <td className="text-white">Order #{selectedBill.order?.id} Pharmaceuticals</td>
-                        <td className="text-end text-white">${selectedBill.subtotal?.toFixed(2)}</td>
+                        <td className="text-end text-white">₹{selectedBill.subtotal?.toFixed(2)}</td>
                       </tr>
                       <tr>
                         <td className="text-white">Pharmacy Tax & Handling (5%)</td>
-                        <td className="text-end text-white">${selectedBill.taxAmount?.toFixed(2)}</td>
+                        <td className="text-end text-white">₹{selectedBill.taxAmount?.toFixed(2)}</td>
                       </tr>
                       <tr className="fw-bold border-top border-secondary border-opacity-50">
                         <td className="text-white">Total Paid</td>
-                        <td className="text-end text-info fs-5">${selectedBill.totalAmount?.toFixed(2)}</td>
+                        <td className="text-end text-info fs-5">₹{selectedBill.totalAmount?.toFixed(2)}</td>
                       </tr>
                     </tbody>
                   </table>
