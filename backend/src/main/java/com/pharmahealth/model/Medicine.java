@@ -38,11 +38,10 @@ public class Medicine {
 
     private Boolean prescriptionRequired = false;
 
-    private LocalDate expiryDate;
-
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String imageUrl;
 
     private LocalDateTime createdAt = LocalDateTime.now();

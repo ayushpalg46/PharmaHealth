@@ -96,6 +96,25 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
     }
   };
 
+  const handleImageFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should be less than 5MB');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewMed(prev => ({ ...prev, imageUrl: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setNewMed(prev => ({ ...prev, imageUrl: '' }));
+  };
+
   const handleDeleteMedicine = async (id) => {
     if (!window.confirm('Are you sure you want to delete this medicine?')) return;
     try {
@@ -285,17 +304,28 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                         </div>
                       </div>
                       <div className="mb-2">
-                        <label className="form-label small fw-semibold">Medicine Image URL</label>
+                        <label className="form-label small fw-semibold text-white">Upload Medicine Photo</label>
                         <input 
-                          type="url" 
+                          type="file" 
+                          accept="image/*"
                           className="form-control form-control-sm" 
-                          placeholder="https://images.unsplash.com/... or image link"
-                          value={newMed.imageUrl} 
-                          onChange={e => setNewMed({...newMed, imageUrl: e.target.value})} 
+                          onChange={handleImageFileChange}
                         />
+                        <div className="form-text small">Select photo directly from your device (PNG, JPG, WEBP).</div>
                         {newMed.imageUrl && (
-                          <div className="mt-1 text-center p-1 border rounded bg-dark">
-                            <img src={newMed.imageUrl} alt="Preview" style={{ maxHeight: '60px', maxWidth: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                          <div className="mt-2 p-2 border rounded position-relative d-flex align-items-center justify-content-between" style={{ backgroundColor: 'rgba(4, 26, 20, 0.9)' }}>
+                            <div className="d-flex align-items-center gap-2">
+                              <img src={newMed.imageUrl} alt="Preview" style={{ height: '48px', width: '48px', objectFit: 'cover', borderRadius: '6px' }} />
+                              <span className="small text-success fw-semibold"><i className="bi bi-check-circle me-1"></i>Image attached</span>
+                            </div>
+                            <button 
+                              type="button" 
+                              className="btn btn-sm btn-outline-danger" 
+                              onClick={handleRemoveImage}
+                              title="Remove photo"
+                            >
+                              <i className="bi bi-trash"></i>
+                            </button>
                           </div>
                         )}
                       </div>
