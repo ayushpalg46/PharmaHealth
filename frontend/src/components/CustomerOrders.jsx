@@ -98,14 +98,22 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                       </div>
                     </div>
 
-                    <div className="d-flex justify-content-between align-items-center p-2 rounded mb-3" style={{ backgroundColor: 'rgba(4, 26, 20, 0.6)', border: '1px solid var(--border-color)' }}>
+                    <div className="d-flex justify-content-between align-items-center p-2 rounded mb-2" style={{ backgroundColor: 'rgba(4, 26, 20, 0.6)', border: '1px solid var(--border-color)' }}>
                       <span className="small text-muted">Grand Total:</span>
-                      <span className="fw-bold text-white fs-5">₹{order.totalAmount.toFixed(2)}</span>
+                      <span className="fw-bold text-info fs-5">₹{order.totalAmount.toFixed(2)}</span>
                     </div>
 
-                    <div className="small text-secondary mb-3">
-                      <i className="bi bi-geo-alt me-1 text-info"></i>
-                      <span>{order.shippingAddress || 'Address on file'}</span>
+                    <div className="d-flex justify-content-between align-items-center mb-3 small">
+                      <div>
+                        <span className="text-muted me-1">Payment:</span>
+                        <span className="badge bg-secondary-subtle text-secondary me-1">{order.paymentMethod}</span>
+                        <span className={`badge ${order.paymentStatus === 'PAID' ? 'bg-success text-white' : 'bg-warning text-dark'}`}>
+                          {order.paymentStatus === 'PAID' ? 'PAID' : 'COD PENDING'}
+                        </span>
+                      </div>
+                      <div className="text-secondary text-truncate" style={{ maxWidth: '180px' }}>
+                        <i className="bi bi-geo-alt me-1 text-info"></i>{order.shippingAddress || 'Address on file'}
+                      </div>
                     </div>
 
                     <div className="d-flex gap-2">
@@ -152,7 +160,9 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                   <div className="col-6 text-end">
                     <span className="text-muted">Date:</span>
                     <strong className="d-block text-white">{new Date(selectedBill.billDate).toLocaleDateString()}</strong>
-                    <span className="badge bg-success-subtle text-success">{selectedBill.paymentStatus}</span>
+                    <span className={`badge ${selectedBill.paymentStatus === 'PAID' ? 'bg-success text-white' : 'bg-warning text-dark'}`}>
+                      {selectedBill.paymentStatus}
+                    </span>
                   </div>
                 </div>
 

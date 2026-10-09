@@ -458,16 +458,10 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                           <td className="fw-bold text-primary">₹{b.totalAmount?.toFixed(2)}</td>
                           <td><span className="badge bg-light text-dark border">{b.paymentMethod}</span></td>
                           <td>
-                            <select 
-                              className="form-select form-select-sm w-auto"
-                              value={b.paymentStatus}
-                              onChange={(e) => handleUpdateBillStatus(b.id, e.target.value)}
-                            >
-                              <option value="PAID">PAID</option>
-                              <option value="PENDING">PENDING</option>
-                              <option value="FAILED">FAILED</option>
-                              <option value="REFUNDED">REFUNDED</option>
-                            </select>
+                            <span className={`badge ${b.paymentStatus === 'PAID' ? 'bg-success text-white' : b.paymentStatus === 'PENDING' ? 'bg-warning text-dark' : 'bg-danger text-white'}`}>
+                              <i className={`bi me-1 ${b.paymentStatus === 'PAID' ? 'bi-check-circle-fill' : b.paymentStatus === 'PENDING' ? 'bi-hourglass-split' : 'bi-x-circle'}`}></i>
+                              {b.paymentStatus}
+                            </span>
                           </td>
                           <td className="small text-muted"><code>{b.transactionId}</code></td>
                           <td>

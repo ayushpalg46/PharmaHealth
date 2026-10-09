@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 
 export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onRemove, onCheckout, currentUser }) {
   const [shippingAddress, setShippingAddress] = useState(currentUser?.address || '123 Health Ave, Springfield');
-  const [contactPhone, setContactPhone] = useState(currentUser?.phone || '+1-555-0199');
+  const [contactPhone, setContactPhone] = useState(currentUser?.phone || '+91 98765 43210');
+  const [paymentMethod, setPaymentMethod] = useState('UPI');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -20,7 +21,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
       await onCheckout({
         shippingAddress,
         contactPhone,
-        paymentMethod: 'CARD',
+        paymentMethod,
         items: cart.map(item => ({
           medicineId: item.medicine.id,
           quantity: item.quantity
@@ -129,18 +130,60 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                   </div>
                 </div>
 
-                <div className="d-flex justify-content-between align-items-center bg-light p-3 rounded">
-                  <span className="fs-5">Total Amount:</span>
-                  <span className="fs-4 fw-bold text-primary">₹{totalAmount.toFixed(2)}</span>
+                <div className="border-top pt-3 mb-3">
+                  <h6 className="fw-bold mb-3 text-white">Select Payment Mode</h6>
+                  <div className="row g-2">
+                    <div className="col-md-4">
+                      <div 
+                        className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'UPI' ? 'border-info' : 'border-secondary border-opacity-25'}`}
+                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'UPI' ? 'rgba(56, 189, 248, 0.18)' : 'rgba(4, 26, 20, 0.6)' }}
+                        onClick={() => setPaymentMethod('UPI')}
+                      >
+                        <div className="fs-4 text-info mb-1"><i className="bi bi-qr-code-scan"></i></div>
+                        <strong className="d-block text-white small">UPI / QR</strong>
+                        <div className="text-muted" style={{ fontSize: '0.75rem' }}>Google Pay, PhonePe, Paytm</div>
+                        <span className="badge bg-success mt-2" style={{ fontSize: '0.68rem' }}>Instant PAID</span>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div 
+                        className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'CARD' ? 'border-info' : 'border-secondary border-opacity-25'}`}
+                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'CARD' ? 'rgba(56, 189, 248, 0.18)' : 'rgba(4, 26, 20, 0.6)' }}
+                        onClick={() => setPaymentMethod('CARD')}
+                      >
+                        <div className="fs-4 text-info mb-1"><i className="bi bi-credit-card-2-front"></i></div>
+                        <strong className="d-block text-white small">Card Payment</strong>
+                        <div className="text-muted" style={{ fontSize: '0.75rem' }}>Visa, MasterCard, RuPay</div>
+                        <span className="badge bg-success mt-2" style={{ fontSize: '0.68rem' }}>Instant PAID</span>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div 
+                        className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'CASH_ON_DELIVERY' ? 'border-warning' : 'border-secondary border-opacity-25'}`}
+                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'CASH_ON_DELIVERY' ? 'rgba(234, 179, 8, 0.18)' : 'rgba(4, 26, 20, 0.6)' }}
+                        onClick={() => setPaymentMethod('CASH_ON_DELIVERY')}
+                      >
+                        <div className="fs-4 text-warning mb-1"><i className="bi bi-cash-stack"></i></div>
+                        <strong className="d-block text-white small">Cash on Delivery</strong>
+                        <div className="text-muted" style={{ fontSize: '0.75rem' }}>Pay cash on receipt</div>
+                        <span className="badge bg-warning text-dark mt-2" style={{ fontSize: '0.68rem' }}>PENDING Mode</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="mt-4">
+                <div className="d-flex justify-content-between align-items-center p-3 rounded mb-3" style={{ backgroundColor: 'rgba(4, 26, 20, 0.85)', border: '1px solid var(--border-color)' }}>
+                  <span className="fs-5 text-white">Total Amount:</span>
+                  <span className="fs-4 fw-bold text-info">₹{totalAmount.toFixed(2)}</span>
+                </div>
+
+                <div>
                   <button 
                     className="btn btn-primary w-100 py-2 fw-semibold" 
                     onClick={handlePlaceOrder}
                     disabled={loading}
                   >
-                    {loading ? 'Processing Order...' : 'Confirm & Place Order'}
+                    {loading ? 'Processing Order...' : `Confirm & Place Order (${paymentMethod === 'CASH_ON_DELIVERY' ? 'COD - Pending' : paymentMethod + ' - Paid'})`}
                   </button>
                 </div>
               </div>

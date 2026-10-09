@@ -79,16 +79,33 @@ public class OrderController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User user = userRepository.findById(userDetails.getId()).orElseThrow();
 
+        String rawMethod = req.getPaymentMethod() != null ? req.getPaymentMethod().trim().toUpperCase() : "CARD";
+        String normalizedMethod = "CARD";
+        boolean isPaid = true;
+
+        if (rawMethod.contains("COD") || rawMethod.contains("CASH") || rawMethod.contains("DELIVERY")) {
+            normalizedMethod = "CASH_ON_DELIVERY";
+            isPaid = false;
+        } else if (rawMethod.contains("UPI")) {
+            normalizedMethod = "UPI";
+            isPaid = true;
+        } else {
+            normalizedMethod = "CARD";
+            isPaid = true;
+        }
+
         Order order = new Order();
         order.setUser(user);
         order.setShippingAddress(req.getShippingAddress());
         order.setContactPhone(req.getContactPhone());
-        order.setPaymentMethod(req.getPaymentMethod() != null ? req.getPaymentMethod() : "CARD");
+        order.setPaymentMethod(normalizedMethod);
         order.setStatus(Order.OrderStatus.PENDING);
-        order.setPaymentStatus(Order.PaymentStatus.PAID);
+        order.setPaymentStatus(isPaid ? Order.PaymentStatus.PAID : Order.PaymentStatus.PENDING);
         order.setTrackingNumber("PH-TRK-" + (100000 + new Random().nextInt(900000)));
         order.setEstimatedDeliveryDate(LocalDateTime.now().plusDays(2));
-        order.setDeliveryNotes("Order confirmed. Preparing for dispensary packing.");
+        order.setDeliveryNotes(isPaid 
+            ? "Payment confirmed via " + normalizedMethod + ". Preparing for dispensary packing." 
+            : "Cash on Delivery (COD) mode selected. Payment pending on order arrival.");
 
         if (req.getPrescriptionId() != null) {
             Prescription prescription = prescriptionRepository.findById(req.getPrescriptionId()).orElse(null);
@@ -131,9 +148,9 @@ public class OrderController {
         bill.setTaxAmount(calculatedTotal.multiply(BigDecimal.valueOf(0.05))); // 5% pharmacy tax
         bill.setDiscountAmount(BigDecimal.ZERO);
         bill.setTotalAmount(calculatedTotal.add(bill.getTaxAmount()));
-        bill.setPaymentStatus(Bill.PaymentStatus.PAID);
-        bill.setPaymentMethod(order.getPaymentMethod());
-        bill.setTransactionId("TXN-" + System.currentTimeMillis());
+        bill.setPaymentStatus(isPaid ? Bill.PaymentStatus.PAID : Bill.PaymentStatus.PENDING);
+        bill.setPaymentMethod(normalizedMethod);
+        bill.setTransactionId(isPaid ? "TXN-" + System.currentTimeMillis() : "COD-PENDING-" + (1000 + new Random().nextInt(9000)));
         bill.setBillDate(LocalDateTime.now());
         billRepository.save(bill);
 
