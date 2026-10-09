@@ -1,5 +1,5 @@
 services:
-  # Spring Boot Backend API
+  # Service 1: Spring Boot Backend Web Service
   - type: web
     name: pharmahealth-backend
     env: docker
@@ -9,6 +9,8 @@ services:
     region: oregon
     healthCheckPath: /api/public/health
     envVars:
+      - key: PORT
+        value: "8080"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       # Aiven Cloud MySQL Database Configuration
@@ -17,20 +19,23 @@ services:
       - key: SPRING_DATASOURCE_USERNAME
         value: avnadmin
       - key: SPRING_DATASOURCE_PASSWORD
-        sync: false # Set securely in Render dashboard
+        sync: false # Enter your Aiven password in Render dashboard
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRATION
         value: "86400000"
 
-  # Single Unified React Frontend Application
+  # Service 2: Single Static Site Frontend (React / Vite)
   - type: web
     name: pharmahealth-frontend
     env: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: ./frontend/dist
     envVars:
-      - key: VITE_API_URL
+      # Connects React frontend to deployed Spring Boot backend REST API
+      - key: VITE_API_BASE_URL
         fromService:
           type: web
           name: pharmahealth-backend
