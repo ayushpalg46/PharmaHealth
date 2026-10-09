@@ -151,25 +151,15 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
                 />
               </div>
 
-              <div className="row g-3 mb-3">
-                <div className="col-md-6">
-                  <label className="form-label small fw-semibold text-white">Primary Contact Phone</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    value={phone} 
-                    onChange={(e) => setPhone(e.target.value)} 
-                    placeholder="+1 (800) 555-0199" 
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label small fw-semibold text-white">Role Badges</label>
-                  <div className="pt-2">
-                    {currentUser.roles?.map(r => (
-                      <span key={r} className="badge bg-info-subtle text-info me-1">{r}</span>
-                    ))}
-                  </div>
-                </div>
+              <div className="mb-3">
+                <label className="form-label small fw-semibold text-white">Primary Contact Phone</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={phone} 
+                  onChange={(e) => setPhone(e.target.value)} 
+                  placeholder="+91 98765 43210" 
+                />
               </div>
 
               <div className="mb-4">
