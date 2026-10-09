@@ -80,8 +80,8 @@ public class OrderController {
         User user = userRepository.findById(userDetails.getId()).orElseThrow();
 
         String rawMethod = req.getPaymentMethod() != null ? req.getPaymentMethod().trim().toUpperCase() : "CARD";
-        String normalizedMethod = "CARD";
-        boolean isPaid = true;
+        String normalizedMethod;
+        boolean isPaid;
 
         if (rawMethod.contains("COD") || rawMethod.contains("CASH") || rawMethod.contains("DELIVERY")) {
             normalizedMethod = "CASH_ON_DELIVERY";
