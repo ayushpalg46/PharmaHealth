@@ -23,7 +23,7 @@ services:
       - key: JWT_EXPIRATION
         value: "86400000"
 
-  # React Frontend Single Page App
+  # Single Unified React Frontend Application
   - type: web
     name: pharmahealth-frontend
     env: static
@@ -35,16 +35,6 @@ services:
           type: web
           name: pharmahealth-backend
           property: host
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-
-  # Static Marketing & Showcase Page
-  - type: web
-    name: pharmahealth-static
-    env: static
-    staticPublishPath: ./static-page
     routes:
       - type: rewrite
         source: /*

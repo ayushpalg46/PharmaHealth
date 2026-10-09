@@ -73,7 +73,6 @@ docker-compose up --build
 
 - **Backend API**: http://localhost:8080
 - **Frontend App**: http://localhost:3000
-- **Static Showcase**: http://localhost:8000
 - **MySQL**: localhost:3306
 
 ### 3. Running Backend Locally
@@ -83,7 +82,7 @@ cd backend
 mvn spring-boot:run
 ```
 
-The Spring Boot backend connects to MySQL on `localhost:3306` with credentials defined in `application.properties`.
+The Spring Boot backend connects to MySQL with credentials defined in `application.properties`.
 
 ### 4. Running Frontend Locally
 
@@ -124,9 +123,8 @@ When deploying the blueprint via `render.yaml` or setting environment variables 
 2. Connect your repository: `https://github.com/ayushpalg46/PharmaHealth.git`.
 3. Render reads [`render.yaml`](file:///c:/PharmaHealth/render.yaml) automatically:
    - Sets up the Spring Boot Web Service (`pharmahealth-backend`).
-   - Sets up the React Frontend (`pharmahealth-frontend`).
-   - Sets up the Static landing showcase (`pharmahealth-static`).
-4. Enter your Aiven credentials when prompted for `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD`.
+   - Sets up the Single Unified React Frontend (`pharmahealth-frontend`).
+4. Enter your Aiven password when prompted for `SPRING_DATASOURCE_PASSWORD`.
 5. Click **Apply** to deploy!
 
 ---
