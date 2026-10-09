@@ -56,94 +56,87 @@ export default function Navbar({
         </button>
 
         <div className="collapse navbar-collapse" id="pharmaNavbar">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
-            {/* ADMIN-ONLY NAVIGATION */}
-            {isAdmin ? (
-              <>
-                <li className="nav-item">
+          <div className="mx-auto my-2 my-lg-0">
+            <div className="nav-tabs-bar">
+              {/* ADMIN-ONLY NAVIGATION */}
+              {isAdmin ? (
+                <>
                   <button 
-                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'admin' && adminTab === 'customers' ? 'active text-info fw-bold bg-primary-subtle' : 'text-light text-opacity-75'}`}
+                    className={`nav-pill-btn ${currentView === 'admin' && adminTab === 'customers' ? 'active' : ''}`}
                     onClick={() => handleAdminNav('customers')}
                   >
-                    <i className="bi bi-people me-1"></i> Active Customers
+                    <i className="bi bi-people-fill text-info"></i>
+                    <span>Customers</span>
                   </button>
-                </li>
-                <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'admin' && adminTab === 'inventory' ? 'active text-info fw-bold bg-primary-subtle' : 'text-light text-opacity-75'}`}
+                    className={`nav-pill-btn ${currentView === 'admin' && adminTab === 'inventory' ? 'active' : ''}`}
                     onClick={() => handleAdminNav('inventory')}
                   >
-                    <i className="bi bi-boxes me-1"></i> Inventory Stock
+                    <i className="bi bi-boxes text-info"></i>
+                    <span>Inventory</span>
                   </button>
-                </li>
-                <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'admin' && adminTab === 'billing' ? 'active text-info fw-bold bg-primary-subtle' : 'text-light text-opacity-75'}`}
+                    className={`nav-pill-btn ${currentView === 'admin' && adminTab === 'billing' ? 'active' : ''}`}
                     onClick={() => handleAdminNav('billing')}
                   >
-                    <i className="bi bi-cash-coin me-1"></i> Bills & Payments
+                    <i className="bi bi-cash-coin text-info"></i>
+                    <span>Bills &amp; Payments</span>
                   </button>
-                </li>
-                <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'admin' && adminTab === 'support' ? 'active text-info fw-bold bg-primary-subtle' : 'text-light text-opacity-75'}`}
+                    className={`nav-pill-btn ${currentView === 'admin' && adminTab === 'support' ? 'active' : ''}`}
                     onClick={() => handleAdminNav('support')}
                   >
-                    <i className="bi bi-chat-heart me-1"></i> Support Inquiries
+                    <i className="bi bi-chat-heart text-info"></i>
+                    <span>Support</span>
                   </button>
-                </li>
-                <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'admin' && adminTab === 'prescriptions' ? 'active text-info fw-bold bg-primary-subtle' : 'text-light text-opacity-75'}`}
+                    className={`nav-pill-btn ${currentView === 'admin' && adminTab === 'prescriptions' ? 'active' : ''}`}
                     onClick={() => handleAdminNav('prescriptions')}
                   >
-                    <i className="bi bi-file-earmark-medical me-1"></i> Prescriptions
+                    <i className="bi bi-file-earmark-medical text-info"></i>
+                    <span>Prescriptions</span>
                   </button>
-                </li>
-              </>
-            ) : (
-              /* CUSTOMER / GUEST NAVIGATION */
-              <>
-                <li className="nav-item">
+                </>
+              ) : (
+                /* CUSTOMER / GUEST NAVIGATION */
+                <>
                   <button 
-                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'store' ? 'active text-info fw-semibold bg-primary-subtle' : 'text-light text-opacity-75'}`}
+                    className={`nav-pill-btn ${currentView === 'store' ? 'active' : ''}`}
                     onClick={() => onViewChange('store')}
                   >
-                    <i className="bi bi-shop me-1"></i> Medicines & Supplies
+                    <i className="bi bi-shop text-info"></i>
+                    <span>Medicines</span>
                   </button>
-                </li>
 
-                {currentUser && (
-                  <li className="nav-item">
+                  {currentUser && (
                     <button 
-                      className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'orders' ? 'active text-info fw-semibold bg-primary-subtle' : 'text-light text-opacity-75'}`}
+                      className={`nav-pill-btn ${currentView === 'orders' ? 'active' : ''}`}
                       onClick={() => onViewChange('orders')}
                     >
-                      <i className="bi bi-receipt-cutoff me-1"></i> My Orders & Bills
+                      <i className="bi bi-receipt-cutoff text-info"></i>
+                      <span>My Orders</span>
                     </button>
-                  </li>
-                )}
+                  )}
 
-                <li className="nav-item">
                   <button 
-                    className={`btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 rounded-3 ${currentView === 'support' ? 'active text-info fw-semibold bg-primary-subtle' : 'text-light text-opacity-75'}`}
+                    className={`nav-pill-btn ${currentView === 'support' ? 'active' : ''}`}
                     onClick={() => onViewChange('support')}
                   >
-                    <i className="bi bi-chat-heart me-1"></i> Customer Support
+                    <i className="bi bi-chat-heart text-info"></i>
+                    <span>Support</span>
                   </button>
-                </li>
 
-                <li className="nav-item">
                   <button 
-                    className="btn btn-link nav-link text-decoration-none border-0 px-3 py-1.5 text-light text-opacity-75"
+                    className="nav-pill-btn"
                     onClick={onOpenPrescription}
                   >
-                    <i className="bi bi-file-earmark-medical me-1"></i> Upload Rx
+                    <i className="bi bi-cloud-arrow-up text-info"></i>
+                    <span>Upload Rx</span>
                   </button>
-                </li>
-              </>
-            )}
-          </ul>
+                </>
+              )}
+            </div>
+          </div>
 
           {/* Right Action Items */}
           <div className="d-flex align-items-center gap-3">

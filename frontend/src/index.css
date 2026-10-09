@@ -75,13 +75,61 @@ p, span, label, div {
 
 /* Navbar */
 .navbar {
-  background: rgba(4, 26, 20, 0.92) !important;
-  backdrop-filter: blur(12px);
+  background: rgba(4, 26, 20, 0.95) !important;
+  backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-color) !important;
 }
 
 .navbar-brand {
   color: #ffffff !important;
+}
+
+/* Equal & Balanced Navigation Pill Tabs */
+.nav-tabs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  background: rgba(6, 35, 26, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+}
+
+.nav-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-decoration: none !important;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  letter-spacing: 0.015em;
+  cursor: pointer;
+}
+
+.nav-pill-btn:hover {
+  color: #ffffff !important;
+  background-color: rgba(37, 99, 235, 0.2) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.nav-pill-btn.active {
+  color: #ffffff !important;
+  font-weight: 600;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  border-color: rgba(56, 189, 248, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
 }
 
 /* Cards & Surfaces */
