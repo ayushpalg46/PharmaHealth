@@ -15,7 +15,9 @@ import { authService, medicineService, orderService, prescriptionService } from 
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
-  const [currentView, setCurrentView] = useState('store'); // 'store' | 'tracker' | 'orders' | 'support' | 'admin' | 'profile'
+  const isAdmin = currentUser?.roles?.includes('ROLE_ADMIN') || currentUser?.roles?.includes('ROLE_PHARMACIST');
+  const [currentView, setCurrentView] = useState(isAdmin ? 'admin' : 'store'); // 'store' | 'tracker' | 'orders' | 'support' | 'admin' | 'profile'
+  const [adminTab, setAdminTab] = useState('deliveries');
   const [medicines, setMedicines] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -147,6 +149,8 @@ export default function App() {
         onOpenPrescription={() => setIsPrescriptionOpen(true)}
         onViewChange={setCurrentView}
         currentView={currentView}
+        adminTab={adminTab}
+        onAdminTabChange={setAdminTab}
       />
 
       {/* Main Content Area */}
@@ -214,6 +218,8 @@ export default function App() {
           <AdminDashboard
             categories={categories}
             onRefreshMedicines={fetchCatalog}
+            activeTab={adminTab}
+            onTabChange={setAdminTab}
           />
         )}
       </main>

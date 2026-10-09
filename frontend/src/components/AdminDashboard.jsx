@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { medicineService, orderService, prescriptionService, billService, supportService, userService } from '../services/api';
 
-export default function AdminDashboard({ categories, onRefreshMedicines }) {
-  const [tab, setTab] = useState('deliveries'); // 'deliveries' | 'customers' | 'inventory' | 'billing' | 'support' | 'prescriptions'
+export default function AdminDashboard({ categories, onRefreshMedicines, activeTab = 'deliveries', onTabChange }) {
+  const [internalTab, setInternalTab] = useState(activeTab);
+  const tab = onTabChange ? activeTab : internalTab;
+  const setTab = onTabChange ? onTabChange : setInternalTab;
+
   const [medicines, setMedicines] = useState([]);
   const [orders, setOrders] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -156,52 +159,43 @@ export default function AdminDashboard({ categories, onRefreshMedicines }) {
   return (
     <div className="container py-4">
       {/* Admin Subheader & Navigation */}
-      <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 pb-3 border-bottom gap-3">
-        <div>
-          <span className="badge bg-warning text-dark fw-bold mb-1">ADMINISTRATOR POV</span>
-          <h3 className="fw-bold mb-0">
-            <i className="bi bi-shield-check text-primary me-2"></i>Pharmacy Control Center
-          </h3>
-          <p className="text-muted small mb-0">Manage customer deliveries, medicine supplies, billing records, and clinical support.</p>
-        </div>
+      <div className="card border-0 mb-4 p-4 shadow-sm" style={{ background: 'linear-gradient(135deg, rgba(6, 35, 26, 0.95) 0%, rgba(13, 74, 57, 0.85) 100%)', border: '1px solid var(--border-color)' }}>
+        <div className="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+          <div>
+            <div className="d-flex align-items-center gap-2 mb-1">
+              <span className="badge bg-warning text-dark fw-bold px-2 py-1">
+                <i className="bi bi-shield-fill-check me-1"></i>ADMINISTRATOR CONSOLE
+              </span>
+              <span className="badge bg-primary-subtle text-info small">Secure Portal</span>
+            </div>
+            <h3 className="fw-bold mb-1 text-white">
+              Pharmacy Control Center
+            </h3>
+            <p className="text-secondary small mb-0">Full oversight of customer orders, medicine inventory, billing records, and clinical inquiries.</p>
+          </div>
 
-        <div className="d-flex flex-wrap gap-1">
-          <button 
-            className={`btn btn-sm ${tab === 'deliveries' ? 'btn-primary' : 'btn-outline-primary'}`} 
-            onClick={() => setTab('deliveries')}
-          >
-            <i className="bi bi-truck me-1"></i> Deliveries
-          </button>
-          <button 
-            className={`btn btn-sm ${tab === 'customers' ? 'btn-primary' : 'btn-outline-primary'}`} 
-            onClick={() => setTab('customers')}
-          >
-            <i className="bi bi-people me-1"></i> Active Customers
-          </button>
-          <button 
-            className={`btn btn-sm ${tab === 'inventory' ? 'btn-primary' : 'btn-outline-primary'}`} 
-            onClick={() => setTab('inventory')}
-          >
-            <i className="bi bi-boxes me-1"></i> Inventory
-          </button>
-          <button 
-            className={`btn btn-sm ${tab === 'billing' ? 'btn-primary' : 'btn-outline-primary'}`} 
-            onClick={() => setTab('billing')}
-          >
-            <i className="bi bi-cash-coin me-1"></i> Bills & Payments
-          </button>
-          <button 
-            className={`btn btn-sm ${tab === 'support' ? 'btn-primary' : 'btn-outline-primary'}`} 
-            onClick={() => setTab('support')}
-          >
-            <i className="bi bi-chat-heart me-1"></i> Support Inquiries
-          </button>
-          <button 
-            className={`btn btn-sm ${tab === 'prescriptions' ? 'btn-primary' : 'btn-outline-primary'}`} 
-            onClick={() => setTab('prescriptions')}
-          >
-            <i className="bi bi-file-earmark-medical me-1"></i> Prescriptions
-          </button>
+          <div className="d-flex flex-wrap gap-2">
+            {[
+              { key: 'deliveries', icon: 'bi-truck', label: 'Deliveries' },
+              { key: 'customers', icon: 'bi-people', label: 'Active Customers' },
+              { key: 'inventory', icon: 'bi-boxes', label: 'Inventory' },
+              { key: 'billing', icon: 'bi-cash-coin', label: 'Bills & Payments' },
+              { key: 'support', icon: 'bi-chat-heart', label: 'Support Inquiries' },
+              { key: 'prescriptions', icon: 'bi-file-earmark-medical', label: 'Prescriptions' },
+            ].map(item => (
+              <button 
+                key={item.key}
+                className={`btn btn-sm px-3 py-2 rounded-pill fw-semibold transition-all ${
+                  tab === item.key 
+                    ? 'btn-primary shadow' 
+                    : 'btn-outline-secondary text-light'
+                }`} 
+                onClick={() => setTab(item.key)}
+              >
+                <i className={`bi ${item.icon} me-1.5`}></i> {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
