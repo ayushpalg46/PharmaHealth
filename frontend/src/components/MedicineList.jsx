@@ -50,9 +50,26 @@ export default function MedicineList({ medicines, categories, selectedCategory, 
         ) : (
           medicines.map((med) => (
             <div key={med.id} className="col-sm-6 col-lg-3">
-              <div className="card h-100 card-medicine border-0 shadow-sm">
-                <div className="p-4 text-center border-bottom position-relative" style={{ backgroundColor: 'rgba(4, 26, 20, 0.6)' }}>
-                  <i className="bi bi-capsule text-primary display-4"></i>
+              <div className="card h-100 card-medicine border-0 shadow-sm overflow-hidden">
+                <div className="position-relative text-center border-bottom" style={{ height: '160px', backgroundColor: 'rgba(4, 26, 20, 0.75)', overflow: 'hidden' }}>
+                  {med.imageUrl ? (
+                    <img 
+                      src={med.imageUrl} 
+                      alt={med.name} 
+                      className="w-100 h-100"
+                      style={{ objectFit: 'cover' }}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div 
+                    className="w-100 h-100 justify-content-center align-items-center"
+                    style={{ display: med.imageUrl ? 'none' : 'flex' }}
+                  >
+                    <i className="bi bi-capsule text-primary display-4"></i>
+                  </div>
                   <span className={`position-absolute top-0 end-0 m-2 ${med.prescriptionRequired ? 'badge-prescription' : 'badge-otc'}`}>
                     {med.prescriptionRequired ? 'Rx Required' : 'OTC'}
                   </span>
@@ -64,7 +81,7 @@ export default function MedicineList({ medicines, categories, selectedCategory, 
                     </span>
                   </div>
                   <h6 className="card-title fw-bold text-white mb-1">{med.name}</h6>
-                  <p className="small text-muted mb-2">{med.genericName} • {med.manufacturer}</p>
+                  <p className="small text-muted mb-2">{med.manufacturer || 'Certified Pharma'}</p>
                   <p className="small text-secondary flex-grow-1 mb-3">
                     {med.description ? med.description.substring(0, 75) + '...' : 'Clinical pharmaceutical grade medication.'}
                   </p>

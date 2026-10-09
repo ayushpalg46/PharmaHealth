@@ -23,13 +23,12 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
   // New Medicine Form State
   const [newMed, setNewMed] = useState({
     name: '',
-    genericName: '',
     manufacturer: '',
-    categoryId: categories[0]?.id || '',
     price: '',
     stockQuantity: '',
     dosageForm: 'Tablet',
     strength: '500mg',
+    imageUrl: '',
     prescriptionRequired: false,
     description: ''
   });
@@ -68,23 +67,27 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
     e.preventDefault();
     try {
       await medicineService.addMedicine({
-        ...newMed,
+        name: newMed.name,
+        manufacturer: newMed.manufacturer,
         price: parseFloat(newMed.price),
         stockQuantity: parseInt(newMed.stockQuantity, 10),
-        categoryId: newMed.categoryId ? parseInt(newMed.categoryId, 10) : null
+        dosageForm: newMed.dosageForm,
+        strength: newMed.strength,
+        imageUrl: newMed.imageUrl,
+        prescriptionRequired: newMed.prescriptionRequired,
+        description: newMed.description
       });
       alert('Medicine added to catalog!');
       loadData();
-      onRefreshMedicines();
+      if (onRefreshMedicines) onRefreshMedicines();
       setNewMed({
         name: '',
-        genericName: '',
         manufacturer: '',
-        categoryId: categories[0]?.id || '',
         price: '',
         stockQuantity: '',
         dosageForm: 'Tablet',
         strength: '500mg',
+        imageUrl: '',
         prescriptionRequired: false,
         description: ''
       });
@@ -98,7 +101,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
     try {
       await medicineService.deleteMedicine(id);
       loadData();
-      onRefreshMedicines();
+      if (onRefreshMedicines) onRefreshMedicines();
     } catch (err) {
       alert('Failed to delete medicine.');
     }
@@ -194,7 +197,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
             </div>
           )}
 
-          {/* TAB 3: INVENTORY & STOCK */}
+          {/* TAB 2: INVENTORY & STOCK */}
           {tab === 'inventory' && (
             <div className="row g-4">
               <div className="col-lg-4">
@@ -205,44 +208,106 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                   <div className="card-body">
                     <form onSubmit={handleAddMedicine}>
                       <div className="mb-2">
-                        <label className="form-label small fw-semibold">Brand / Drug Name</label>
-                        <input type="text" className="form-control form-control-sm" required value={newMed.name} onChange={e => setNewMed({...newMed, name: e.target.value})} />
+                        <label className="form-label small fw-semibold">Medicine / Drug Name</label>
+                        <input 
+                          type="text" 
+                          className="form-control form-control-sm" 
+                          required 
+                          placeholder="e.g. Paracetamol Extra"
+                          value={newMed.name} 
+                          onChange={e => setNewMed({...newMed, name: e.target.value})} 
+                        />
                       </div>
                       <div className="mb-2">
-                        <label className="form-label small fw-semibold">Generic Compound</label>
-                        <input type="text" className="form-control form-control-sm" value={newMed.genericName} onChange={e => setNewMed({...newMed, genericName: e.target.value})} />
+                        <label className="form-label small fw-semibold">Manufacturer</label>
+                        <input 
+                          type="text" 
+                          className="form-control form-control-sm" 
+                          placeholder="e.g. Sun Pharma, Cipla"
+                          value={newMed.manufacturer} 
+                          onChange={e => setNewMed({...newMed, manufacturer: e.target.value})} 
+                        />
                       </div>
                       <div className="row g-2 mb-2">
                         <div className="col-6">
-                          <label className="form-label small fw-semibold">Manufacturer</label>
-                          <input type="text" className="form-control form-control-sm" value={newMed.manufacturer} onChange={e => setNewMed({...newMed, manufacturer: e.target.value})} />
+                          <label className="form-label small fw-semibold">Dosage Form</label>
+                          <select 
+                            className="form-select form-select-sm" 
+                            value={newMed.dosageForm} 
+                            onChange={e => setNewMed({...newMed, dosageForm: e.target.value})}
+                          >
+                            <option value="Tablet">Tablet</option>
+                            <option value="Capsule">Capsule</option>
+                            <option value="Syrup">Syrup</option>
+                            <option value="Injection">Injection</option>
+                            <option value="Ointment">Ointment / Cream</option>
+                            <option value="Drops">Drops (Eye / Ear)</option>
+                            <option value="Inhaler">Inhaler</option>
+                            <option value="Powder">Powder</option>
+                            <option value="Lotion">Lotion / Gel</option>
+                            <option value="Other">Other</option>
+                          </select>
                         </div>
                         <div className="col-6">
-                          <label className="form-label small fw-semibold">Category</label>
-                          <select className="form-select form-select-sm" value={newMed.categoryId} onChange={e => setNewMed({...newMed, categoryId: e.target.value})}>
-                            {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                          </select>
+                          <label className="form-label small fw-semibold">Strength</label>
+                          <input 
+                            type="text" 
+                            className="form-control form-control-sm" 
+                            placeholder="e.g. 500mg, 100ml"
+                            value={newMed.strength} 
+                            onChange={e => setNewMed({...newMed, strength: e.target.value})} 
+                          />
                         </div>
                       </div>
                       <div className="row g-2 mb-2">
                         <div className="col-6">
                           <label className="form-label small fw-semibold">Price (₹)</label>
-                          <input type="number" step="0.01" className="form-control form-control-sm" required value={newMed.price} onChange={e => setNewMed({...newMed, price: e.target.value})} />
+                          <input 
+                            type="number" 
+                            step="0.01" 
+                            className="form-control form-control-sm" 
+                            required 
+                            placeholder="e.g. 150.00"
+                            value={newMed.price} 
+                            onChange={e => setNewMed({...newMed, price: e.target.value})} 
+                          />
                         </div>
                         <div className="col-6">
                           <label className="form-label small fw-semibold">Stock Quantity</label>
-                          <input type="number" className="form-control form-control-sm" required value={newMed.stockQuantity} onChange={e => setNewMed({...newMed, stockQuantity: e.target.value})} />
+                          <input 
+                            type="number" 
+                            className="form-control form-control-sm" 
+                            required 
+                            placeholder="e.g. 100"
+                            value={newMed.stockQuantity} 
+                            onChange={e => setNewMed({...newMed, stockQuantity: e.target.value})} 
+                          />
                         </div>
                       </div>
-                      <div className="row g-2 mb-2">
-                        <div className="col-6">
-                          <label className="form-label small fw-semibold">Dosage Form</label>
-                          <input type="text" className="form-control form-control-sm" value={newMed.dosageForm} onChange={e => setNewMed({...newMed, dosageForm: e.target.value})} />
-                        </div>
-                        <div className="col-6">
-                          <label className="form-label small fw-semibold">Strength</label>
-                          <input type="text" className="form-control form-control-sm" value={newMed.strength} onChange={e => setNewMed({...newMed, strength: e.target.value})} />
-                        </div>
+                      <div className="mb-2">
+                        <label className="form-label small fw-semibold">Medicine Image URL</label>
+                        <input 
+                          type="url" 
+                          className="form-control form-control-sm" 
+                          placeholder="https://images.unsplash.com/... or image link"
+                          value={newMed.imageUrl} 
+                          onChange={e => setNewMed({...newMed, imageUrl: e.target.value})} 
+                        />
+                        {newMed.imageUrl && (
+                          <div className="mt-1 text-center p-1 border rounded bg-dark">
+                            <img src={newMed.imageUrl} alt="Preview" style={{ maxHeight: '60px', maxWidth: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                          </div>
+                        )}
+                      </div>
+                      <div className="mb-2">
+                        <label className="form-label small fw-semibold">Description / Notes</label>
+                        <textarea 
+                          className="form-control form-control-sm" 
+                          rows="2"
+                          placeholder="Usage instructions, symptoms treated..."
+                          value={newMed.description} 
+                          onChange={e => setNewMed({...newMed, description: e.target.value})} 
+                        ></textarea>
                       </div>
                       <div className="form-check mb-3">
                         <input className="form-check-input" type="checkbox" checked={newMed.prescriptionRequired} onChange={e => setNewMed({...newMed, prescriptionRequired: e.target.checked})} id="reqRx" />
@@ -264,7 +329,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                       <thead className="table-light small">
                         <tr>
                           <th>Medication</th>
-                          <th>Category</th>
+                          <th>Dosage & Strength</th>
                           <th>Price</th>
                           <th>In Stock</th>
                           <th>Rx Required</th>
@@ -275,10 +340,30 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                         {medicines.map(m => (
                           <tr key={m.id}>
                             <td>
-                              <strong>{m.name}</strong>
-                              <div className="small text-muted">{m.genericName} • {m.dosageForm}</div>
+                              <div className="d-flex align-items-center gap-2">
+                                {m.imageUrl ? (
+                                  <img 
+                                    src={m.imageUrl} 
+                                    alt={m.name} 
+                                    className="rounded border" 
+                                    style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                                    onError={(e) => { e.target.style.display = 'none'; }}
+                                  />
+                                ) : (
+                                  <div className="badge bg-primary-subtle text-info p-2 rounded">
+                                    <i className="bi bi-capsule fs-6"></i>
+                                  </div>
+                                )}
+                                <div>
+                                  <strong>{m.name}</strong>
+                                  <div className="small text-muted">{m.manufacturer || 'Pharmaceutical'}</div>
+                                </div>
+                              </div>
                             </td>
-                            <td>{m.category?.name || 'General'}</td>
+                            <td>
+                              <span className="badge bg-secondary-subtle text-secondary">{m.dosageForm || 'Tablet'}</span>
+                              <div className="small text-muted">{m.strength || 'Standard'}</div>
+                            </td>
                             <td><strong>₹{m.price.toFixed(2)}</strong></td>
                             <td>
                               <span className={`badge ${m.stockQuantity > 50 ? 'bg-success' : m.stockQuantity > 10 ? 'bg-warning text-dark' : 'bg-danger'}`}>
