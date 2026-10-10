@@ -2,39 +2,39 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
 :root {
-  /* Light Blue Theme Palette */
-  --bg-main: #38bdf8;
-  --bg-secondary: #0284c7;
-  --bg-card: rgba(3, 105, 161, 0.78);
-  --bg-card-hover: rgba(2, 132, 199, 0.9);
-  --bg-input: rgba(7, 89, 133, 0.75);
-  --bg-glass: rgba(3, 105, 161, 0.88);
+  /* Dark Blue Theme Palette */
+  --bg-main: #060b1c;
+  --bg-secondary: #0a132e;
+  --bg-card: #0f1c42;
+  --bg-card-hover: #152554;
+  --bg-input: #0a1430;
+  --bg-glass: rgba(15, 28, 66, 0.92);
 
   /* Vibrant Green Accent Palette */
   --accent-green: #10b981;
   --accent-green-hover: #059669;
   --accent-green-light: #34d399;
-  --accent-green-glow: rgba(16, 185, 129, 0.5);
+  --accent-green-glow: rgba(16, 185, 129, 0.45);
   --accent-emerald: #00e676;
 
   /* Legacy alias mapped to theme */
   --accent-blue: #10b981;
   --accent-blue-hover: #059669;
   --accent-blue-light: #34d399;
-  --accent-blue-glow: rgba(16, 185, 129, 0.5);
+  --accent-blue-glow: rgba(16, 185, 129, 0.45);
   --accent-cyan: #34d399;
 
   /* Text Colors - Predominantly White */
   --text-primary: #ffffff;
-  --text-secondary: #ffffff;
-  --text-muted: #f0fdf4;
+  --text-secondary: #f1f5f9;
+  --text-muted: #cbd5e1;
   --text-accent: #34d399;
 
   /* Borders & Shadows */
-  --border-color: rgba(52, 211, 153, 0.4);
-  --border-subtle: rgba(255, 255, 255, 0.28);
-  --shadow-glow: 0 10px 25px -5px rgba(16, 185, 129, 0.35), 0 8px 10px -6px rgba(2, 132, 199, 0.5);
-  --shadow-card: 0 12px 30px rgba(2, 44, 80, 0.45);
+  --border-color: rgba(16, 185, 129, 0.25);
+  --border-subtle: rgba(255, 255, 255, 0.15);
+  --shadow-glow: 0 10px 25px -5px rgba(16, 185, 129, 0.25), 0 8px 10px -6px rgba(6, 11, 28, 0.6);
+  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.55);
 
   --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
@@ -43,27 +43,26 @@
 body {
   margin: 0;
   font-family: var(--font-main);
-  background-color: #0284c7 !important;
-  background: radial-gradient(circle at 15% 15%, #38bdf8 0%, #0284c7 40%, #0369a1 80%, #0c4a6e 100%) !important;
+  background-color: var(--bg-main) !important;
+  background: radial-gradient(circle at 10% 20%, #0d1e4c 0%, #060b1c 60%, #030610 100%) !important;
   background-attachment: fixed !important;
-  color: #ffffff !important;
+  color: var(--text-primary) !important;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Typography Overrides - Crisp Pure White with subtle shadow for perfect contrast */
+/* Typography Overrides - Crisp Pure White */
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   color: #ffffff !important;
   font-weight: 700;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 p, span, label, div, strong, small, li {
-  color: #ffffff;
+  color: inherit;
 }
 
 .text-muted, .small.text-muted, .form-text {
-  color: rgba(255, 255, 255, 0.88) !important;
+  color: #cbd5e1 !important;
 }
 
 .text-dark {
@@ -71,15 +70,15 @@ p, span, label, div, strong, small, li {
 }
 
 .text-secondary {
-  color: #ffffff !important;
+  color: #f1f5f9 !important;
 }
 
 .text-white-50 {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: rgba(255, 255, 255, 0.75) !important;
 }
 
 .text-primary, .brand-accent {
-  color: var(--accent-emerald) !important;
+  color: var(--accent-green-light) !important;
 }
 
 .text-info {
@@ -92,9 +91,9 @@ p, span, label, div, strong, small, li {
 
 /* Navbar */
 .navbar {
-  background: rgba(2, 132, 199, 0.95) !important;
+  background: rgba(6, 11, 28, 0.96) !important;
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }
 
 .navbar-brand {
@@ -109,8 +108,8 @@ p, span, label, div, strong, small, li {
   justify-content: center;
   gap: 0.35rem;
   padding: 0.25rem 0.4rem;
-  background: rgba(3, 105, 161, 0.85);
-  border: 1px solid rgba(52, 211, 153, 0.4);
+  background: rgba(10, 19, 46, 0.85);
+  border: 1px solid rgba(16, 185, 129, 0.25);
   border-radius: 9999px;
   backdrop-filter: blur(12px);
   max-width: 100%;
@@ -144,14 +143,14 @@ p, span, label, div, strong, small, li {
 
 .nav-pill-btn i {
   font-size: 0.95rem;
-  color: var(--accent-emerald) !important;
+  color: var(--accent-green-light) !important;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .nav-pill-btn:hover {
   color: #ffffff !important;
-  background-color: rgba(16, 185, 129, 0.25) !important;
-  border-color: rgba(52, 211, 153, 0.5) !important;
+  background-color: rgba(16, 185, 129, 0.18) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
   transform: translateY(-1px);
 }
 
@@ -159,8 +158,8 @@ p, span, label, div, strong, small, li {
   color: #ffffff !important;
   font-weight: 600;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-  border-color: rgba(52, 211, 153, 0.9) !important;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.5);
+  border-color: rgba(52, 211, 153, 0.8) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
 }
 
 .nav-pill-btn.active i {
@@ -176,13 +175,13 @@ p, span, label, div, strong, small, li {
 }
 
 .card-header {
-  background-color: rgba(7, 89, 133, 0.95) !important;
+  background-color: rgba(10, 19, 46, 0.95) !important;
   border-bottom: 1px solid var(--border-subtle) !important;
   color: var(--text-primary) !important;
 }
 
 .card-footer {
-  background-color: rgba(7, 89, 133, 0.95) !important;
+  background-color: rgba(10, 19, 46, 0.95) !important;
   border-top: 1px solid var(--border-subtle) !important;
   color: var(--text-primary) !important;
 }
@@ -192,7 +191,7 @@ p, span, label, div, strong, small, li {
   background-color: var(--bg-card) !important;
   border: 1px solid var(--border-color) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(2, 44, 80, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .card-medicine:hover {
@@ -204,7 +203,7 @@ p, span, label, div, strong, small, li {
 
 /* Hero Banners */
 .bg-primary {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 45%, #059669 100%) !important;
+  background: linear-gradient(135deg, #0d1e4c 0%, #091538 50%, #064e3b 100%) !important;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -228,7 +227,7 @@ p, span, label, div, strong, small, li {
 .btn-outline-primary {
   color: var(--accent-green-light) !important;
   border-color: var(--accent-green) !important;
-  background-color: rgba(16, 185, 129, 0.15) !important;
+  background-color: rgba(16, 185, 129, 0.1) !important;
 }
 
 .btn-outline-primary:hover {
@@ -244,9 +243,9 @@ p, span, label, div, strong, small, li {
 }
 
 .btn-outline-info {
-  color: #ffffff !important;
+  color: var(--accent-green-light) !important;
   border-color: var(--accent-green-light) !important;
-  background-color: rgba(16, 185, 129, 0.2) !important;
+  background-color: rgba(16, 185, 129, 0.1) !important;
 }
 
 .btn-outline-info:hover {
@@ -256,20 +255,20 @@ p, span, label, div, strong, small, li {
 }
 
 .btn-outline-light {
-  border-color: rgba(255, 255, 255, 0.4) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
   color: #ffffff !important;
 }
 
 .btn-outline-light:hover {
-  background-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
   color: #ffffff !important;
   border-color: #ffffff !important;
 }
 
 .btn-outline-secondary {
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-subtle) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
 .btn-outline-secondary:hover {
@@ -280,26 +279,26 @@ p, span, label, div, strong, small, li {
 
 /* Forms & Inputs */
 .form-control, .form-select {
-  background-color: rgba(7, 89, 133, 0.65) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  background-color: var(--bg-input) !important;
+  border: 1px solid var(--border-subtle) !important;
   color: #ffffff !important;
   border-radius: 8px;
 }
 
 .form-control:focus, .form-select:focus {
-  background-color: rgba(3, 105, 161, 0.85) !important;
+  background-color: #0d1a3e !important;
   border-color: var(--accent-green-light) !important;
   box-shadow: 0 0 0 0.25rem var(--accent-green-glow) !important;
   color: #ffffff !important;
 }
 
 .form-control::placeholder {
-  color: rgba(255, 255, 255, 0.65) !important;
+  color: #94a3b8 !important;
 }
 
 .input-group-text {
-  background-color: rgba(7, 89, 133, 0.75) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
+  background-color: var(--bg-input) !important;
+  border-color: var(--border-subtle) !important;
   color: var(--accent-green-light) !important;
 }
 
@@ -318,7 +317,7 @@ p, span, label, div, strong, small, li {
 }
 
 .table-light, .table thead.table-light th {
-  background-color: rgba(7, 89, 133, 0.95) !important;
+  background-color: rgba(10, 19, 46, 0.95) !important;
   color: var(--accent-green-light) !important;
   border-bottom: 2px solid var(--border-color) !important;
   font-weight: 600;
@@ -328,34 +327,33 @@ p, span, label, div, strong, small, li {
 }
 
 .table-hover tbody tr:hover td {
-  background-color: rgba(16, 185, 129, 0.15) !important;
+  background-color: rgba(16, 185, 129, 0.12) !important;
   color: #ffffff !important;
 }
 
 /* Modals */
 .modal-content {
-  background-color: #0369a1 !important;
-  background: radial-gradient(circle at 10% 20%, #0284c7 0%, #0369a1 60%, #075985 100%) !important;
+  background-color: #0b1536 !important;
   border: 1px solid var(--border-color) !important;
   color: var(--text-primary) !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 0 30px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.25);
   border-radius: 20px;
 }
 
 .modal-header {
   border-bottom: 1px solid var(--border-subtle) !important;
-  background: linear-gradient(135deg, #0284c7 0%, #059669 100%) !important;
+  background: linear-gradient(135deg, #0f1f4b 0%, #064e3b 100%) !important;
   color: #ffffff !important;
 }
 
 .modal-footer {
   border-top: 1px solid var(--border-subtle) !important;
-  background-color: rgba(7, 89, 133, 0.95) !important;
+  background-color: #070e24 !important;
 }
 
 /* List Groups */
 .list-group-item {
-  background-color: rgba(7, 89, 133, 0.6) !important;
+  background-color: var(--bg-input) !important;
   border-color: var(--border-subtle) !important;
   color: var(--text-primary) !important;
 }
