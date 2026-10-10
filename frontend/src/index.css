@@ -2,39 +2,39 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
 :root {
-  /* Blue Background Theme Palette */
-  --bg-main: #060b1c;
-  --bg-secondary: #0a132e;
-  --bg-card: #0f1c42;
-  --bg-card-hover: #152554;
-  --bg-input: #0a1430;
-  --bg-glass: rgba(15, 28, 66, 0.88);
+  /* Light Blue Theme Palette */
+  --bg-main: #0284c7;
+  --bg-secondary: #0369a1;
+  --bg-card: #075985;
+  --bg-card-hover: #0c4a6e;
+  --bg-input: #0c4a6e;
+  --bg-glass: rgba(7, 89, 133, 0.88);
 
   /* Vibrant Green Accent Palette */
   --accent-green: #10b981;
   --accent-green-hover: #059669;
   --accent-green-light: #34d399;
-  --accent-green-glow: rgba(16, 185, 129, 0.4);
+  --accent-green-glow: rgba(16, 185, 129, 0.45);
   --accent-emerald: #00e676;
 
   /* Legacy alias mapped to theme */
   --accent-blue: #10b981;
   --accent-blue-hover: #059669;
   --accent-blue-light: #34d399;
-  --accent-blue-glow: rgba(16, 185, 129, 0.4);
-  --accent-cyan: #10b981;
+  --accent-blue-glow: rgba(16, 185, 129, 0.45);
+  --accent-cyan: #34d399;
 
   /* Text Colors - Predominantly White */
   --text-primary: #ffffff;
-  --text-secondary: #f1f5f9;
-  --text-muted: #94a3b8;
+  --text-secondary: #f8fafc;
+  --text-muted: #e2e8f0;
   --text-accent: #34d399;
 
   /* Borders & Shadows */
-  --border-color: rgba(16, 185, 129, 0.22);
-  --border-subtle: rgba(255, 255, 255, 0.12);
-  --shadow-glow: 0 10px 25px -5px rgba(16, 185, 129, 0.25), 0 8px 10px -6px rgba(6, 11, 28, 0.6);
-  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.55);
+  --border-color: rgba(52, 211, 153, 0.35);
+  --border-subtle: rgba(255, 255, 255, 0.22);
+  --shadow-glow: 0 10px 25px -5px rgba(16, 185, 129, 0.35), 0 8px 10px -6px rgba(2, 132, 199, 0.5);
+  --shadow-card: 0 12px 30px rgba(2, 44, 80, 0.45);
 
   --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
@@ -44,15 +44,16 @@ body {
   margin: 0;
   font-family: var(--font-main);
   background-color: var(--bg-main) !important;
-  background: radial-gradient(circle at 10% 20%, #0d1e4c 0%, #060b1c 60%, #030610 100%) !important;
+  background: radial-gradient(circle at 15% 15%, #0284c7 0%, #0369a1 45%, #075985 85%, #0c4a6e 100%) !important;
+  background-attachment: fixed !important;
   color: var(--text-primary) !important;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Typography Overrides */
+/* Typography Overrides - Crisp Pure White */
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  color: var(--text-primary) !important;
+  color: #ffffff !important;
   font-weight: 700;
 }
 
@@ -61,15 +62,15 @@ p, span, label, div {
 }
 
 .text-muted, .small.text-muted, .form-text {
-  color: var(--text-muted) !important;
+  color: rgba(255, 255, 255, 0.82) !important;
 }
 
 .text-dark {
-  color: var(--text-primary) !important;
+  color: #ffffff !important;
 }
 
 .text-secondary {
-  color: var(--text-secondary) !important;
+  color: #f1f5f9 !important;
 }
 
 .text-primary, .brand-accent {
@@ -86,9 +87,9 @@ p, span, label, div {
 
 /* Navbar */
 .navbar {
-  background: rgba(6, 11, 28, 0.96) !important;
+  background: rgba(3, 105, 161, 0.95) !important;
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-color) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
 
 .navbar-brand {
@@ -103,8 +104,8 @@ p, span, label, div {
   justify-content: center;
   gap: 0.35rem;
   padding: 0.25rem 0.4rem;
-  background: rgba(10, 19, 46, 0.85);
-  border: 1px solid rgba(16, 185, 129, 0.22);
+  background: rgba(7, 89, 133, 0.85);
+  border: 1px solid rgba(52, 211, 153, 0.35);
   border-radius: 9999px;
   backdrop-filter: blur(12px);
   max-width: 100%;
@@ -170,13 +171,13 @@ p, span, label, div {
 }
 
 .card-header {
-  background-color: rgba(10, 19, 46, 0.95) !important;
+  background-color: rgba(7, 89, 133, 0.95) !important;
   border-bottom: 1px solid var(--border-subtle) !important;
   color: var(--text-primary) !important;
 }
 
 .card-footer {
-  background-color: rgba(10, 19, 46, 0.95) !important;
+  background-color: rgba(7, 89, 133, 0.95) !important;
   border-top: 1px solid var(--border-subtle) !important;
   color: var(--text-primary) !important;
 }
@@ -186,7 +187,7 @@ p, span, label, div {
   background-color: var(--bg-card) !important;
   border: 1px solid var(--border-color) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 16px rgba(2, 44, 80, 0.35);
 }
 
 .card-medicine:hover {
@@ -198,7 +199,7 @@ p, span, label, div {
 
 /* Hero Banners */
 .bg-primary {
-  background: linear-gradient(135deg, #0d1e4c 0%, #091538 50%, #064e3b 100%) !important;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 45%, #059669 100%) !important;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -222,7 +223,7 @@ p, span, label, div {
 .btn-outline-primary {
   color: var(--accent-green-light) !important;
   border-color: var(--accent-green) !important;
-  background-color: rgba(16, 185, 129, 0.1) !important;
+  background-color: rgba(16, 185, 129, 0.15) !important;
 }
 
 .btn-outline-primary:hover {
@@ -238,9 +239,9 @@ p, span, label, div {
 }
 
 .btn-outline-info {
-  color: var(--accent-green-light) !important;
+  color: #ffffff !important;
   border-color: var(--accent-green-light) !important;
-  background-color: rgba(16, 185, 129, 0.1) !important;
+  background-color: rgba(16, 185, 129, 0.2) !important;
 }
 
 .btn-outline-info:hover {
@@ -250,20 +251,20 @@ p, span, label, div {
 }
 
 .btn-outline-light {
-  border-color: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
   color: #ffffff !important;
 }
 
 .btn-outline-light:hover {
-  background-color: rgba(255, 255, 255, 0.15) !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
   color: #ffffff !important;
   border-color: #ffffff !important;
 }
 
 .btn-outline-secondary {
-  color: var(--text-secondary) !important;
-  border-color: var(--border-subtle) !important;
-  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .btn-outline-secondary:hover {
@@ -274,26 +275,26 @@ p, span, label, div {
 
 /* Forms & Inputs */
 .form-control, .form-select {
-  background-color: var(--bg-input) !important;
-  border: 1px solid var(--border-subtle) !important;
+  background-color: rgba(7, 89, 133, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
   color: #ffffff !important;
   border-radius: 8px;
 }
 
 .form-control:focus, .form-select:focus {
-  background-color: #0d1a3e !important;
+  background-color: rgba(3, 105, 161, 0.85) !important;
   border-color: var(--accent-green-light) !important;
   box-shadow: 0 0 0 0.25rem var(--accent-green-glow) !important;
   color: #ffffff !important;
 }
 
 .form-control::placeholder {
-  color: #64748b !important;
+  color: rgba(255, 255, 255, 0.65) !important;
 }
 
 .input-group-text {
-  background-color: var(--bg-input) !important;
-  border-color: var(--border-subtle) !important;
+  background-color: rgba(7, 89, 133, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
   color: var(--accent-green-light) !important;
 }
 
@@ -312,7 +313,7 @@ p, span, label, div {
 }
 
 .table-light, .table thead.table-light th {
-  background-color: rgba(10, 19, 46, 0.95) !important;
+  background-color: rgba(7, 89, 133, 0.95) !important;
   color: var(--accent-green-light) !important;
   border-bottom: 2px solid var(--border-color) !important;
   font-weight: 600;
@@ -322,33 +323,34 @@ p, span, label, div {
 }
 
 .table-hover tbody tr:hover td {
-  background-color: rgba(16, 185, 129, 0.12) !important;
+  background-color: rgba(16, 185, 129, 0.15) !important;
   color: #ffffff !important;
 }
 
 /* Modals */
 .modal-content {
-  background-color: #0b1536 !important;
+  background-color: #0369a1 !important;
+  background: radial-gradient(circle at 10% 20%, #0284c7 0%, #0369a1 60%, #075985 100%) !important;
   border: 1px solid var(--border-color) !important;
   color: var(--text-primary) !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 0 30px rgba(16, 185, 129, 0.3);
   border-radius: 20px;
 }
 
 .modal-header {
   border-bottom: 1px solid var(--border-subtle) !important;
-  background: linear-gradient(135deg, #0f1f4b 0%, #064e3b 100%) !important;
+  background: linear-gradient(135deg, #0284c7 0%, #059669 100%) !important;
   color: #ffffff !important;
 }
 
 .modal-footer {
   border-top: 1px solid var(--border-subtle) !important;
-  background-color: #070e24 !important;
+  background-color: rgba(7, 89, 133, 0.95) !important;
 }
 
 /* List Groups */
 .list-group-item {
-  background-color: var(--bg-input) !important;
+  background-color: rgba(7, 89, 133, 0.6) !important;
   border-color: var(--border-subtle) !important;
   color: var(--text-primary) !important;
 }
