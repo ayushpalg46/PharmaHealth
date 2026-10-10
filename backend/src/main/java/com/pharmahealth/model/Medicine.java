@@ -38,6 +38,7 @@ public class Medicine {
 
     private Boolean prescriptionRequired = false;
 
+    private LocalDate manufactureDate;
     private LocalDate expiryDate;
 
     @Column(columnDefinition = "TEXT")
@@ -129,6 +130,14 @@ public class Medicine {
 
     public void setPrescriptionRequired(Boolean prescriptionRequired) {
         this.prescriptionRequired = prescriptionRequired;
+    }
+
+    public LocalDate getManufactureDate() {
+        return manufactureDate;
+    }
+
+    public void setManufactureDate(LocalDate manufactureDate) {
+        this.manufactureDate = manufactureDate;
     }
 
     public LocalDate getExpiryDate() {

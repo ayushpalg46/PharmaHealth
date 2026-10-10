@@ -22,6 +22,7 @@ public class MedicineRequest {
     private String dosageForm;
     private String strength;
     private Boolean prescriptionRequired;
+    private LocalDate manufactureDate;
     private LocalDate expiryDate;
     private String description;
     private String imageUrl;
@@ -96,6 +97,14 @@ public class MedicineRequest {
 
     public void setPrescriptionRequired(Boolean prescriptionRequired) {
         this.prescriptionRequired = prescriptionRequired;
+    }
+
+    public LocalDate getManufactureDate() {
+        return manufactureDate;
+    }
+
+    public void setManufactureDate(LocalDate manufactureDate) {
+        this.manufactureDate = manufactureDate;
     }
 
     public LocalDate getExpiryDate() {

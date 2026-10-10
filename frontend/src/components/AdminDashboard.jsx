@@ -20,6 +20,9 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
   // Selected Bill receipt view
   const [selectedBill, setSelectedBill] = useState(null);
 
+  // Notifications active filter
+  const [notifFilter, setNotifFilter] = useState('ALL');
+
   // New Medicine Form State
   const [newMed, setNewMed] = useState({
     name: '',
@@ -28,6 +31,8 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
     stockQuantity: '',
     dosageForm: 'Tablet',
     strength: '500mg',
+    manufactureDate: '',
+    expiryDate: '',
     imageUrl: '',
     prescriptionRequired: false,
     description: ''
@@ -51,6 +56,15 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
       } else if (tab === 'prescriptions') {
         const res = await prescriptionService.getAllPrescriptions();
         setPrescriptions(res.data);
+      } else if (tab === 'notifications') {
+        const [medRes, ticketRes, rxRes] = await Promise.all([
+          medicineService.getMedicines(),
+          supportService.getAllTickets(),
+          prescriptionService.getAllPrescriptions()
+        ]);
+        setMedicines(medRes.data);
+        setTickets(ticketRes.data);
+        setPrescriptions(rxRes.data);
       }
     } catch (err) {
       console.error('Error fetching admin data:', err);
@@ -73,6 +87,8 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
         stockQuantity: parseInt(newMed.stockQuantity, 10),
         dosageForm: newMed.dosageForm,
         strength: newMed.strength,
+        manufactureDate: newMed.manufactureDate || null,
+        expiryDate: newMed.expiryDate || null,
         imageUrl: newMed.imageUrl,
         prescriptionRequired: newMed.prescriptionRequired,
         description: newMed.description
@@ -87,6 +103,8 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
         stockQuantity: '',
         dosageForm: 'Tablet',
         strength: '500mg',
+        manufactureDate: '',
+        expiryDate: '',
         imageUrl: '',
         prescriptionRequired: false,
         description: ''
@@ -303,6 +321,26 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                           />
                         </div>
                       </div>
+                      <div className="row g-2 mb-2">
+                        <div className="col-6">
+                          <label className="form-label small fw-semibold">Mfg Date</label>
+                          <input 
+                            type="date" 
+                            className="form-control form-control-sm" 
+                            value={newMed.manufactureDate} 
+                            onChange={e => setNewMed({...newMed, manufactureDate: e.target.value})} 
+                          />
+                        </div>
+                        <div className="col-6">
+                          <label className="form-label small fw-semibold">Expiry Date</label>
+                          <input 
+                            type="date" 
+                            className="form-control form-control-sm" 
+                            value={newMed.expiryDate} 
+                            onChange={e => setNewMed({...newMed, expiryDate: e.target.value})} 
+                          />
+                        </div>
+                      </div>
                       <div className="mb-2">
                         <label className="form-label small fw-semibold text-white">Upload Medicine Photo</label>
                         <input 
@@ -359,55 +397,73 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                       <thead className="table-light small">
                         <tr>
                           <th>Medication</th>
-                          <th>Dosage & Strength</th>
+                          <th>Dosage &amp; Strength</th>
+                          <th>Mfg / Expiry</th>
                           <th>Price</th>
                           <th>In Stock</th>
-                          <th>Rx Required</th>
+                          <th>Rx</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {medicines.map(m => (
-                          <tr key={m.id}>
-                            <td>
-                              <div className="d-flex align-items-center gap-2">
-                                {m.imageUrl ? (
-                                  <img 
-                                    src={m.imageUrl} 
-                                    alt={m.name} 
-                                    className="rounded border" 
-                                    style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                                    onError={(e) => { e.target.style.display = 'none'; }}
-                                  />
-                                ) : (
-                                  <div className="badge bg-primary-subtle text-info p-2 rounded">
-                                    <i className="bi bi-capsule fs-6"></i>
+                        {medicines.map(m => {
+                          const isExpired = m.expiryDate && new Date(m.expiryDate) < new Date();
+                          const diffDays = m.expiryDate ? Math.ceil((new Date(m.expiryDate) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                          const isExpiringSoon = diffDays !== null && diffDays >= 0 && diffDays <= 60;
+
+                          return (
+                            <tr key={m.id}>
+                              <td>
+                                <div className="d-flex align-items-center gap-2">
+                                  {m.imageUrl ? (
+                                    <img 
+                                      src={m.imageUrl} 
+                                      alt={m.name} 
+                                      className="rounded border" 
+                                      style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                                      onError={(e) => { e.target.style.display = 'none'; }}
+                                    />
+                                  ) : (
+                                    <div className="badge bg-primary-subtle text-info p-2 rounded">
+                                      <i className="bi bi-capsule fs-6"></i>
+                                    </div>
+                                  )}
+                                  <div>
+                                    <strong>{m.name}</strong>
+                                    <div className="small text-muted">{m.manufacturer || 'Pharmaceutical'}</div>
                                   </div>
-                                )}
-                                <div>
-                                  <strong>{m.name}</strong>
-                                  <div className="small text-muted">{m.manufacturer || 'Pharmaceutical'}</div>
                                 </div>
-                              </div>
-                            </td>
-                            <td>
-                              <span className="badge bg-secondary-subtle text-secondary">{m.dosageForm || 'Tablet'}</span>
-                              <div className="small text-muted">{m.strength || 'Standard'}</div>
-                            </td>
-                            <td><strong>₹{m.price.toFixed(2)}</strong></td>
-                            <td>
-                              <span className={`badge ${m.stockQuantity > 50 ? 'bg-success' : m.stockQuantity > 10 ? 'bg-warning text-dark' : 'bg-danger'}`}>
-                                {m.stockQuantity} units
-                              </span>
-                            </td>
-                            <td>{m.prescriptionRequired ? 'Yes (Rx)' : 'No (OTC)'}</td>
-                            <td>
-                              <button className="btn btn-outline-danger btn-sm" onClick={() => handleDeleteMedicine(m.id)}>
-                                <i className="bi bi-trash"></i>
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
+                              </td>
+                              <td>
+                                <span className="badge bg-secondary-subtle text-secondary">{m.dosageForm || 'Tablet'}</span>
+                                <div className="small text-muted">{m.strength || 'Standard'}</div>
+                              </td>
+                              <td>
+                                <div className="small text-muted">Mfg: {m.manufactureDate ? new Date(m.manufactureDate).toLocaleDateString() : 'N/A'}</div>
+                                <div className="small">
+                                  Exp: {m.expiryDate ? new Date(m.expiryDate).toLocaleDateString() : 'N/A'}
+                                  {isExpired ? (
+                                    <span className="badge bg-danger ms-1">Expired</span>
+                                  ) : isExpiringSoon ? (
+                                    <span className="badge bg-warning text-dark ms-1">{diffDays}d left</span>
+                                  ) : null}
+                                </div>
+                              </td>
+                              <td><strong>₹{m.price.toFixed(2)}</strong></td>
+                              <td>
+                                <span className={`badge ${m.stockQuantity === 0 ? 'bg-danger' : m.stockQuantity > 50 ? 'bg-success' : m.stockQuantity > 10 ? 'bg-warning text-dark' : 'bg-danger'}`}>
+                                  {m.stockQuantity} units
+                                </span>
+                              </td>
+                              <td>{m.prescriptionRequired ? 'Yes (Rx)' : 'No (OTC)'}</td>
+                              <td>
+                                <button className="btn btn-outline-danger btn-sm" onClick={() => handleDeleteMedicine(m.id)}>
+                                  <i className="bi bi-trash"></i>
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -545,7 +601,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
             </div>
           )}
 
-          {/* TAB 6: PRESCRIPTIONS */}
+          {/* TAB 5: PRESCRIPTIONS */}
           {tab === 'prescriptions' && (
             <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
               <div className="card-header bg-white p-3">
@@ -598,6 +654,243 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
               </div>
             </div>
           )}
+
+          {/* TAB 6: NOTIFICATIONS & SYSTEM ALERTS HUB */}
+          {tab === 'notifications' && (() => {
+            const now = new Date();
+            const outOfStockMeds = medicines.filter(m => m.stockQuantity === 0);
+            const lowStockMeds = medicines.filter(m => m.stockQuantity > 0 && m.stockQuantity <= 10);
+            const expiredMeds = medicines.filter(m => m.expiryDate && new Date(m.expiryDate) < now);
+            const expiringSoonMeds = medicines.filter(m => {
+              if (!m.expiryDate) return false;
+              const exp = new Date(m.expiryDate);
+              const diffDays = Math.ceil((exp - now) / (1000 * 60 * 60 * 24));
+              return diffDays >= 0 && diffDays <= 60;
+            });
+            const pendingTickets = tickets.filter(t => t.status === 'OPEN' || t.status === 'PENDING');
+            const pendingPrescriptions = prescriptions.filter(p => p.status === 'PENDING');
+            const totalAlertsCount = outOfStockMeds.length + lowStockMeds.length + expiredMeds.length + expiringSoonMeds.length + pendingTickets.length + pendingPrescriptions.length;
+
+            return (
+              <div>
+                {/* Notification Counters */}
+                <div className="row g-3 mb-4">
+                  <div className="col-md-3">
+                    <div className="card p-3 border-0 rounded-4 shadow-sm text-center" style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)' }}>
+                      <div className="fs-3 fw-bold text-danger">{outOfStockMeds.length + lowStockMeds.length}</div>
+                      <div className="small text-white fw-semibold"><i className="bi bi-boxes me-1"></i>Stock Reminders</div>
+                      <div className="text-muted" style={{ fontSize: '0.75rem' }}>{outOfStockMeds.length} empty, {lowStockMeds.length} low</div>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="card p-3 border-0 rounded-4 shadow-sm text-center" style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.35)' }}>
+                      <div className="fs-3 fw-bold text-warning">{expiredMeds.length + expiringSoonMeds.length}</div>
+                      <div className="small text-white fw-semibold"><i className="bi bi-calendar-x me-1"></i>Expiry Alerts</div>
+                      <div className="text-muted" style={{ fontSize: '0.75rem' }}>{expiredMeds.length} expired, {expiringSoonMeds.length} expiring soon</div>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="card p-3 border-0 rounded-4 shadow-sm text-center" style={{ backgroundColor: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.35)' }}>
+                      <div className="fs-3 fw-bold text-info">{pendingTickets.length}</div>
+                      <div className="small text-white fw-semibold"><i className="bi bi-chat-heart me-1"></i>Helpbox &amp; Complaints</div>
+                      <div className="text-muted" style={{ fontSize: '0.75rem' }}>Awaiting staff reply</div>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="card p-3 border-0 rounded-4 shadow-sm text-center" style={{ backgroundColor: 'rgba(168, 85, 247, 0.15)', border: '1px solid rgba(168, 85, 247, 0.35)' }}>
+                      <div className="fs-3 fw-bold text-light">{pendingPrescriptions.length}</div>
+                      <div className="small text-white fw-semibold"><i className="bi bi-file-earmark-medical me-1"></i>Pending Rx</div>
+                      <div className="text-muted" style={{ fontSize: '0.75rem' }}>Prescriptions to verify</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Filter Pills */}
+                <div className="d-flex flex-wrap gap-2 mb-4">
+                  <button 
+                    className={`btn btn-sm rounded-pill px-3 ${notifFilter === 'ALL' ? 'btn-info text-white fw-bold' : 'btn-outline-secondary'}`}
+                    onClick={() => setNotifFilter('ALL')}
+                  >
+                    All Notifications ({totalAlertsCount})
+                  </button>
+                  <button 
+                    className={`btn btn-sm rounded-pill px-3 ${notifFilter === 'STOCK' ? 'btn-danger text-white fw-bold' : 'btn-outline-secondary'}`}
+                    onClick={() => setNotifFilter('STOCK')}
+                  >
+                    Stock Alerts ({outOfStockMeds.length + lowStockMeds.length})
+                  </button>
+                  <button 
+                    className={`btn btn-sm rounded-pill px-3 ${notifFilter === 'EXPIRY' ? 'btn-warning text-dark fw-bold' : 'btn-outline-secondary'}`}
+                    onClick={() => setNotifFilter('EXPIRY')}
+                  >
+                    Expiry Warnings ({expiredMeds.length + expiringSoonMeds.length})
+                  </button>
+                  <button 
+                    className={`btn btn-sm rounded-pill px-3 ${notifFilter === 'SUPPORT' ? 'btn-info text-white fw-bold' : 'btn-outline-secondary'}`}
+                    onClick={() => setNotifFilter('SUPPORT')}
+                  >
+                    Helpbox &amp; Complaints ({pendingTickets.length})
+                  </button>
+                  <button 
+                    className={`btn btn-sm rounded-pill px-3 ${notifFilter === 'RX' ? 'btn-primary text-white fw-bold' : 'btn-outline-secondary'}`}
+                    onClick={() => setNotifFilter('RX')}
+                  >
+                    Prescriptions ({pendingPrescriptions.length})
+                  </button>
+                </div>
+
+                {/* Alert Feed List */}
+                <div className="d-flex flex-column gap-3">
+                  {totalAlertsCount === 0 && (
+                    <div className="card border-0 rounded-4 shadow-sm p-5 text-center" style={{ backgroundColor: 'rgba(4, 26, 20, 0.7)' }}>
+                      <i className="bi bi-check-circle-fill text-success display-3 mb-3 d-block"></i>
+                      <h4 className="text-white">All Systems Clear!</h4>
+                      <p className="text-muted">No low stock items, expired medications, or pending customer complaints at this time.</p>
+                    </div>
+                  )}
+
+                  {/* 1. OUT OF STOCK ALERTS */}
+                  {(notifFilter === 'ALL' || notifFilter === 'STOCK') && outOfStockMeds.map(m => (
+                    <div key={`out-${m.id}`} className="card border-0 rounded-4 p-3 shadow-sm d-flex flex-row justify-content-between align-items-center" style={{ backgroundColor: 'rgba(239, 68, 68, 0.12)', borderLeft: '5px solid #ef4444' }}>
+                      <div className="d-flex align-items-center gap-3">
+                        <div className="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center" style={{ width: '45px', height: '45px', fontSize: '1.3rem' }}>
+                          <i className="bi bi-exclamation-octagon-fill"></i>
+                        </div>
+                        <div>
+                          <div className="d-flex align-items-center gap-2 mb-1">
+                            <span className="badge bg-danger">OUT OF STOCK (0 UNITS)</span>
+                            <span className="text-muted small">Immediate Restock Required</span>
+                          </div>
+                          <h6 className="fw-bold text-white mb-0">{m.name} ({m.strength || 'Standard'})</h6>
+                          <div className="small text-muted">Manufacturer: {m.manufacturer || 'General Pharma'} • Dosage: {m.dosageForm || 'Tablet'}</div>
+                        </div>
+                      </div>
+                      <button className="btn btn-sm btn-danger fw-semibold px-3" onClick={() => setTab('inventory')}>
+                        <i className="bi bi-plus-circle me-1"></i> Restock
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* 2. LOW STOCK ALERTS */}
+                  {(notifFilter === 'ALL' || notifFilter === 'STOCK') && lowStockMeds.map(m => (
+                    <div key={`low-${m.id}`} className="card border-0 rounded-4 p-3 shadow-sm d-flex flex-row justify-content-between align-items-center" style={{ backgroundColor: 'rgba(245, 158, 11, 0.12)', borderLeft: '5px solid #f59e0b' }}>
+                      <div className="d-flex align-items-center gap-3">
+                        <div className="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center" style={{ width: '45px', height: '45px', fontSize: '1.3rem' }}>
+                          <i className="bi bi-box-seam"></i>
+                        </div>
+                        <div>
+                          <div className="d-flex align-items-center gap-2 mb-1">
+                            <span className="badge bg-warning text-dark">LOW STOCK REMINDER</span>
+                            <span className="text-muted small">Only {m.stockQuantity} units remaining</span>
+                          </div>
+                          <h6 className="fw-bold text-white mb-0">{m.name} ({m.strength || 'Standard'})</h6>
+                          <div className="small text-muted">Price: ₹{m.price.toFixed(2)} • Reorder recommended soon</div>
+                        </div>
+                      </div>
+                      <button className="btn btn-sm btn-outline-warning fw-semibold px-3" onClick={() => setTab('inventory')}>
+                        View Stock
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* 3. EXPIRED MEDICINE ALERTS */}
+                  {(notifFilter === 'ALL' || notifFilter === 'EXPIRY') && expiredMeds.map(m => (
+                    <div key={`exp-${m.id}`} className="card border-0 rounded-4 p-3 shadow-sm d-flex flex-row justify-content-between align-items-center" style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', borderLeft: '5px solid #dc2626' }}>
+                      <div className="d-flex align-items-center gap-3">
+                        <div className="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center" style={{ width: '45px', height: '45px', fontSize: '1.3rem' }}>
+                          <i className="bi bi-calendar-x-fill"></i>
+                        </div>
+                        <div>
+                          <div className="d-flex align-items-center gap-2 mb-1">
+                            <span className="badge bg-danger">EXPIRED DRUG ALERT</span>
+                            <span className="text-danger small fw-semibold">Expired on {new Date(m.expiryDate).toLocaleDateString()}</span>
+                          </div>
+                          <h6 className="fw-bold text-white mb-0">{m.name}</h6>
+                          <div className="small text-muted">Quarantine this batch immediately to prevent patient distribution.</div>
+                        </div>
+                      </div>
+                      <button className="btn btn-sm btn-outline-danger fw-semibold px-3" onClick={() => setTab('inventory')}>
+                        Manage Batch
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* 4. EXPIRING SOON ALERTS */}
+                  {(notifFilter === 'ALL' || notifFilter === 'EXPIRY') && expiringSoonMeds.map(m => {
+                    const diffDays = Math.ceil((new Date(m.expiryDate) - now) / (1000 * 60 * 60 * 24));
+                    return (
+                      <div key={`soon-${m.id}`} className="card border-0 rounded-4 p-3 shadow-sm d-flex flex-row justify-content-between align-items-center" style={{ backgroundColor: 'rgba(245, 158, 11, 0.12)', borderLeft: '5px solid #f59e0b' }}>
+                        <div className="d-flex align-items-center gap-3">
+                          <div className="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center" style={{ width: '45px', height: '45px', fontSize: '1.3rem' }}>
+                            <i className="bi bi-hourglass-split"></i>
+                          </div>
+                          <div>
+                            <div className="d-flex align-items-center gap-2 mb-1">
+                              <span className="badge bg-warning text-dark">EXPIRING IN {diffDays} DAYS</span>
+                              <span className="text-muted small">Expiry: {new Date(m.expiryDate).toLocaleDateString()}</span>
+                            </div>
+                            <h6 className="fw-bold text-white mb-0">{m.name} ({m.strength || 'Standard'})</h6>
+                            <div className="small text-muted">Stock: {m.stockQuantity} units • Prioritize dispensing or supplier return</div>
+                          </div>
+                        </div>
+                        <button className="btn btn-sm btn-outline-warning fw-semibold px-3" onClick={() => setTab('inventory')}>
+                          Check Item
+                        </button>
+                      </div>
+                    );
+                  })}
+
+                  {/* 5. SUPPORT & HELPBOX COMPLAINTS */}
+                  {(notifFilter === 'ALL' || notifFilter === 'SUPPORT') && pendingTickets.map(t => (
+                    <div key={`ticket-${t.id}`} className="card border-0 rounded-4 p-3 shadow-sm d-flex flex-row justify-content-between align-items-center" style={{ backgroundColor: 'rgba(56, 189, 248, 0.12)', borderLeft: '5px solid #38bdf8' }}>
+                      <div className="d-flex align-items-center gap-3">
+                        <div className="rounded-circle bg-info text-white d-flex align-items-center justify-content-center" style={{ width: '45px', height: '45px', fontSize: '1.3rem' }}>
+                          <i className="bi bi-chat-left-dots-fill"></i>
+                        </div>
+                        <div>
+                          <div className="d-flex align-items-center gap-2 mb-1">
+                            <span className="badge bg-info text-white">HELPBOX COMPLAINT #{t.id}</span>
+                            <span className="badge bg-secondary-subtle text-secondary">{t.category}</span>
+                            <span className="text-muted small">from {t.user?.fullName || t.user?.username}</span>
+                          </div>
+                          <h6 className="fw-bold text-white mb-0">{t.subject}</h6>
+                          <div className="small text-muted text-truncate" style={{ maxWidth: '500px' }}>"{t.message}"</div>
+                        </div>
+                      </div>
+                      <button 
+                        className="btn btn-sm btn-info text-white fw-semibold px-3" 
+                        onClick={() => { setActiveTicket(t); setTicketResponse(''); }}
+                      >
+                        Respond Now
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* 6. PENDING PRESCRIPTIONS */}
+                  {(notifFilter === 'ALL' || notifFilter === 'RX') && pendingPrescriptions.map(p => (
+                    <div key={`rx-${p.id}`} className="card border-0 rounded-4 p-3 shadow-sm d-flex flex-row justify-content-between align-items-center" style={{ backgroundColor: 'rgba(168, 85, 247, 0.12)', borderLeft: '5px solid #a855f7' }}>
+                      <div className="d-flex align-items-center gap-3">
+                        <div className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style={{ width: '45px', height: '45px', fontSize: '1.3rem' }}>
+                          <i className="bi bi-file-earmark-medical-fill"></i>
+                        </div>
+                        <div>
+                          <div className="d-flex align-items-center gap-2 mb-1">
+                            <span className="badge bg-primary text-white">PRESCRIPTION RX-{p.id}</span>
+                            <span className="text-muted small">Patient: {p.user?.fullName || p.user?.username}</span>
+                          </div>
+                          <h6 className="fw-bold text-white mb-0">Doctor: {p.doctorName || 'General Practitioner'}</h6>
+                          <div className="small text-muted">Diagnosis: {p.diagnosis || 'Standard Prescription File'}</div>
+                        </div>
+                      </div>
+                      <button className="btn btn-sm btn-primary fw-semibold px-3" onClick={() => setTab('prescriptions')}>
+                        Verify Rx
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
         </>
       )}
 

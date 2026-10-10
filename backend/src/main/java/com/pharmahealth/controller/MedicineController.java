@@ -43,6 +43,7 @@ public class MedicineController {
         medicine.setDosageForm(req.getDosageForm());
         medicine.setStrength(req.getStrength());
         medicine.setPrescriptionRequired(req.getPrescriptionRequired() != null ? req.getPrescriptionRequired() : false);
+        medicine.setManufactureDate(req.getManufactureDate());
         medicine.setExpiryDate(req.getExpiryDate());
         medicine.setDescription(req.getDescription());
         medicine.setImageUrl(req.getImageUrl());
@@ -69,6 +70,7 @@ public class MedicineController {
             medicine.setDosageForm(req.getDosageForm());
             medicine.setStrength(req.getStrength());
             medicine.setPrescriptionRequired(req.getPrescriptionRequired() != null ? req.getPrescriptionRequired() : false);
+            medicine.setManufactureDate(req.getManufactureDate());
             medicine.setExpiryDate(req.getExpiryDate());
             medicine.setDescription(req.getDescription());
             medicine.setImageUrl(req.getImageUrl());

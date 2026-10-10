@@ -96,6 +96,13 @@ export default function Navbar({
                     <i className="bi bi-file-earmark-medical text-info"></i>
                     <span>Prescriptions</span>
                   </button>
+                  <button 
+                    className={`nav-pill-btn position-relative ${currentView === 'admin' && adminTab === 'notifications' ? 'active' : ''}`}
+                    onClick={() => handleAdminNav('notifications')}
+                  >
+                    <i className="bi bi-bell-fill text-warning"></i>
+                    <span>Notifications</span>
+                  </button>
                 </>
               ) : (
                 /* CUSTOMER / GUEST NAVIGATION */
