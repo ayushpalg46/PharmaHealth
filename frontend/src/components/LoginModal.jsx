@@ -26,10 +26,11 @@ export default function LoginModal({ isOpen, onClose, onLogin, onSwitchToRegiste
     <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-          <div className="modal-header bg-dark text-white">
-            <h5 className="modal-title fw-bold">
-              <i className="bi bi-shield-lock text-info me-2"></i>Sign In to PharmaHealth
-            </h5>
+          <div className="modal-header bg-dark text-white d-flex align-items-center justify-content-between">
+            <div className="d-flex align-items-center gap-2">
+              <img src="/perLogo.png" alt="PharmaHealth" style={{ height: '32px', width: 'auto' }} className="rounded-2" />
+              <h5 className="modal-title fw-bold mb-0">Sign In to PharmaHealth</h5>
+            </div>
             <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
           </div>
           <form onSubmit={handleSubmit}>

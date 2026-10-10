@@ -2,32 +2,39 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
 :root {
-  /* Green Theme Palette */
-  --bg-main: #041a14;
-  --bg-secondary: #07271e;
-  --bg-card: #0a3327;
-  --bg-card-hover: #0e4233;
-  --bg-input: #06231a;
-  --bg-glass: rgba(10, 51, 39, 0.85);
+  /* Blue Background Theme Palette */
+  --bg-main: #060b1c;
+  --bg-secondary: #0a132e;
+  --bg-card: #0f1c42;
+  --bg-card-hover: #152554;
+  --bg-input: #0a1430;
+  --bg-glass: rgba(15, 28, 66, 0.88);
 
-  /* Blue Accent Palette */
-  --accent-blue: #2563eb;
-  --accent-blue-hover: #1d4ed8;
-  --accent-blue-light: #38bdf8;
-  --accent-blue-glow: rgba(59, 130, 246, 0.4);
-  --accent-cyan: #06b6d4;
+  /* Vibrant Green Accent Palette */
+  --accent-green: #10b981;
+  --accent-green-hover: #059669;
+  --accent-green-light: #34d399;
+  --accent-green-glow: rgba(16, 185, 129, 0.4);
+  --accent-emerald: #00e676;
 
-  /* Text Colors */
+  /* Legacy alias mapped to theme */
+  --accent-blue: #10b981;
+  --accent-blue-hover: #059669;
+  --accent-blue-light: #34d399;
+  --accent-blue-glow: rgba(16, 185, 129, 0.4);
+  --accent-cyan: #10b981;
+
+  /* Text Colors - Predominantly White */
   --text-primary: #ffffff;
-  --text-secondary: #e2e8f0;
+  --text-secondary: #f1f5f9;
   --text-muted: #94a3b8;
-  --text-accent: #60a5fa;
+  --text-accent: #34d399;
 
   /* Borders & Shadows */
-  --border-color: rgba(59, 130, 246, 0.25);
+  --border-color: rgba(16, 185, 129, 0.22);
   --border-subtle: rgba(255, 255, 255, 0.12);
-  --shadow-glow: 0 10px 25px -5px rgba(37, 99, 235, 0.25), 0 8px 10px -6px rgba(4, 26, 20, 0.6);
-  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 10px 25px -5px rgba(16, 185, 129, 0.25), 0 8px 10px -6px rgba(6, 11, 28, 0.6);
+  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.55);
 
   --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
@@ -37,7 +44,7 @@ body {
   margin: 0;
   font-family: var(--font-main);
   background-color: var(--bg-main) !important;
-  background: radial-gradient(circle at 10% 20%, #08382b 0%, #041a14 60%, #020e0b 100%) !important;
+  background: radial-gradient(circle at 10% 20%, #0d1e4c 0%, #060b1c 60%, #030610 100%) !important;
   color: var(--text-primary) !important;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -66,17 +73,21 @@ p, span, label, div {
 }
 
 .text-primary, .brand-accent {
-  color: var(--accent-blue-light) !important;
+  color: var(--accent-green-light) !important;
 }
 
 .text-info {
-  color: #38bdf8 !important;
+  color: var(--accent-green-light) !important;
+}
+
+.text-success {
+  color: var(--accent-emerald) !important;
 }
 
 /* Navbar */
 .navbar {
-  background: rgba(4, 26, 20, 0.95) !important;
-  backdrop-filter: blur(14px);
+  background: rgba(6, 11, 28, 0.96) !important;
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-color) !important;
 }
 
@@ -92,17 +103,17 @@ p, span, label, div {
   justify-content: center;
   gap: 0.35rem;
   padding: 0.25rem 0.4rem;
-  background: rgba(6, 35, 26, 0.75);
-  border: 1px solid rgba(56, 189, 248, 0.18);
+  background: rgba(10, 19, 46, 0.85);
+  border: 1px solid rgba(16, 185, 129, 0.22);
   border-radius: 9999px;
   backdrop-filter: blur(12px);
   max-width: 100%;
   overflow-x: auto;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
 }
 
 .nav-tabs-bar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+  display: none;
 }
 
 .nav-pill-btn {
@@ -113,7 +124,7 @@ p, span, label, div {
   padding: 0.42rem 0.85rem;
   font-size: 0.84rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
   text-decoration: none !important;
   border-radius: 9999px;
   border: 1px solid transparent;
@@ -127,22 +138,23 @@ p, span, label, div {
 
 .nav-pill-btn i {
   font-size: 0.95rem;
+  color: var(--accent-green-light) !important;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .nav-pill-btn:hover {
   color: #ffffff !important;
-  background-color: rgba(37, 99, 235, 0.2) !important;
-  border-color: rgba(56, 189, 248, 0.35) !important;
+  background-color: rgba(16, 185, 129, 0.18) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
   transform: translateY(-1px);
 }
 
 .nav-pill-btn.active {
   color: #ffffff !important;
   font-weight: 600;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
-  border-color: rgba(56, 189, 248, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border-color: rgba(52, 211, 153, 0.8) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
 }
 
 .nav-pill-btn.active i {
@@ -158,13 +170,13 @@ p, span, label, div {
 }
 
 .card-header {
-  background-color: rgba(6, 35, 26, 0.9) !important;
+  background-color: rgba(10, 19, 46, 0.95) !important;
   border-bottom: 1px solid var(--border-subtle) !important;
   color: var(--text-primary) !important;
 }
 
 .card-footer {
-  background-color: rgba(6, 35, 26, 0.9) !important;
+  background-color: rgba(10, 19, 46, 0.95) !important;
   border-top: 1px solid var(--border-subtle) !important;
   color: var(--text-primary) !important;
 }
@@ -174,66 +186,67 @@ p, span, label, div {
   background-color: var(--bg-card) !important;
   border: 1px solid var(--border-color) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .card-medicine:hover {
   transform: translateY(-6px);
   background-color: var(--bg-card-hover) !important;
-  border-color: var(--accent-blue) !important;
-  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.25), 0 0 15px rgba(56, 189, 248, 0.2);
+  border-color: var(--accent-green) !important;
+  box-shadow: 0 16px 32px rgba(16, 185, 129, 0.25), 0 0 15px rgba(52, 211, 153, 0.2);
 }
 
 /* Hero Banners */
 .bg-primary {
-  background: linear-gradient(135deg, #07382b 0%, #0d4a39 50%, #1e40af 100%) !important;
+  background: linear-gradient(135deg, #0d1e4c 0%, #091538 50%, #064e3b 100%) !important;
   border-bottom: 1px solid var(--border-color);
 }
 
 /* Buttons */
 .btn-primary {
-  background-color: var(--accent-blue) !important;
-  border-color: var(--accent-blue) !important;
+  background-color: var(--accent-green) !important;
+  border-color: var(--accent-green) !important;
   color: #ffffff !important;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
   transition: all 0.2s ease;
 }
 
 .btn-primary:hover, .btn-primary:focus {
-  background-color: var(--accent-blue-hover) !important;
-  border-color: var(--accent-blue-hover) !important;
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
+  background-color: var(--accent-green-hover) !important;
+  border-color: var(--accent-green-hover) !important;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
   transform: translateY(-1px);
 }
 
 .btn-outline-primary {
-  color: var(--accent-blue-light) !important;
-  border-color: var(--accent-blue) !important;
-  background-color: rgba(37, 99, 235, 0.1) !important;
+  color: var(--accent-green-light) !important;
+  border-color: var(--accent-green) !important;
+  background-color: rgba(16, 185, 129, 0.1) !important;
 }
 
 .btn-outline-primary:hover {
-  background-color: var(--accent-blue) !important;
+  background-color: var(--accent-green) !important;
   color: #ffffff !important;
-  border-color: var(--accent-blue) !important;
+  border-color: var(--accent-green) !important;
 }
 
 .btn-info {
-  background-color: #0284c7 !important;
-  border-color: #0284c7 !important;
+  background-color: var(--accent-green) !important;
+  border-color: var(--accent-green) !important;
   color: #ffffff !important;
 }
 
 .btn-outline-info {
-  color: #38bdf8 !important;
-  border-color: #38bdf8 !important;
-  background-color: rgba(56, 189, 248, 0.1) !important;
+  color: var(--accent-green-light) !important;
+  border-color: var(--accent-green-light) !important;
+  background-color: rgba(16, 185, 129, 0.1) !important;
 }
 
 .btn-outline-info:hover {
-  background-color: #0284c7 !important;
+  background-color: var(--accent-green) !important;
   color: #ffffff !important;
+  border-color: var(--accent-green) !important;
 }
 
 .btn-outline-light {
@@ -254,9 +267,9 @@ p, span, label, div {
 }
 
 .btn-outline-secondary:hover {
-  background-color: var(--accent-blue) !important;
+  background-color: var(--accent-green) !important;
   color: #ffffff !important;
-  border-color: var(--accent-blue) !important;
+  border-color: var(--accent-green) !important;
 }
 
 /* Forms & Inputs */
@@ -268,9 +281,9 @@ p, span, label, div {
 }
 
 .form-control:focus, .form-select:focus {
-  background-color: #072e22 !important;
-  border-color: var(--accent-blue-light) !important;
-  box-shadow: 0 0 0 0.25rem var(--accent-blue-glow) !important;
+  background-color: #0d1a3e !important;
+  border-color: var(--accent-green-light) !important;
+  box-shadow: 0 0 0 0.25rem var(--accent-green-glow) !important;
   color: #ffffff !important;
 }
 
@@ -281,7 +294,7 @@ p, span, label, div {
 .input-group-text {
   background-color: var(--bg-input) !important;
   border-color: var(--border-subtle) !important;
-  color: var(--accent-blue-light) !important;
+  color: var(--accent-green-light) !important;
 }
 
 /* Tables */
@@ -299,8 +312,8 @@ p, span, label, div {
 }
 
 .table-light, .table thead.table-light th {
-  background-color: rgba(7, 39, 30, 0.95) !important;
-  color: #60a5fa !important;
+  background-color: rgba(10, 19, 46, 0.95) !important;
+  color: var(--accent-green-light) !important;
   border-bottom: 2px solid var(--border-color) !important;
   font-weight: 600;
   letter-spacing: 0.03em;
@@ -309,28 +322,28 @@ p, span, label, div {
 }
 
 .table-hover tbody tr:hover td {
-  background-color: rgba(37, 99, 235, 0.12) !important;
+  background-color: rgba(16, 185, 129, 0.12) !important;
   color: #ffffff !important;
 }
 
 /* Modals */
 .modal-content {
-  background-color: #072920 !important;
+  background-color: #0b1536 !important;
   border: 1px solid var(--border-color) !important;
   color: var(--text-primary) !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.25);
   border-radius: 20px;
 }
 
 .modal-header {
   border-bottom: 1px solid var(--border-subtle) !important;
-  background: linear-gradient(135deg, #09392c 0%, #1d4ed8 100%) !important;
+  background: linear-gradient(135deg, #0f1f4b 0%, #064e3b 100%) !important;
   color: #ffffff !important;
 }
 
 .modal-footer {
   border-top: 1px solid var(--border-subtle) !important;
-  background-color: #052019 !important;
+  background-color: #070e24 !important;
 }
 
 /* List Groups */
@@ -357,9 +370,9 @@ p, span, label, div {
 }
 
 .badge-otc {
-  background-color: rgba(56, 189, 248, 0.2);
-  color: #7dd3fc;
-  border: 1px solid rgba(56, 189, 248, 0.4);
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.4);
   font-weight: 600;
   font-size: 0.75rem;
   padding: 0.35rem 0.65rem;
@@ -367,21 +380,21 @@ p, span, label, div {
 }
 
 .bg-primary-subtle {
-  background-color: rgba(37, 99, 235, 0.2) !important;
-  color: #93c5fd !important;
-  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  background-color: rgba(16, 185, 129, 0.18) !important;
+  color: #6ee7b7 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
 }
 
 .bg-info-subtle {
-  background-color: rgba(6, 182, 212, 0.2) !important;
-  color: #67e8f9 !important;
-  border: 1px solid rgba(6, 182, 212, 0.3) !important;
+  background-color: rgba(16, 185, 129, 0.18) !important;
+  color: #6ee7b7 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
 }
 
 .bg-success-subtle {
-  background-color: rgba(16, 185, 129, 0.2) !important;
+  background-color: rgba(16, 185, 129, 0.22) !important;
   color: #6ee7b7 !important;
-  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
 }
 
 .bg-secondary-subtle {
@@ -392,7 +405,7 @@ p, span, label, div {
 
 /* Footer */
 footer {
-  background-color: #03140f !important;
+  background-color: #040816 !important;
   border-top: 1px solid var(--border-color) !important;
 }
 
@@ -405,9 +418,9 @@ footer {
   background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
-  background: #0e4e3c;
+  background: #0f245c;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-blue);
+  background: var(--accent-green);
 }

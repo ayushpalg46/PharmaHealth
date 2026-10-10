@@ -36,15 +36,23 @@ export default function Navbar({
             }
           }}
         >
-          <span className="p-2 rounded-3 fs-5 text-info d-flex align-items-center justify-content-center" style={{ backgroundColor: 'rgba(56, 189, 248, 0.12)', border: '1px solid rgba(56, 189, 248, 0.25)' }}>
-            <i className={isAdmin ? "bi bi-shield-lock-fill" : "bi bi-capsule"}></i>
-          </span>
+          <img 
+            src="/perLogo.png" 
+            alt="PharmaHealth Logo" 
+            style={{ 
+              height: '42px', 
+              width: 'auto', 
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 2px 8px rgba(16, 185, 129, 0.35))' 
+            }} 
+            className="rounded-2"
+          />
           <div className="d-flex flex-column">
             <span className="fw-bold tracking-tight fs-4 text-white lh-1">
-              Pharma<span className="text-info">Health</span>
+              Pharma<span className="text-success">Health</span>
             </span>
             {isAdmin && (
-              <span className="text-warning small fw-bold tracking-widest mt-1" style={{ fontSize: '0.65rem' }}>
+              <span className="small fw-bold tracking-widest mt-1" style={{ fontSize: '0.65rem', color: 'var(--accent-green-light)' }}>
                 ADMIN CONTROL CENTER
               </span>
             )}

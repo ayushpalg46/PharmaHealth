@@ -85,23 +85,23 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
       <div 
         className="card border-0 shadow-sm rounded-4 p-4 mb-4" 
         style={{ 
-          backgroundColor: 'rgba(5, 38, 30, 0.85)', 
-          border: '1px solid rgba(16, 185, 129, 0.25)' 
+          backgroundColor: '#0b1638', 
+          border: '1px solid rgba(16, 185, 129, 0.3)' 
         }}
       >
         <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
           <div className="d-flex align-items-center gap-3">
             <div
-              className="rounded-circle d-flex align-items-center justify-content-center shadow-sm text-info"
+              className="rounded-circle d-flex align-items-center justify-content-center shadow-sm text-white"
               style={{
                 width: '64px',
                 height: '64px',
                 fontSize: '1.8rem',
-                backgroundColor: '#032018',
-                border: '2px solid rgba(56, 189, 248, 0.4)'
+                backgroundColor: '#071026',
+                border: '2px solid rgba(16, 185, 129, 0.6)'
               }}
             >
-              <i className={isAdmin ? 'bi bi-shield-lock-fill' : 'bi bi-person-fill'}></i>
+              <i className={isAdmin ? 'bi bi-shield-lock-fill text-success' : 'bi bi-person-fill text-success'}></i>
             </div>
             <div>
               <h4 className="fw-bold mb-0 text-white">
@@ -119,7 +119,7 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             {!isEditing ? (
               <button
                 type="button"
-                className="btn btn-primary btn-sm px-3 d-flex align-items-center gap-2 fw-semibold"
+                className="btn btn-primary btn-sm px-3 d-flex align-items-center gap-2 fw-semibold text-white"
                 onClick={handleStartEdit}
               >
                 <i className="bi bi-pencil-square"></i>
@@ -151,15 +151,15 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
       <div 
         className="card border-0 shadow-sm rounded-4 p-4 p-md-5" 
         style={{ 
-          backgroundColor: 'rgba(5, 38, 30, 0.7)', 
-          border: '1px solid rgba(16, 185, 129, 0.15)' 
+          backgroundColor: '#0b1638', 
+          border: '1px solid rgba(16, 185, 129, 0.2)' 
         }}
       >
         {/* Card Header */}
         <div className="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom border-secondary border-opacity-25">
           <div>
             <h5 className="fw-bold mb-1 text-white">
-              <i className={`bi ${isEditing ? 'bi-pencil-fill text-warning' : 'bi-person-badge text-info'} me-2`}></i>
+              <i className={`bi ${isEditing ? 'bi-pencil-fill text-warning' : 'bi-person-badge text-success'} me-2`}></i>
               {isEditing 
                 ? (isAdmin ? 'Edit Admin Profile' : 'Edit Customer Profile') 
                 : (isAdmin ? 'Admin Profile Overview' : 'Customer Profile Overview')}
@@ -171,7 +171,7 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             </p>
           </div>
           {loading && (
-            <div className="spinner-border spinner-border-sm text-info" role="status">
+            <div className="spinner-border spinner-border-sm text-success" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
           )}
@@ -201,9 +201,9 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             <div className="col-md-6">
               <div 
                 className="p-3 rounded-3 h-100" 
-                style={{ backgroundColor: 'rgba(3, 32, 24, 0.7)', border: '1px solid rgba(56, 189, 248, 0.15)' }}
+                style={{ backgroundColor: '#071026', border: '1px solid rgba(16, 185, 129, 0.25)' }}
               >
-                <div className="d-flex align-items-center gap-2 text-info small mb-1 fw-semibold">
+                <div className="d-flex align-items-center gap-2 text-success small mb-1 fw-semibold">
                   <i className="bi bi-person"></i>
                   <span>Full Name</span>
                 </div>
@@ -217,9 +217,9 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             <div className="col-md-6">
               <div 
                 className="p-3 rounded-3 h-100" 
-                style={{ backgroundColor: 'rgba(3, 32, 24, 0.7)', border: '1px solid rgba(56, 189, 248, 0.15)' }}
+                style={{ backgroundColor: '#071026', border: '1px solid rgba(16, 185, 129, 0.25)' }}
               >
-                <div className="d-flex align-items-center gap-2 text-info small mb-1 fw-semibold">
+                <div className="d-flex align-items-center gap-2 text-success small mb-1 fw-semibold">
                   <i className="bi bi-envelope"></i>
                   <span>Email Address</span>
                 </div>
@@ -233,9 +233,9 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             <div className="col-md-6">
               <div 
                 className="p-3 rounded-3 h-100" 
-                style={{ backgroundColor: 'rgba(3, 32, 24, 0.7)', border: '1px solid rgba(56, 189, 248, 0.15)' }}
+                style={{ backgroundColor: '#071026', border: '1px solid rgba(16, 185, 129, 0.25)' }}
               >
-                <div className="d-flex align-items-center gap-2 text-info small mb-1 fw-semibold">
+                <div className="d-flex align-items-center gap-2 text-success small mb-1 fw-semibold">
                   <i className="bi bi-at"></i>
                   <span>Username</span>
                 </div>
@@ -249,9 +249,9 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             <div className="col-md-6">
               <div 
                 className="p-3 rounded-3 h-100" 
-                style={{ backgroundColor: 'rgba(3, 32, 24, 0.7)', border: '1px solid rgba(56, 189, 248, 0.15)' }}
+                style={{ backgroundColor: '#071026', border: '1px solid rgba(16, 185, 129, 0.25)' }}
               >
-                <div className="d-flex align-items-center gap-2 text-info small mb-1 fw-semibold">
+                <div className="d-flex align-items-center gap-2 text-success small mb-1 fw-semibold">
                   <i className="bi bi-telephone"></i>
                   <span>Phone Number</span>
                 </div>
@@ -266,9 +266,9 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
               <div className="col-12">
                 <div 
                   className="p-3 rounded-3" 
-                  style={{ backgroundColor: 'rgba(3, 32, 24, 0.7)', border: '1px solid rgba(56, 189, 248, 0.15)' }}
+                  style={{ backgroundColor: '#071026', border: '1px solid rgba(16, 185, 129, 0.25)' }}
                 >
-                  <div className="d-flex align-items-center gap-2 text-info small mb-1 fw-semibold">
+                  <div className="d-flex align-items-center gap-2 text-success small mb-1 fw-semibold">
                     <i className="bi bi-geo-alt"></i>
                     <span>Delivery Address</span>
                   </div>

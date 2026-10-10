@@ -6,9 +6,17 @@ export default function Footer() {
       <div className="container">
         <div className="row g-4">
           <div className="col-md-4">
-            <h5 className="fw-bold text-info mb-3">
-              <i className="bi bi-capsule me-2"></i>PharmaHealth
-            </h5>
+            <div className="d-flex align-items-center gap-2 mb-3">
+              <img 
+                src="/perLogo.png" 
+                alt="PharmaHealth" 
+                style={{ height: '36px', width: 'auto', objectFit: 'contain' }} 
+                className="rounded-2"
+              />
+              <span className="fw-bold fs-5 text-white">
+                Pharma<span className="text-success">Health</span>
+              </span>
+            </div>
             <p className="text-secondary small">
               Smart healthcare, certified pharmaceutical dispensary, and digital prescription verification system.
             </p>
