@@ -57,15 +57,9 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
     <div className="container py-4">
       <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
         <div>
-          <div className="d-flex align-items-center gap-2 mb-1">
-            <h3 className="fw-bold mb-0 text-white">
-              <i className="bi bi-bag-check text-info me-2"></i>My Orders & Invoices
-            </h3>
-            <span className="live-sync-badge">
-              <span className="live-pulse-dot"></span>
-              Live Sync
-            </span>
-          </div>
+          <h3 className="fw-bold mb-1 text-white">
+            <i className="bi bi-bag-check text-info me-2"></i>My Orders & Invoices
+          </h3>
           <p className="text-muted small mb-0">View medication order history, live dispatch status, and download official tax receipts.</p>
         </div>
         <button 
@@ -77,7 +71,6 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
           <span>{isRefreshing ? 'Syncing...' : 'Refresh'}</span>
         </button>
       </div>
-
 
       {loading ? (
         <div className="text-center py-5 text-muted">Loading orders...</div>
@@ -105,7 +98,7 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                       <strong className="d-block text-secondary">{new Date(order.createdAt || order.orderDate || Date.now()).toLocaleDateString()}</strong>
                     </div>
                     <div>
-                      <span className={`badge ${order.status === 'DELIVERED' ? 'bg-success' : 'bg-primary'}`}>
+                      <span className={`small fw-semibold ${order.status === 'DELIVERED' ? 'text-success' : 'text-info'}`}>
                         {order.status.replace('_', ' ')}
                       </span>
                     </div>
@@ -132,8 +125,8 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                     <div className="d-flex justify-content-between align-items-center mb-3 small">
                       <div>
                         <span className="text-muted me-1">Payment:</span>
-                        <span className="badge bg-secondary-subtle text-secondary me-1">{order.paymentMethod}</span>
-                        <span className={`badge ${order.paymentStatus === 'PAID' ? 'bg-success text-white' : 'bg-warning text-dark'}`}>
+                        <span className="text-secondary me-2">{order.paymentMethod}</span>
+                        <span className={`fw-semibold ${order.paymentStatus === 'PAID' ? 'text-success' : 'text-warning'}`}>
                           {order.paymentStatus === 'PAID' ? 'PAID' : 'COD PENDING'}
                         </span>
                       </div>

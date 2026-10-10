@@ -67,7 +67,6 @@ export default function CustomerSupport({ currentUser, onOpenLogin }) {
     <div className="container py-4">
       {/* Header */}
       <div className="text-center mb-5">
-        <span className="badge bg-info-subtle text-info fw-semibold px-3 py-1 rounded-pill mb-2">24/7 HELPDESK</span>
         <h2 className="fw-bold text-white">PharmaHealth Customer Support & Guidance</h2>
         <p className="text-muted">Have questions regarding medication dosage, your delivery status, or payments? We're here to help.</p>
       </div>
@@ -148,15 +147,9 @@ export default function CustomerSupport({ currentUser, onOpenLogin }) {
         <div className="col-lg-7">
           <div className="card border-0 shadow-sm rounded-4 p-4 h-100">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <div className="d-flex align-items-center gap-2">
-                <h5 className="fw-bold mb-0 text-white">
-                  <i className="bi bi-journal-text text-info me-2"></i>My Inquiries & Responses
-                </h5>
-                <span className="live-sync-badge">
-                  <span className="live-pulse-dot"></span>
-                  Live
-                </span>
-              </div>
+              <h5 className="fw-bold mb-0 text-white">
+                <i className="bi bi-journal-text text-info me-2"></i>My Inquiries & Responses
+              </h5>
               <button 
                 className="btn btn-primary btn-sm d-flex align-items-center gap-1" 
                 onClick={() => loadTickets(true, false)}
@@ -185,10 +178,10 @@ export default function CustomerSupport({ currentUser, onOpenLogin }) {
                   <div key={t.id} className="border border-secondary border-opacity-25 rounded-3 p-3" style={{ backgroundColor: 'rgba(4, 26, 20, 0.6)' }}>
                     <div className="d-flex justify-content-between align-items-start mb-2">
                       <div>
-                        <span className="badge bg-info-subtle text-info small me-2">{t.category}</span>
+                        <span className="text-info small me-2 fw-semibold">[{t.category}]</span>
                         <strong className="text-white">{t.subject}</strong>
                       </div>
-                      <span className={`badge ${t.status === 'RESOLVED' ? 'bg-success' : t.status === 'IN_PROGRESS' ? 'bg-primary' : 'bg-warning text-dark'}`}>
+                      <span className={`small fw-semibold ${t.status === 'RESOLVED' ? 'text-success' : t.status === 'IN_PROGRESS' ? 'text-info' : 'text-warning'}`}>
                         {t.status}
                       </span>
                     </div>

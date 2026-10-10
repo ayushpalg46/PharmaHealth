@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import MedicineList from './components/MedicineList';
 import CustomerOrders from './components/CustomerOrders';
 import CustomerSupport from './components/CustomerSupport';
@@ -171,7 +170,6 @@ export default function App() {
           <>
             <div className="bg-primary text-white py-5 text-center shadow-sm">
               <div className="container">
-                <span className="badge bg-white text-primary mb-2 px-3 py-1 fw-bold">ONLINE PHARMACY & SUPPLIES</span>
                 <h1 className="fw-bolder display-5 mb-2">Authentic Medicines & Clinical Care</h1>
                 <p className="lead mb-0 text-white-50">
                   Search through thousands of laboratory-tested medications, vitamins, and healthcare supplies.
@@ -226,7 +224,6 @@ export default function App() {
         )}
       </main>
 
-      <Footer />
 
       {/* Unified Modals */}
       <LoginModal

@@ -232,29 +232,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
 
   return (
     <div className="container py-4">
-      {/* Admin Status & Live Sync Bar */}
-      <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-25">
-        <div className="d-flex align-items-center gap-2">
-          <span className="live-sync-badge">
-            <span className="live-pulse-dot"></span>
-            Live Auto-Sync Active
-          </span>
-          {isRefreshing && (
-            <span className="badge bg-secondary-subtle text-secondary small py-1">
-              <i className="bi bi-arrow-repeat spin me-1"></i>Updating...
-            </span>
-          )}
-        </div>
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
-          onClick={() => loadData(true, false)}
-          disabled={loading || isRefreshing}
-        >
-          <i className={`bi bi-arrow-clockwise ${(loading || isRefreshing) ? 'spin' : ''}`}></i>
-          <span>Refresh Data</span>
-        </button>
-      </div>
+
 
       {loading ? (
         <div className="text-center py-5">
