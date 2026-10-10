@@ -154,7 +154,6 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                         <div className="fs-4 text-info mb-1"><i className="bi bi-qr-code-scan"></i></div>
                         <strong className="d-block text-white small">UPI / QR</strong>
                         <div className="text-muted" style={{ fontSize: '0.75rem' }}>Google Pay, PhonePe, Paytm</div>
-                        <span className="badge bg-success mt-2" style={{ fontSize: '0.68rem' }}>Instant PAID</span>
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -166,7 +165,6 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                         <div className="fs-4 text-info mb-1"><i className="bi bi-credit-card-2-front"></i></div>
                         <strong className="d-block text-white small">Card Payment</strong>
                         <div className="text-muted" style={{ fontSize: '0.75rem' }}>Visa, MasterCard, RuPay</div>
-                        <span className="badge bg-success mt-2" style={{ fontSize: '0.68rem' }}>Instant PAID</span>
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -178,7 +176,6 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                         <div className="fs-4 text-warning mb-1"><i className="bi bi-cash-stack"></i></div>
                         <strong className="d-block text-white small">Cash on Delivery</strong>
                         <div className="text-muted" style={{ fontSize: '0.75rem' }}>Pay cash on receipt</div>
-                        <span className="badge bg-warning text-dark mt-2" style={{ fontSize: '0.68rem' }}>PENDING Mode</span>
                       </div>
                     </div>
                   </div>
@@ -195,7 +192,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                     onClick={handlePlaceOrder}
                     disabled={loading}
                   >
-                    {loading ? 'Processing Order...' : `Confirm & Place Order (${paymentMethod === 'CASH_ON_DELIVERY' ? 'COD - Pending' : paymentMethod + ' - Paid'})`}
+                    {loading ? 'Processing Order...' : 'Confirm & Place Order'}
                   </button>
                 </div>
               </div>
