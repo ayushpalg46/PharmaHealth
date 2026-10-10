@@ -56,9 +56,9 @@ public class UserController {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return userRepository.findById(userDetails.getId()).map(user -> {
-            if (fullName != null && !fullName.isBlank()) user.setFullName(fullName);
-            if (phone != null && !phone.isBlank()) user.setPhone(phone);
-            if (address != null && !address.isBlank()) user.setAddress(address);
+            if (fullName != null && !fullName.isBlank()) user.setFullName(fullName.trim());
+            if (phone != null) user.setPhone(phone.trim());
+            if (address != null) user.setAddress(address.trim());
             user.setUpdatedAt(LocalDateTime.now());
             User saved = userRepository.save(user);
             return ResponseEntity.ok(saved);

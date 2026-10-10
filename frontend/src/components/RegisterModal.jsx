@@ -54,58 +54,120 @@ export default function RegisterModal({ isOpen, onClose, onRegister, onSwitchToL
           </div>
           <form onSubmit={handleSubmit}>
             <div className="modal-body p-4">
-              {error && <div className="alert alert-danger py-2 small">{error}</div>}
-              {success && <div className="alert alert-success py-2 small">{success}</div>}
+              {error && <div className="alert alert-danger py-2 small mb-3">{error}</div>}
+              {success && <div className="alert alert-success py-2 small mb-3">{success}</div>}
 
-              <div className="row g-2 mb-2">
-                <div className="col-6">
-                  <label className="form-label small fw-semibold">Username</label>
-                  <input type="text" className="form-control" name="username" required value={formData.username} onChange={handleChange} />
+              <div className="row g-3 mb-3">
+                <div className="col-md-6">
+                  <label className="form-label small fw-semibold">
+                    Username <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="username"
+                    required
+                    placeholder="e.g. johndoe"
+                    value={formData.username}
+                    onChange={handleChange}
+                  />
                 </div>
-                <div className="col-6">
-                  <label className="form-label small fw-semibold">Full Legal Name</label>
-                  <input type="text" className="form-control" name="fullName" required value={formData.fullName} onChange={handleChange} />
+                <div className="col-md-6">
+                  <label className="form-label small fw-semibold">
+                    Full Legal Name <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="fullName"
+                    required
+                    placeholder="e.g. John Doe"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
 
-              <div className="row g-2 mb-2">
-                <div className="col-7">
-                  <label className="form-label small fw-semibold">Email</label>
-                  <input type="email" className="form-control" name="email" required value={formData.email} onChange={handleChange} />
+              <div className="row g-3 mb-3">
+                <div className="col-md-7">
+                  <label className="form-label small fw-semibold">
+                    Email Address <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    name="email"
+                    required
+                    placeholder="name@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
                 </div>
-                <div className="col-5">
-                  <label className="form-label small fw-semibold">Register As</label>
+                <div className="col-md-5">
+                  <label className="form-label small fw-semibold">Account Type</label>
                   <select className="form-select" name="role" value={formData.role} onChange={handleChange}>
-                    <option value="customer">Customer POV</option>
-                    <option value="admin">Admin POV</option>
+                    <option value="customer">Customer</option>
+                    <option value="admin">Administrator</option>
                   </select>
                 </div>
               </div>
 
-              <div className="mb-2">
-                <label className="form-label small fw-semibold">Password</label>
-                <input type="password" className="form-control" name="password" required value={formData.password} onChange={handleChange} placeholder="Minimum 6 characters" />
+              <div className="mb-3">
+                <label className="form-label small fw-semibold">
+                  Password <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="password"
+                  className="form-control"
+                  name="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Minimum 6 characters"
+                  minLength={6}
+                />
               </div>
 
-              <div className="row g-2 mb-3">
-                <div className="col-6">
-                  <label className="form-label small fw-semibold">Contact Phone</label>
-                  <input type="text" className="form-control" name="phone" value={formData.phone} onChange={handleChange} />
-                </div>
-                <div className="col-6">
-                  <label className="form-label small fw-semibold">Delivery Address</label>
-                  <input type="text" className="form-control" name="address" value={formData.address} onChange={handleChange} />
-                </div>
+              <div className="mb-3">
+                <label className="form-label small fw-semibold">
+                  Phone Number <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="tel"
+                  className="form-control"
+                  name="phone"
+                  required
+                  placeholder="+91 98765 43210"
+                  value={formData.phone}
+                  onChange={handleChange}
+                />
               </div>
 
-              <button type="submit" className="btn btn-primary text-white w-100 py-2 fw-semibold" disabled={loading}>
-                {loading ? 'Creating...' : 'Register Account'}
+              {formData.role === 'customer' && (
+                <div className="mb-3">
+                  <label className="form-label small fw-semibold">
+                    Delivery / Shipping Address <span className="text-danger">*</span>
+                  </label>
+                  <textarea
+                    className="form-control"
+                    name="address"
+                    rows="2"
+                    required
+                    placeholder="Flat/House No., Street, Area, City, Pin Code"
+                    value={formData.address}
+                    onChange={handleChange}
+                  ></textarea>
+                </div>
+              )}
+
+              <button type="submit" className="btn btn-primary text-white w-100 py-2 fw-semibold mt-2" disabled={loading}>
+                {loading ? 'Creating Account...' : 'Register Account'}
               </button>
             </div>
           </form>
-          <div className="modal-footer justify-content-center bg-light small">
-            <span>Already have an account? </span>
-            <button className="btn btn-link p-0 small fw-semibold" onClick={() => { onClose(); onSwitchToLogin(); }}>
+          <div className="modal-footer justify-content-center bg-light small py-3">
+            <span className="text-muted">Already have an account? </span>
+            <button className="btn btn-link p-0 small fw-semibold text-primary" onClick={() => { onClose(); onSwitchToLogin(); }}>
               Sign In
             </button>
           </div>
