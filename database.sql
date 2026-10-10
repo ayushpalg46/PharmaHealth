@@ -160,18 +160,14 @@ INSERT INTO roles (id, name) VALUES
 (2, 'ROLE_PHARMACIST'),
 (3, 'ROLE_CUSTOMER');
 
--- Users (Password: 'password123')
+-- Fixed System Administrator Account (Password: 'admin123')
 INSERT INTO users (id, username, email, password, full_name, phone, address) VALUES
-(1, 'admin', 'admin@pharmahealth.com', '$2a$10$wKqK69h9K3z1jAeknL513uRk2q04yH.kM0DkmH0Z0Q2d9mCgR3q9q', 'System Administrator', '+1-800-555-0100', '100 Health Way, Suite 400, New York, NY'),
-(2, 'pharmacist1', 'pharmacist@pharmahealth.com', '$2a$10$wKqK69h9K3z1jAeknL513uRk2q04yH.kM0DkmH0Z0Q2d9mCgR3q9q', 'Dr. Sarah Connor', '+1-800-555-0101', '742 Evergreen Terrace, Springfield, OR'),
-(3, 'johndoe', 'john.doe@example.com', '$2a$10$wKqK69h9K3z1jAeknL513uRk2q04yH.kM0DkmH0Z0Q2d9mCgR3q9q', 'John Doe', '+1-800-555-0199', '123 Elm Street, Austin, TX');
+(1, 'admin', 'admin@pharmahealth.com', '$2a$10$wKqK69h9K3z1jAeknL513uRk2q04yH.kM0DkmH0Z0Q2d9mCgR3q9q', 'System Administrator', '+1-800-555-0100', '100 Health Way, Suite 400, New York, NY');
 
--- User Roles
+-- User Roles for Fixed Admin
 INSERT INTO user_roles (user_id, role_id) VALUES
 (1, 1),
-(1, 2),
-(2, 2),
-(3, 3);
+(1, 2);
 
 -- Categories
 INSERT INTO categories (id, name, description) VALUES
@@ -182,7 +178,7 @@ INSERT INTO categories (id, name, description) VALUES
 (5, 'Respiratory Care', 'Inhalers, anti-allergy, and asthma treatment formulas'),
 (6, 'Diabetes Care', 'Glucose management and insulin therapy support');
 
--- Medicines
+-- Medicines Catalog
 INSERT INTO medicines (id, name, generic_name, manufacturer, category_id, price, stock_quantity, dosage_form, strength, prescription_required, expiry_date, description) VALUES
 (1, 'Amoxicillin Trihydrate', 'Amoxicillin', 'Pfizer Healthcare', 1, 14.50, 250, 'Capsule', '500mg', TRUE, '2028-12-31', 'Broad-spectrum antibiotic used to treat bacterial infections.'),
 (2, 'Paracetamol Extra', 'Acetaminophen', 'GSK Consumer Health', 2, 6.99, 500, 'Tablet', '500mg', FALSE, '2029-06-30', 'Fast-acting pain reliever and fever reducer.'),
@@ -193,19 +189,3 @@ INSERT INTO medicines (id, name, generic_name, manufacturer, category_id, price,
 (7, 'Salbutamol Inhaler', 'Albuterol', 'Cipla Health', 5, 18.75, 140, 'Inhaler', '100mcg', TRUE, '2028-08-30', 'Bronchodilator for rapid relief of asthma and bronchospasm.'),
 (8, 'Omega-3 Fish Oil Ultra Pure', 'Fish Oil EPA/DHA', 'Nordic Naturals', 4, 24.50, 310, 'Softgel', '1200mg', FALSE, '2028-10-15', 'Supports heart, brain, and joint function with concentrated EPA/DHA.');
 
--- Sample Order for John Doe
-INSERT INTO orders (id, user_id, prescription_id, total_amount, status, shipping_address, contact_phone, payment_method, payment_status, tracking_number, delivery_notes, estimated_delivery_date) VALUES
-(1, 3, NULL, 30.49, 'OUT_FOR_DELIVERY', '123 Elm Street, Austin, TX', '+1-800-555-0199', 'CARD', 'PAID', 'PH-TRK-784912', 'Courier van in neighborhood. Estimated delivery by 4 PM.', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY));
-
--- Order Items
-INSERT INTO order_items (id, order_id, medicine_id, quantity, unit_price, total_price) VALUES
-(1, 1, 2, 2, 6.99, 13.98),
-(2, 1, 6, 1, 15.99, 15.99);
-
--- Bill
-INSERT INTO bills (id, order_id, user_id, invoice_number, subtotal, tax_amount, discount_amount, total_amount, payment_status, payment_method, transaction_id) VALUES
-(1, 1, 3, 'INV-PH-1042', 29.97, 1.50, 0.00, 31.47, 'PAID', 'CARD', 'TXN-984321948');
-
--- Support Ticket
-INSERT INTO support_tickets (id, user_id, subject, category, message, status, admin_response) VALUES
-(1, 3, 'Delivery estimate confirmation', 'DELIVERY', 'Hello, can you confirm if my package requires temperature control?', 'RESOLVED', 'Yes, our cold-chain courier maintains 2-8°C with insulated packaging.');

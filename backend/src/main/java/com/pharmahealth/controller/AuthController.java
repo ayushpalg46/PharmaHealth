@@ -72,7 +72,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    @Operation(summary = "Register new user account")
+    @Operation(summary = "Register new customer account (Public registration strictly creates Customer accounts)")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
@@ -94,37 +94,15 @@ public class AuthController {
         user.setPhone(signUpRequest.getPhone());
         user.setAddress(signUpRequest.getAddress());
 
-        Set<String> strRoles = signUpRequest.getRoles();
+        // Public registration is strictly restricted to ROLE_CUSTOMER
         Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null || strRoles.isEmpty()) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
-                    .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_CUSTOMER)));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role.toLowerCase()) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_ADMIN)));
-                        roles.add(adminRole);
-                        break;
-                    case "pharmacist":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_PHARMACIST)
-                                .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_PHARMACIST)));
-                        roles.add(modRole);
-                        break;
-                    default:
-                        Role custRole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
-                                .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_CUSTOMER)));
-                        roles.add(custRole);
-                }
-            });
-        }
-
+        Role customerRole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
+                .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_CUSTOMER)));
+        roles.add(customerRole);
         user.setRoles(roles);
+
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(new MessageResponse("Customer account created successfully!"));
     }
 }

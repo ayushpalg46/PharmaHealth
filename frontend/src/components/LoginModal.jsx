@@ -22,11 +22,6 @@ export default function LoginModal({ isOpen, onClose, onLogin, onSwitchToRegiste
     }
   };
 
-  const handleQuickFill = (u, p) => {
-    setUsername(u);
-    setPassword(p);
-  };
-
   return (
     <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
       <div className="modal-dialog modal-dialog-centered">
@@ -42,18 +37,18 @@ export default function LoginModal({ isOpen, onClose, onLogin, onSwitchToRegiste
               {error && <div className="alert alert-danger py-2 small">{error}</div>}
               
               <div className="mb-3">
-                <label className="form-label small fw-semibold">Username</label>
+                <label className="form-label small fw-semibold">Username or Email</label>
                 <input 
                   type="text" 
                   className="form-control" 
                   required 
                   value={username} 
                   onChange={(e) => setUsername(e.target.value)} 
-                  placeholder="e.g. admin or johndoe"
+                  placeholder="Enter your username"
                 />
               </div>
 
-              <div className="mb-3">
+              <div className="mb-4">
                 <label className="form-label small fw-semibold">Password</label>
                 <input 
                   type="password" 
@@ -61,39 +56,25 @@ export default function LoginModal({ isOpen, onClose, onLogin, onSwitchToRegiste
                   required 
                   value={password} 
                   onChange={(e) => setPassword(e.target.value)} 
-                  placeholder="••••••••"
+                  placeholder="Enter your password"
                 />
               </div>
 
-              {/* Quick Demo Switcher */}
-              <div className="bg-light p-3 rounded-3 mb-3 border">
-                <div className="small fw-bold text-muted mb-2">Instant Role Demo Logins:</div>
-                <div className="d-flex gap-2">
-                  <button 
-                    type="button" 
-                    className="btn btn-outline-warning btn-sm text-dark flex-grow-1"
-                    onClick={() => handleQuickFill('admin', 'password123')}
-                  >
-                    <i className="bi bi-shield-fill me-1"></i> Admin POV
-                  </button>
-                  <button 
-                    type="button" 
-                    className="btn btn-outline-primary btn-sm flex-grow-1"
-                    onClick={() => handleQuickFill('johndoe', 'password123')}
-                  >
-                    <i className="bi bi-person-fill me-1"></i> Customer POV
-                  </button>
-                </div>
-              </div>
-
-              <button type="submit" className="btn btn-primary w-100 py-2 fw-semibold" disabled={loading}>
-                {loading ? 'Authenticating with JWT...' : 'Sign In'}
+              <button type="submit" className="btn btn-primary text-white w-100 py-2 fw-semibold" disabled={loading}>
+                {loading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                    Signing In...
+                  </>
+                ) : (
+                  'Sign In'
+                )}
               </button>
             </div>
           </form>
-          <div className="modal-footer justify-content-center bg-light small">
-            <span>Don't have an account? </span>
-            <button className="btn btn-link p-0 small fw-semibold" onClick={() => { onClose(); onSwitchToRegister(); }}>
+          <div className="modal-footer justify-content-center bg-light small py-3">
+            <span className="text-muted">Don't have a customer account? </span>
+            <button className="btn btn-link p-0 small fw-semibold text-primary" onClick={() => { onClose(); onSwitchToRegister(); }}>
               Create Account
             </button>
           </div>

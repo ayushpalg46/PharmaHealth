@@ -7,8 +7,7 @@ export default function RegisterModal({ isOpen, onClose, onRegister, onSwitchToL
     password: '',
     fullName: '',
     phone: '',
-    address: '',
-    role: 'customer'
+    address: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -28,7 +27,7 @@ export default function RegisterModal({ isOpen, onClose, onRegister, onSwitchToL
     try {
       await onRegister({
         ...formData,
-        roles: [formData.role]
+        roles: ['ROLE_CUSTOMER']
       });
       setSuccess('Account created successfully! You can now sign in.');
       setTimeout(() => {
@@ -48,7 +47,7 @@ export default function RegisterModal({ isOpen, onClose, onRegister, onSwitchToL
         <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
           <div className="modal-header bg-primary text-white">
             <h5 className="modal-title fw-bold">
-              <i className="bi bi-person-plus me-2"></i>Create PharmaHealth Account
+              <i className="bi bi-person-plus me-2"></i>Create Customer Account
             </h5>
             <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
           </div>
@@ -89,7 +88,7 @@ export default function RegisterModal({ isOpen, onClose, onRegister, onSwitchToL
               </div>
 
               <div className="row g-3 mb-3">
-                <div className="col-md-7">
+                <div className="col-md-6">
                   <label className="form-label small fw-semibold">
                     Email Address <span className="text-danger">*</span>
                   </label>
@@ -103,12 +102,19 @@ export default function RegisterModal({ isOpen, onClose, onRegister, onSwitchToL
                     onChange={handleChange}
                   />
                 </div>
-                <div className="col-md-5">
-                  <label className="form-label small fw-semibold">Account Type</label>
-                  <select className="form-select" name="role" value={formData.role} onChange={handleChange}>
-                    <option value="customer">Customer</option>
-                    <option value="admin">Administrator</option>
-                  </select>
+                <div className="col-md-6">
+                  <label className="form-label small fw-semibold">
+                    Contact Phone <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    className="form-control"
+                    name="phone"
+                    required
+                    placeholder="+91 98765 43210"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
 
@@ -130,38 +136,21 @@ export default function RegisterModal({ isOpen, onClose, onRegister, onSwitchToL
 
               <div className="mb-3">
                 <label className="form-label small fw-semibold">
-                  Phone Number <span className="text-danger">*</span>
+                  Delivery / Shipping Address <span className="text-danger">*</span>
                 </label>
-                <input
-                  type="tel"
+                <textarea
                   className="form-control"
-                  name="phone"
+                  name="address"
+                  rows="2"
                   required
-                  placeholder="+91 98765 43210"
-                  value={formData.phone}
+                  placeholder="Flat/House No., Street, Area, City, Pin Code"
+                  value={formData.address}
                   onChange={handleChange}
-                />
+                ></textarea>
               </div>
 
-              {formData.role === 'customer' && (
-                <div className="mb-3">
-                  <label className="form-label small fw-semibold">
-                    Delivery / Shipping Address <span className="text-danger">*</span>
-                  </label>
-                  <textarea
-                    className="form-control"
-                    name="address"
-                    rows="2"
-                    required
-                    placeholder="Flat/House No., Street, Area, City, Pin Code"
-                    value={formData.address}
-                    onChange={handleChange}
-                  ></textarea>
-                </div>
-              )}
-
               <button type="submit" className="btn btn-primary text-white w-100 py-2 fw-semibold mt-2" disabled={loading}>
-                {loading ? 'Creating Account...' : 'Register Account'}
+                {loading ? 'Creating Customer Account...' : 'Register Customer Account'}
               </button>
             </div>
           </form>

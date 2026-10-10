@@ -8,6 +8,19 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
 
   const [medicines, setMedicines] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [staff, setStaff] = useState([]);
+  const [customerSubTab, setCustomerSubTab] = useState('customers');
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [newAdmin, setNewAdmin] = useState({
+    fullName: '',
+    username: '',
+    email: '',
+    phone: '',
+    password: ''
+  });
+  const [adminRegisterLoading, setAdminRegisterLoading] = useState(false);
+  const [adminRegisterMsg, setAdminRegisterMsg] = useState('');
+  const [adminRegisterError, setAdminRegisterError] = useState('');
   const [bills, setBills] = useState([]);
   const [tickets, setTickets] = useState([]);
   const [prescriptions, setPrescriptions] = useState([]);
@@ -42,8 +55,12 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
     setLoading(true);
     try {
       if (tab === 'customers') {
-        const res = await userService.getActiveCustomers();
-        setCustomers(res.data);
+        const [custRes, staffRes] = await Promise.all([
+          userService.getActiveCustomers(),
+          userService.getStaffMembers().catch(() => ({ data: [] }))
+        ]);
+        setCustomers(custRes.data);
+        setStaff(staffRes.data);
       } else if (tab === 'inventory') {
         const res = await medicineService.getMedicines();
         setMedicines(res.data);
@@ -70,6 +87,27 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
       console.error('Error fetching admin data:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateAdmin = async (e) => {
+    e.preventDefault();
+    setAdminRegisterLoading(true);
+    setAdminRegisterMsg('');
+    setAdminRegisterError('');
+    try {
+      await userService.createAdminUser(newAdmin);
+      setAdminRegisterMsg('New Administrator registered successfully!');
+      setNewAdmin({ fullName: '', username: '', email: '', phone: '', password: '' });
+      loadData();
+      setTimeout(() => {
+        setIsAdminModalOpen(false);
+        setAdminRegisterMsg('');
+      }, 1500);
+    } catch (err) {
+      setAdminRegisterError(err.response?.data?.message || 'Failed to create administrator account.');
+    } finally {
+      setAdminRegisterLoading(false);
     }
   };
 
@@ -184,53 +222,123 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
         </div>
       ) : (
         <>
-          {/* TAB 1: ACTIVE CUSTOMERS */}
+          {/* TAB 1: CUSTOMERS & STAFF MANAGEMENT */}
           {tab === 'customers' && (
             <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
-              <div className="card-header bg-white p-3">
-                <h6 className="fw-bold mb-0">Active Registered Customers ({customers.length})</h6>
+              <div className="card-header bg-white p-3 d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+                <div className="d-flex align-items-center gap-2">
+                  <button
+                    type="button"
+                    className={`btn btn-sm ${customerSubTab === 'customers' ? 'btn-primary' : 'btn-outline-secondary'}`}
+                    onClick={() => setCustomerSubTab('customers')}
+                  >
+                    <i className="bi bi-people me-1"></i> Registered Customers ({customers.length})
+                  </button>
+                  <button
+                    type="button"
+                    className={`btn btn-sm ${customerSubTab === 'staff' ? 'btn-primary' : 'btn-outline-secondary'}`}
+                    onClick={() => setCustomerSubTab('staff')}
+                  >
+                    <i className="bi bi-shield-check me-1"></i> System Administrators ({staff.length})
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-info text-white d-flex align-items-center gap-1"
+                  onClick={() => {
+                    setAdminRegisterMsg('');
+                    setAdminRegisterError('');
+                    setIsAdminModalOpen(true);
+                  }}
+                  style={{ backgroundColor: 'rgba(2, 132, 199, 0.25)', borderColor: 'rgba(56, 189, 248, 0.4)' }}
+                >
+                  <i className="bi bi-person-plus-fill text-info"></i>
+                  <span>Register New Admin</span>
+                </button>
               </div>
-              <div className="table-responsive">
-                <table className="table table-hover align-middle mb-0">
-                  <thead className="table-light small">
-                    <tr>
-                      <th>Customer ID</th>
-                      <th>Full Legal Name</th>
-                      <th>Username / Email</th>
-                      <th>Contact Phone</th>
-                      <th>Registered Delivery Address</th>
-                      <th>Orders Placed</th>
-                      <th>Member Since</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {customers.length === 0 ? (
-                      <tr><td colSpan="7" className="text-center py-4 text-muted">No customers found.</td></tr>
-                    ) : (
-                      customers.map(c => (
-                        <tr key={c.id}>
-                          <td><strong>CUST-{c.id}</strong></td>
-                          <td><strong>{c.fullName}</strong></td>
-                          <td>
-                            <div>{c.username}</div>
-                            <div className="small text-muted">{c.email}</div>
-                          </td>
-                          <td>{c.phone || 'N/A'}</td>
-                          <td className="small" style={{ maxWidth: '250px' }}>{c.address || 'Not specified'}</td>
-                          <td>
-                            <span className="badge bg-primary-subtle text-primary fs-6 px-2">
-                              {c.totalOrders} Orders
-                            </span>
-                          </td>
-                          <td className="small text-muted">
-                            {new Date(c.createdAt).toLocaleDateString()}
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+
+              {customerSubTab === 'customers' ? (
+                <div className="table-responsive">
+                  <table className="table table-hover align-middle mb-0">
+                    <thead className="table-light small">
+                      <tr>
+                        <th>Customer ID</th>
+                        <th>Full Legal Name</th>
+                        <th>Username / Email</th>
+                        <th>Contact Phone</th>
+                        <th>Registered Delivery Address</th>
+                        <th>Orders Placed</th>
+                        <th>Member Since</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {customers.length === 0 ? (
+                        <tr><td colSpan="7" className="text-center py-4 text-muted">No customers found.</td></tr>
+                      ) : (
+                        customers.map(c => (
+                          <tr key={c.id}>
+                            <td><strong>CUST-{c.id}</strong></td>
+                            <td><strong>{c.fullName}</strong></td>
+                            <td>
+                              <div>{c.username}</div>
+                              <div className="small text-muted">{c.email}</div>
+                            </td>
+                            <td>{c.phone || 'N/A'}</td>
+                            <td className="small" style={{ maxWidth: '250px' }}>{c.address || 'Not specified'}</td>
+                            <td>
+                              <span className="badge bg-primary-subtle text-primary fs-6 px-2">
+                                {c.totalOrders} Orders
+                              </span>
+                            </td>
+                            <td className="small text-muted">
+                              {new Date(c.createdAt).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="table-responsive">
+                  <table className="table table-hover align-middle mb-0">
+                    <thead className="table-light small">
+                      <tr>
+                        <th>Admin ID</th>
+                        <th>Full Legal Name</th>
+                        <th>Username</th>
+                        <th>Email Address</th>
+                        <th>Contact Phone</th>
+                        <th>Access Scope</th>
+                        <th>Joined Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {staff.length === 0 ? (
+                        <tr><td colSpan="7" className="text-center py-4 text-muted">No administrators found.</td></tr>
+                      ) : (
+                        staff.map(u => (
+                          <tr key={u.id}>
+                            <td><strong>ADM-{u.id}</strong></td>
+                            <td><strong>{u.fullName}</strong></td>
+                            <td><code>@{u.username}</code></td>
+                            <td>{u.email}</td>
+                            <td>{u.phone || 'N/A'}</td>
+                            <td>
+                              <span className="badge bg-warning text-dark">
+                                System Administrator
+                              </span>
+                            </td>
+                            <td className="small text-muted">
+                              {new Date(u.createdAt).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
 
@@ -984,6 +1092,128 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
               <div className="modal-footer bg-light">
                 <button className="btn btn-secondary btn-sm" onClick={() => setSelectedBill(null)}>Close</button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: REGISTER NEW ADMINISTRATOR */}
+      {isAdminModalOpen && (
+        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+              <div className="modal-header bg-dark text-white">
+                <h5 className="modal-title fw-bold">
+                  <i className="bi bi-shield-lock-fill text-info me-2"></i>Register New Administrator
+                </h5>
+                <button type="button" className="btn-close btn-close-white" onClick={() => setIsAdminModalOpen(false)}></button>
+              </div>
+              <form onSubmit={handleCreateAdmin}>
+                <div className="modal-body p-4">
+                  <div className="small text-muted mb-3">
+                    Authorized administrators have full access to stock inventory, order statuses, prescription approvals, and billing.
+                  </div>
+
+                  {adminRegisterMsg && (
+                    <div className="alert alert-success py-2 small mb-3">
+                      <i className="bi bi-check-circle me-1"></i>{adminRegisterMsg}
+                    </div>
+                  )}
+                  {adminRegisterError && (
+                    <div className="alert alert-danger py-2 small mb-3">
+                      <i className="bi bi-exclamation-triangle me-1"></i>{adminRegisterError}
+                    </div>
+                  )}
+
+                  <div className="row g-3 mb-3">
+                    <div className="col-md-6">
+                      <label className="form-label small fw-semibold">
+                        Username <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        required
+                        placeholder="e.g. admin2"
+                        value={newAdmin.username}
+                        onChange={e => setNewAdmin({ ...newAdmin, username: e.target.value })}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label small fw-semibold">
+                        Full Legal Name <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        required
+                        placeholder="e.g. Dr. Alex Smith"
+                        value={newAdmin.fullName}
+                        onChange={e => setNewAdmin({ ...newAdmin, fullName: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="row g-3 mb-3">
+                    <div className="col-md-6">
+                      <label className="form-label small fw-semibold">
+                        Email Address <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        required
+                        placeholder="admin@pharmahealth.com"
+                        value={newAdmin.email}
+                        onChange={e => setNewAdmin({ ...newAdmin, email: e.target.value })}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label small fw-semibold">Contact Phone</label>
+                      <input
+                        type="tel"
+                        className="form-control"
+                        placeholder="+91 98765 43210"
+                        value={newAdmin.phone}
+                        onChange={e => setNewAdmin({ ...newAdmin, phone: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label small fw-semibold">
+                      Access Password <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      required
+                      minLength={6}
+                      placeholder="Minimum 6 characters"
+                      value={newAdmin.password}
+                      onChange={e => setNewAdmin({ ...newAdmin, password: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="modal-footer bg-light p-3 d-flex justify-content-end gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary btn-sm px-3"
+                    onClick={() => setIsAdminModalOpen(false)}
+                    disabled={adminRegisterLoading}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-sm px-4 fw-semibold text-white"
+                    disabled={adminRegisterLoading}
+                  >
+                    {adminRegisterLoading ? 'Registering...' : 'Register Administrator'}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

@@ -41,6 +41,8 @@ export const userService = {
   getMyProfile: () => api.get('/users/me'),
   updateProfile: (params) => api.put('/users/profile', null, { params }),
   getActiveCustomers: () => api.get('/users/customers'),
+  getStaffMembers: () => api.get('/users/staff'),
+  createAdminUser: (userData) => api.post('/users/create-admin', userData),
 };
 
 export const medicineService = {
