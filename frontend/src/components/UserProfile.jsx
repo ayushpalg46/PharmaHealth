@@ -84,10 +84,6 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
       {/* Top Profile Header Banner */}
       <div 
         className="card border-0 shadow-sm rounded-4 p-4 mb-4" 
-        style={{ 
-          backgroundColor: '#0b1638', 
-          border: '1px solid rgba(16, 185, 129, 0.3)' 
-        }}
       >
         <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
           <div className="d-flex align-items-center gap-3">
@@ -97,7 +93,7 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
                 width: '64px',
                 height: '64px',
                 fontSize: '1.8rem',
-                backgroundColor: '#071026',
+                backgroundColor: 'rgba(2, 132, 199, 0.4)',
                 border: '2px solid rgba(16, 185, 129, 0.6)'
               }}
             >
@@ -150,10 +146,6 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
       {/* Main Content Card (Overview Mode or Edit Mode) */}
       <div 
         className="card border-0 shadow-sm rounded-4 p-4 p-md-5" 
-        style={{ 
-          backgroundColor: '#0b1638', 
-          border: '1px solid rgba(16, 185, 129, 0.2)' 
-        }}
       >
         {/* Card Header */}
         <div className="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom border-secondary border-opacity-25">
@@ -201,7 +193,7 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             <div className="col-md-6">
               <div 
                 className="p-3 rounded-3 h-100" 
-                style={{ backgroundColor: '#071026', border: '1px solid rgba(16, 185, 129, 0.25)' }}
+                style={{ backgroundColor: 'rgba(2, 132, 199, 0.35)', border: '1px solid rgba(52, 211, 153, 0.35)' }}
               >
                 <div className="d-flex align-items-center gap-2 text-success small mb-1 fw-semibold">
                   <i className="bi bi-person"></i>
@@ -217,7 +209,7 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             <div className="col-md-6">
               <div 
                 className="p-3 rounded-3 h-100" 
-                style={{ backgroundColor: '#071026', border: '1px solid rgba(16, 185, 129, 0.25)' }}
+                style={{ backgroundColor: 'rgba(2, 132, 199, 0.35)', border: '1px solid rgba(52, 211, 153, 0.35)' }}
               >
                 <div className="d-flex align-items-center gap-2 text-success small mb-1 fw-semibold">
                   <i className="bi bi-envelope"></i>
@@ -233,7 +225,7 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             <div className="col-md-6">
               <div 
                 className="p-3 rounded-3 h-100" 
-                style={{ backgroundColor: '#071026', border: '1px solid rgba(16, 185, 129, 0.25)' }}
+                style={{ backgroundColor: 'rgba(2, 132, 199, 0.35)', border: '1px solid rgba(52, 211, 153, 0.35)' }}
               >
                 <div className="d-flex align-items-center gap-2 text-success small mb-1 fw-semibold">
                   <i className="bi bi-at"></i>
@@ -249,7 +241,7 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
             <div className="col-md-6">
               <div 
                 className="p-3 rounded-3 h-100" 
-                style={{ backgroundColor: '#071026', border: '1px solid rgba(16, 185, 129, 0.25)' }}
+                style={{ backgroundColor: 'rgba(2, 132, 199, 0.35)', border: '1px solid rgba(52, 211, 153, 0.35)' }}
               >
                 <div className="d-flex align-items-center gap-2 text-success small mb-1 fw-semibold">
                   <i className="bi bi-telephone"></i>
@@ -266,7 +258,7 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
               <div className="col-12">
                 <div 
                   className="p-3 rounded-3" 
-                  style={{ backgroundColor: '#071026', border: '1px solid rgba(16, 185, 129, 0.25)' }}
+                  style={{ backgroundColor: 'rgba(2, 132, 199, 0.35)', border: '1px solid rgba(52, 211, 153, 0.35)' }}
                 >
                   <div className="d-flex align-items-center gap-2 text-success small mb-1 fw-semibold">
                     <i className="bi bi-geo-alt"></i>

@@ -51,7 +51,7 @@ export default function MedicineList({ medicines, categories, selectedCategory, 
           medicines.map((med) => (
             <div key={med.id} className="col-sm-6 col-lg-3">
               <div className="card h-100 card-medicine border-0 shadow-sm overflow-hidden">
-                <div className="position-relative text-center border-bottom" style={{ height: '160px', backgroundColor: 'rgba(4, 26, 20, 0.75)', overflow: 'hidden' }}>
+                <div className="position-relative text-center border-bottom" style={{ height: '160px', backgroundColor: 'rgba(2, 132, 199, 0.25)', overflow: 'hidden' }}>
                   {med.imageUrl ? (
                     <img 
                       src={med.imageUrl} 

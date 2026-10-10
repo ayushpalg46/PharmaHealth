@@ -117,7 +117,7 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                       </div>
                     </div>
 
-                    <div className="d-flex justify-content-between align-items-center p-2 rounded mb-2" style={{ backgroundColor: 'rgba(4, 26, 20, 0.6)', border: '1px solid var(--border-color)' }}>
+                    <div className="d-flex justify-content-between align-items-center p-2 rounded mb-2" style={{ backgroundColor: 'rgba(2, 132, 199, 0.35)', border: '1px solid rgba(52, 211, 153, 0.4)' }}>
                       <span className="small text-muted">Grand Total:</span>
                       <span className="fw-bold text-info fs-5">₹{order.totalAmount.toFixed(2)}</span>
                     </div>

@@ -148,40 +148,40 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                     <div className="col-md-4">
                       <div 
                         className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'UPI' ? 'border-info' : 'border-secondary border-opacity-25'}`}
-                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'UPI' ? 'rgba(56, 189, 248, 0.18)' : 'rgba(4, 26, 20, 0.6)' }}
+                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'UPI' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(2, 132, 199, 0.35)' }}
                         onClick={() => setPaymentMethod('UPI')}
                       >
                         <div className="fs-4 text-info mb-1"><i className="bi bi-qr-code-scan"></i></div>
                         <strong className="d-block text-white small">UPI / QR</strong>
-                        <div className="text-muted" style={{ fontSize: '0.75rem' }}>Google Pay, PhonePe, Paytm</div>
+                        <div className="text-white-50" style={{ fontSize: '0.75rem' }}>Google Pay, PhonePe, Paytm</div>
                       </div>
                     </div>
                     <div className="col-md-4">
                       <div 
                         className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'CARD' ? 'border-info' : 'border-secondary border-opacity-25'}`}
-                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'CARD' ? 'rgba(56, 189, 248, 0.18)' : 'rgba(4, 26, 20, 0.6)' }}
+                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'CARD' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(2, 132, 199, 0.35)' }}
                         onClick={() => setPaymentMethod('CARD')}
                       >
                         <div className="fs-4 text-info mb-1"><i className="bi bi-credit-card-2-front"></i></div>
                         <strong className="d-block text-white small">Card Payment</strong>
-                        <div className="text-muted" style={{ fontSize: '0.75rem' }}>Visa, MasterCard, RuPay</div>
+                        <div className="text-white-50" style={{ fontSize: '0.75rem' }}>Visa, MasterCard, RuPay</div>
                       </div>
                     </div>
                     <div className="col-md-4">
                       <div 
                         className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'CASH_ON_DELIVERY' ? 'border-warning' : 'border-secondary border-opacity-25'}`}
-                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'CASH_ON_DELIVERY' ? 'rgba(234, 179, 8, 0.18)' : 'rgba(4, 26, 20, 0.6)' }}
+                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'CASH_ON_DELIVERY' ? 'rgba(234, 179, 8, 0.25)' : 'rgba(2, 132, 199, 0.35)' }}
                         onClick={() => setPaymentMethod('CASH_ON_DELIVERY')}
                       >
                         <div className="fs-4 text-warning mb-1"><i className="bi bi-cash-stack"></i></div>
                         <strong className="d-block text-white small">Cash on Delivery</strong>
-                        <div className="text-muted" style={{ fontSize: '0.75rem' }}>Pay cash on receipt</div>
+                        <div className="text-white-50" style={{ fontSize: '0.75rem' }}>Pay cash on receipt</div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="d-flex justify-content-between align-items-center p-3 rounded mb-3" style={{ backgroundColor: 'rgba(4, 26, 20, 0.85)', border: '1px solid var(--border-color)' }}>
+                <div className="d-flex justify-content-between align-items-center p-3 rounded mb-3" style={{ backgroundColor: 'rgba(2, 132, 199, 0.45)', border: '1px solid rgba(52, 211, 153, 0.4)' }}>
                   <span className="fs-5 text-white">Total Amount:</span>
                   <span className="fs-4 fw-bold text-info">₹{totalAmount.toFixed(2)}</span>
                 </div>

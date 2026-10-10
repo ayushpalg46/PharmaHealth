@@ -175,7 +175,7 @@ export default function CustomerSupport({ currentUser, onOpenLogin }) {
             ) : (
               <div className="d-flex flex-column gap-3 overflow-auto" style={{ maxHeight: '600px' }}>
                 {tickets.map(t => (
-                  <div key={t.id} className="border border-secondary border-opacity-25 rounded-3 p-3" style={{ backgroundColor: 'rgba(4, 26, 20, 0.6)' }}>
+                  <div key={t.id} className="border border-secondary border-opacity-25 rounded-3 p-3" style={{ backgroundColor: 'rgba(2, 132, 199, 0.35)' }}>
                     <div className="d-flex justify-content-between align-items-start mb-2">
                       <div>
                         <span className="text-info small me-2 fw-semibold">[{t.category}]</span>
@@ -186,7 +186,7 @@ export default function CustomerSupport({ currentUser, onOpenLogin }) {
                       </span>
                     </div>
 
-                    <p className="small text-secondary mb-2 p-2 rounded" style={{ backgroundColor: 'rgba(0,0,0,0.25)' }}>
+                    <p className="small text-secondary mb-2 p-2 rounded" style={{ backgroundColor: 'rgba(2, 132, 199, 0.25)' }}>
                       "{t.message}"
                     </p>
 
