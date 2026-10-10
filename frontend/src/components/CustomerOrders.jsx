@@ -99,7 +99,7 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                     </div>
                     <div>
                       <span className={`small fw-semibold ${order.status === 'DELIVERED' ? 'text-success' : 'text-info'}`}>
-                        {order.status.replace('_', ' ')}
+                        {order.status === 'PENDING' ? 'CONFIRMED' : order.status.replace('_', ' ')}
                       </span>
                     </div>
                   </div>
@@ -125,10 +125,7 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                     <div className="d-flex justify-content-between align-items-center mb-3 small">
                       <div>
                         <span className="text-muted me-1">Payment:</span>
-                        <span className="text-secondary me-2">{order.paymentMethod}</span>
-                        <span className={`fw-semibold ${order.paymentStatus === 'PAID' ? 'text-success' : 'text-warning'}`}>
-                          {order.paymentStatus === 'PAID' ? 'PAID' : 'COD PENDING'}
-                        </span>
+                        <span className="text-secondary">{order.paymentMethod}</span>
                       </div>
                       <div className="text-secondary text-truncate" style={{ maxWidth: '180px' }}>
                         <i className="bi bi-geo-alt me-1 text-info"></i>{order.shippingAddress || 'Address on file'}
@@ -179,8 +176,8 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                   <div className="col-6 text-end">
                     <span className="text-muted">Date:</span>
                     <strong className="d-block text-white">{new Date(selectedBill.billDate).toLocaleDateString()}</strong>
-                    <span className={`badge ${selectedBill.paymentStatus === 'PAID' ? 'bg-success text-white' : 'bg-warning text-dark'}`}>
-                      {selectedBill.paymentStatus}
+                    <span className="badge bg-success text-white">
+                      {selectedBill.paymentStatus === 'PENDING' ? 'CONFIRMED' : selectedBill.paymentStatus}
                     </span>
                   </div>
                 </div>
