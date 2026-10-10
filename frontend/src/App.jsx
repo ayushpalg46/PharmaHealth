@@ -11,6 +11,7 @@ import RegisterModal from './components/RegisterModal';
 import CartModal from './components/CartModal';
 import PrescriptionUploadModal from './components/PrescriptionUploadModal';
 import { authService, medicineService, orderService, prescriptionService } from './services/api';
+import useAutoRefresh from './hooks/useAutoRefresh';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
@@ -30,12 +31,12 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isPrescriptionOpen, setIsPrescriptionOpen] = useState(false);
 
-  // Load Catalog Data
-  const fetchCatalog = async () => {
+  // Load Catalog Data (supports forced background refresh)
+  const fetchCatalog = async (forceFresh = false) => {
     try {
       const [medRes, catRes] = await Promise.all([
-        medicineService.getMedicines(selectedCategory, searchTerm),
-        medicineService.getCategories()
+        medicineService.getMedicines(selectedCategory, searchTerm, { forceFresh }),
+        medicineService.getCategories({ forceFresh })
       ]);
       setMedicines(medRes.data);
       setCategories(catRes.data);
@@ -44,10 +45,10 @@ export default function App() {
     }
   };
 
-  const fetchUserOrders = async () => {
+  const fetchUserOrders = async (forceFresh = false) => {
     if (currentUser) {
       try {
-        const res = await orderService.getMyOrders();
+        const res = await orderService.getMyOrders({ forceFresh });
         setMyOrders(res.data);
       } catch (err) {
         console.error('Error fetching user orders:', err);
@@ -62,6 +63,17 @@ export default function App() {
   useEffect(() => {
     fetchUserOrders();
   }, [currentUser]);
+
+  // Periodic Auto-Refresh: Keep store inventory and active orders freshly synced every 15 seconds
+  useAutoRefresh(() => {
+    if (currentView === 'store') {
+      fetchCatalog(true);
+    }
+    if (currentUser) {
+      fetchUserOrders(true);
+    }
+  }, 15000);
+
 
   // Auth Handlers
   const handleLogin = async (username, password) => {

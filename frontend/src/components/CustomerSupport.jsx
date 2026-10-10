@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supportService } from '../services/api';
+import useAutoRefresh from '../hooks/useAutoRefresh';
 
 export default function CustomerSupport({ currentUser, onOpenLogin }) {
   const [tickets, setTickets] = useState([]);
@@ -7,25 +8,39 @@ export default function CustomerSupport({ currentUser, onOpenLogin }) {
   const [category, setCategory] = useState('DELIVERY');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
 
-  const loadTickets = async () => {
+  const loadTickets = async (forceFresh = false, isSilent = false) => {
     if (!currentUser) return;
-    setLoading(true);
+    if (!isSilent) {
+      setLoading(true);
+    } else {
+      setIsRefreshing(true);
+    }
     try {
-      const res = await supportService.getMyTickets();
+      const res = await supportService.getMyTickets({ forceFresh });
       setTickets(res.data);
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
   useEffect(() => {
-    loadTickets();
+    loadTickets(false, false);
   }, [currentUser]);
+
+  // Periodic Auto-Refresh: Poll for clinical team / pharmacist responses every 12 seconds
+  useAutoRefresh(() => {
+    if (currentUser) {
+      loadTickets(true, true);
+    }
+  }, 12000);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -133,11 +148,22 @@ export default function CustomerSupport({ currentUser, onOpenLogin }) {
         <div className="col-lg-7">
           <div className="card border-0 shadow-sm rounded-4 p-4 h-100">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h5 className="fw-bold mb-0 text-white">
-                <i className="bi bi-journal-text text-info me-2"></i>My Inquiries & Responses
-              </h5>
-              <button className="btn btn-primary btn-sm" onClick={loadTickets}>
-                <i className="bi bi-arrow-clockwise"></i>
+              <div className="d-flex align-items-center gap-2">
+                <h5 className="fw-bold mb-0 text-white">
+                  <i className="bi bi-journal-text text-info me-2"></i>My Inquiries & Responses
+                </h5>
+                <span className="live-sync-badge">
+                  <span className="live-pulse-dot"></span>
+                  Live
+                </span>
+              </div>
+              <button 
+                className="btn btn-primary btn-sm d-flex align-items-center gap-1" 
+                onClick={() => loadTickets(true, false)}
+                disabled={loading || isRefreshing}
+              >
+                <i className={`bi bi-arrow-clockwise ${(loading || isRefreshing) ? 'spin' : ''}`}></i>
+                <span>{isRefreshing ? 'Syncing...' : 'Refresh'}</span>
               </button>
             </div>
 

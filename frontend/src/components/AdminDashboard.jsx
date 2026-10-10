@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { medicineService, orderService, prescriptionService, billService, supportService, userService } from '../services/api';
+import useAutoRefresh from '../hooks/useAutoRefresh';
 
 export default function AdminDashboard({ categories, onRefreshMedicines, activeTab = 'customers', onTabChange }) {
   const [internalTab, setInternalTab] = useState(activeTab);
@@ -25,6 +26,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
   const [tickets, setTickets] = useState([]);
   const [prescriptions, setPrescriptions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Response to support ticket
   const [activeTicket, setActiveTicket] = useState(null);
@@ -51,33 +53,37 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
     description: ''
   });
 
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = async (forceFresh = false, isSilent = false) => {
+    if (!isSilent) {
+      setLoading(true);
+    } else {
+      setIsRefreshing(true);
+    }
     try {
       if (tab === 'customers') {
         const [custRes, staffRes] = await Promise.all([
-          userService.getActiveCustomers(),
-          userService.getStaffMembers().catch(() => ({ data: [] }))
+          userService.getActiveCustomers({ forceFresh }),
+          userService.getStaffMembers({ forceFresh }).catch(() => ({ data: [] }))
         ]);
         setCustomers(custRes.data);
         setStaff(staffRes.data);
       } else if (tab === 'inventory') {
-        const res = await medicineService.getMedicines();
+        const res = await medicineService.getMedicines(null, '', { forceFresh });
         setMedicines(res.data);
       } else if (tab === 'billing') {
-        const res = await billService.getAllBills();
+        const res = await billService.getAllBills({ forceFresh });
         setBills(res.data);
       } else if (tab === 'support') {
-        const res = await supportService.getAllTickets();
+        const res = await supportService.getAllTickets({ forceFresh });
         setTickets(res.data);
       } else if (tab === 'prescriptions') {
-        const res = await prescriptionService.getAllPrescriptions();
+        const res = await prescriptionService.getAllPrescriptions({ forceFresh });
         setPrescriptions(res.data);
       } else if (tab === 'notifications') {
         const [medRes, ticketRes, rxRes] = await Promise.all([
-          medicineService.getMedicines(),
-          supportService.getAllTickets(),
-          prescriptionService.getAllPrescriptions()
+          medicineService.getMedicines(null, '', { forceFresh }),
+          supportService.getAllTickets({ forceFresh }),
+          prescriptionService.getAllPrescriptions({ forceFresh })
         ]);
         setMedicines(medRes.data);
         setTickets(ticketRes.data);
@@ -87,8 +93,19 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
       console.error('Error fetching admin data:', err);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
+
+  useEffect(() => {
+    loadData(false, false);
+  }, [tab]);
+
+  // Real-time automatic background polling every 10 seconds
+  useAutoRefresh(() => {
+    loadData(true, true);
+  }, 10000);
+
 
   const handleCreateAdmin = async (e) => {
     e.preventDefault();
@@ -215,6 +232,30 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
 
   return (
     <div className="container py-4">
+      {/* Admin Status & Live Sync Bar */}
+      <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+        <div className="d-flex align-items-center gap-2">
+          <span className="live-sync-badge">
+            <span className="live-pulse-dot"></span>
+            Live Auto-Sync Active
+          </span>
+          {isRefreshing && (
+            <span className="badge bg-secondary-subtle text-secondary small py-1">
+              <i className="bi bi-arrow-repeat spin me-1"></i>Updating...
+            </span>
+          )}
+        </div>
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
+          onClick={() => loadData(true, false)}
+          disabled={loading || isRefreshing}
+        >
+          <i className={`bi bi-arrow-clockwise ${(loading || isRefreshing) ? 'spin' : ''}`}></i>
+          <span>Refresh Data</span>
+        </button>
+      </div>
+
       {loading ? (
         <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status"></div>
@@ -224,6 +265,7 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
         <>
           {/* TAB 1: CUSTOMERS & STAFF MANAGEMENT */}
           {tab === 'customers' && (
+
             <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
               <div className="card-header bg-white p-3 d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
                 <div className="d-flex align-items-center gap-2">

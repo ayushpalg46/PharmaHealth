@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { orderService, billService } from '../services/api';
+import useAutoRefresh from '../hooks/useAutoRefresh';
 
 export default function CustomerOrders({ currentUser, onOpenLogin }) {
   const [orders, setOrders] = useState([]);
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedBill, setSelectedBill] = useState(null);
 
-  const loadData = async () => {
+  const loadData = async (forceFresh = false, isSilent = false) => {
     if (!currentUser) return;
-    setLoading(true);
+    if (!isSilent) {
+      setLoading(true);
+    } else {
+      setIsRefreshing(true);
+    }
     try {
       const [orderRes, billRes] = await Promise.all([
-        orderService.getMyOrders(),
-        billService.getMyBills()
+        orderService.getMyOrders({ forceFresh }),
+        billService.getMyBills({ forceFresh })
       ]);
       setOrders(orderRes.data);
       setBills(billRes.data);
@@ -21,12 +27,20 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
       console.error(err);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
   useEffect(() => {
-    loadData();
+    loadData(false, false);
   }, [currentUser]);
+
+  // Periodic Auto-Refresh for real-time tracking of order and delivery status
+  useAutoRefresh(() => {
+    if (currentUser) {
+      loadData(true, true);
+    }
+  }, 12000);
 
   if (!currentUser) {
     return (
@@ -43,15 +57,27 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
     <div className="container py-4">
       <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
         <div>
-          <h3 className="fw-bold mb-1 text-white">
-            <i className="bi bi-bag-check text-info me-2"></i>My Orders & Invoices
-          </h3>
-          <p className="text-muted small mb-0">View medication order history and download official tax receipts.</p>
+          <div className="d-flex align-items-center gap-2 mb-1">
+            <h3 className="fw-bold mb-0 text-white">
+              <i className="bi bi-bag-check text-info me-2"></i>My Orders & Invoices
+            </h3>
+            <span className="live-sync-badge">
+              <span className="live-pulse-dot"></span>
+              Live Sync
+            </span>
+          </div>
+          <p className="text-muted small mb-0">View medication order history, live dispatch status, and download official tax receipts.</p>
         </div>
-        <button className="btn btn-primary btn-sm" onClick={loadData}>
-          <i className="bi bi-arrow-clockwise me-1"></i>Refresh
+        <button 
+          className="btn btn-primary btn-sm d-flex align-items-center gap-1" 
+          onClick={() => loadData(true, false)}
+          disabled={loading || isRefreshing}
+        >
+          <i className={`bi bi-arrow-clockwise ${(loading || isRefreshing) ? 'spin' : ''}`}></i>
+          <span>{isRefreshing ? 'Syncing...' : 'Refresh'}</span>
         </button>
       </div>
+
 
       {loading ? (
         <div className="text-center py-5 text-muted">Loading orders...</div>
