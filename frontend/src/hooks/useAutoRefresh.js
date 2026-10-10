@@ -15,28 +15,10 @@ export function useAutoRefresh(callback, intervalMs = 12000, enabled = true) {
 
   useEffect(() => {
     if (!enabled) return;
-
-    const tick = () => {
-      // Only execute if page/tab is currently visible
-      if (document.visibilityState === 'visible') {
-        savedCallback.current?.();
-      }
-    };
-
-    const id = setInterval(tick, intervalMs);
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        tick();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      clearInterval(id);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
+    const id = setInterval(() => {
+      if (document.visibilityState === 'visible') savedCallback.current?.();
+    }, intervalMs);
+    return () => clearInterval(id);
   }, [intervalMs, enabled]);
 }
 

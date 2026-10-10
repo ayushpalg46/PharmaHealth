@@ -8,17 +8,12 @@ export default function CustomerSupport({ currentUser, onOpenLogin }) {
   const [category, setCategory] = useState('DELIVERY');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
 
-  const loadTickets = async (forceFresh = false, isSilent = false) => {
+  const loadTickets = async (forceFresh = false) => {
     if (!currentUser) return;
-    if (!isSilent) {
-      setLoading(true);
-    } else {
-      setIsRefreshing(true);
-    }
+    setLoading(true);
     try {
       const res = await supportService.getMyTickets({ forceFresh });
       setTickets(res.data);
@@ -26,19 +21,15 @@ export default function CustomerSupport({ currentUser, onOpenLogin }) {
       console.error(err);
     } finally {
       setLoading(false);
-      setIsRefreshing(false);
     }
   };
 
   useEffect(() => {
-    loadTickets(false, false);
+    loadTickets();
   }, [currentUser]);
 
-  // Periodic Auto-Refresh: Poll for clinical team / pharmacist responses every 12 seconds
   useAutoRefresh(() => {
-    if (currentUser) {
-      loadTickets(true, true);
-    }
+    if (currentUser) loadTickets(true);
   }, 12000);
 
 
@@ -152,11 +143,11 @@ export default function CustomerSupport({ currentUser, onOpenLogin }) {
               </h5>
               <button 
                 className="btn btn-primary btn-sm d-flex align-items-center gap-1" 
-                onClick={() => loadTickets(true, false)}
-                disabled={loading || isRefreshing}
+                onClick={() => loadTickets(true)}
+                disabled={loading}
               >
-                <i className={`bi bi-arrow-clockwise ${(loading || isRefreshing) ? 'spin' : ''}`}></i>
-                <span>{isRefreshing ? 'Syncing...' : 'Refresh'}</span>
+                <i className={`bi bi-arrow-clockwise ${loading ? 'spin' : ''}`}></i>
+                <span>Refresh</span>
               </button>
             </div>
 

@@ -145,39 +145,23 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                 <div className="border-top pt-3 mb-3">
                   <h6 className="fw-bold mb-3 text-white">Select Payment Mode</h6>
                   <div className="row g-2">
-                    <div className="col-md-4">
-                      <div 
-                        className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'UPI' ? 'border-info' : 'border-secondary border-opacity-25'}`}
-                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'UPI' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(2, 132, 199, 0.35)' }}
-                        onClick={() => setPaymentMethod('UPI')}
-                      >
-                        <div className="fs-4 text-info mb-1"><i className="bi bi-qr-code-scan"></i></div>
-                        <strong className="d-block text-white small">UPI / QR</strong>
-                        <div className="text-white-50" style={{ fontSize: '0.75rem' }}>Google Pay, PhonePe, Paytm</div>
+                    {[
+                      { id: 'UPI', icon: 'bi-qr-code-scan', label: 'UPI / QR', sub: 'Google Pay, PhonePe, Paytm' },
+                      { id: 'CARD', icon: 'bi-credit-card-2-front', label: 'Card Payment', sub: 'Visa, MasterCard, RuPay' },
+                      { id: 'CASH_ON_DELIVERY', icon: 'bi-cash-stack', label: 'Cash on Delivery', sub: 'Pay cash on receipt' }
+                    ].map(m => (
+                      <div key={m.id} className="col-md-4">
+                        <div 
+                          className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === m.id ? 'border-info' : 'border-secondary border-opacity-25'}`}
+                          style={{ cursor: 'pointer', backgroundColor: paymentMethod === m.id ? 'rgba(56, 189, 248, 0.25)' : 'rgba(2, 132, 199, 0.35)' }}
+                          onClick={() => setPaymentMethod(m.id)}
+                        >
+                          <div className={`fs-4 ${m.id === 'CASH_ON_DELIVERY' ? 'text-warning' : 'text-info'} mb-1`}><i className={`bi ${m.icon}`}></i></div>
+                          <strong className="d-block text-white small">{m.label}</strong>
+                          <div className="text-white-50" style={{ fontSize: '0.75rem' }}>{m.sub}</div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div 
-                        className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'CARD' ? 'border-info' : 'border-secondary border-opacity-25'}`}
-                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'CARD' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(2, 132, 199, 0.35)' }}
-                        onClick={() => setPaymentMethod('CARD')}
-                      >
-                        <div className="fs-4 text-info mb-1"><i className="bi bi-credit-card-2-front"></i></div>
-                        <strong className="d-block text-white small">Card Payment</strong>
-                        <div className="text-white-50" style={{ fontSize: '0.75rem' }}>Visa, MasterCard, RuPay</div>
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div 
-                        className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'CASH_ON_DELIVERY' ? 'border-warning' : 'border-secondary border-opacity-25'}`}
-                        style={{ cursor: 'pointer', backgroundColor: paymentMethod === 'CASH_ON_DELIVERY' ? 'rgba(234, 179, 8, 0.25)' : 'rgba(2, 132, 199, 0.35)' }}
-                        onClick={() => setPaymentMethod('CASH_ON_DELIVERY')}
-                      >
-                        <div className="fs-4 text-warning mb-1"><i className="bi bi-cash-stack"></i></div>
-                        <strong className="d-block text-white small">Cash on Delivery</strong>
-                        <div className="text-white-50" style={{ fontSize: '0.75rem' }}>Pay cash on receipt</div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
 
