@@ -21,8 +21,8 @@ export default function Navbar({
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow py-3">
-      <div className="container">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow py-2">
+      <div className="container-fluid px-3 px-xl-4">
         {/* Brand */}
         <a 
           className="navbar-brand d-flex align-items-center gap-2" 
@@ -97,10 +97,10 @@ export default function Navbar({
                     <span>Prescriptions</span>
                   </button>
                   <button 
-                    className={`nav-pill-btn position-relative ${currentView === 'admin' && adminTab === 'notifications' ? 'active' : ''}`}
+                    className={`nav-pill-btn ${currentView === 'admin' && adminTab === 'notifications' ? 'active' : ''}`}
                     onClick={() => handleAdminNav('notifications')}
                   >
-                    <i className="bi bi-bell-fill text-warning"></i>
+                    <i className="bi bi-bell-fill text-info"></i>
                     <span>Notifications</span>
                   </button>
                 </>
