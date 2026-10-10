@@ -42,7 +42,7 @@ public class MedicineController {
         medicine.setStockQuantity(req.getStockQuantity());
         medicine.setDosageForm(req.getDosageForm());
         medicine.setStrength(req.getStrength());
-        medicine.setPrescriptionRequired(req.getPrescriptionRequired() != null ? req.getPrescriptionRequired() : false);
+        medicine.setPrescriptionRequired(Boolean.TRUE.equals(req.getPrescriptionRequired()));
         medicine.setManufactureDate(req.getManufactureDate());
         medicine.setExpiryDate(req.getExpiryDate());
         medicine.setDescription(req.getDescription());
@@ -69,7 +69,7 @@ public class MedicineController {
             medicine.setStockQuantity(req.getStockQuantity());
             medicine.setDosageForm(req.getDosageForm());
             medicine.setStrength(req.getStrength());
-            medicine.setPrescriptionRequired(req.getPrescriptionRequired() != null ? req.getPrescriptionRequired() : false);
+            medicine.setPrescriptionRequired(Boolean.TRUE.equals(req.getPrescriptionRequired()));
             medicine.setManufactureDate(req.getManufactureDate());
             medicine.setExpiryDate(req.getExpiryDate());
             medicine.setDescription(req.getDescription());
