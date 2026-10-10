@@ -36,7 +36,7 @@ export default function Navbar({
             }
           }}
         >
-          <span className={`badge ${isAdmin ? 'bg-warning text-dark' : 'bg-primary'} p-2 rounded-3 fs-5`}>
+          <span className="p-2 rounded-3 fs-5 text-info d-flex align-items-center justify-content-center" style={{ backgroundColor: 'rgba(56, 189, 248, 0.12)', border: '1px solid rgba(56, 189, 248, 0.25)' }}>
             <i className={isAdmin ? "bi bi-shield-lock-fill" : "bi bi-capsule"}></i>
           </span>
           <div className="d-flex flex-column">
@@ -167,10 +167,7 @@ export default function Navbar({
                   onClick={() => onViewChange('profile')}
                 >
                   <i className="bi bi-person-circle"></i>
-                  <span>{currentUser.username || 'Profile'}</span>
-                  <span className={`badge ${isAdmin ? 'bg-warning text-dark' : 'bg-primary'}`}>
-                    {isAdmin ? 'Admin' : 'Customer'}
-                  </span>
+                  <span className="fw-medium">{currentUser.username || 'Profile'}</span>
                 </button>
 
                 <button className="btn btn-outline-secondary btn-sm" onClick={onLogout} title="Sign Out">

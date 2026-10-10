@@ -79,12 +79,7 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
               <i className={isAdmin ? 'bi bi-shield-lock-fill' : 'bi bi-person-fill'}></i>
             </div>
             <div>
-              <div className="d-flex align-items-center gap-2 flex-wrap">
-                <h4 className="fw-bold mb-0 text-white">{fullName || profile?.fullName || currentUser.username}</h4>
-                <span className={`badge ${isAdmin ? 'bg-warning text-dark' : 'bg-info text-white'}`}>
-                  {isAdmin ? 'Admin Profile' : 'Customer Profile'}
-                </span>
-              </div>
+              <h4 className="fw-bold mb-0 text-white">{fullName || profile?.fullName || currentUser.username}</h4>
               <div className="text-white-50 small mt-1">
                 <span>@{currentUser.username}</span>
                 <span className="mx-2">•</span>
