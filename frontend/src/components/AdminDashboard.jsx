@@ -149,8 +149,8 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
         description: newMed.description
       });
       alert('Medicine added to catalog!');
-      loadData();
-      if (onRefreshMedicines) onRefreshMedicines();
+      loadData(true);
+      if (onRefreshMedicines) onRefreshMedicines(true);
       setNewMed({
         name: '',
         manufacturer: '',
@@ -165,23 +165,66 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
         description: ''
       });
     } catch (err) {
-      alert('Error creating medicine.');
+      const errMsg = err.response?.data?.message || err.message || 'Error creating medicine.';
+      alert(`Error creating medicine: ${errMsg}`);
     }
   };
 
   const handleImageFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Image size should be less than 5MB');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewMed(prev => ({ ...prev, imageUrl: reader.result }));
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file (PNG, JPG, JPEG, WEBP).');
+      return;
     }
+
+    if (file.size > 15 * 1024 * 1024) {
+      alert('Image file size exceeds 15MB limit.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 800; // Optimal catalog dimension
+
+          if (width > height) {
+            if (width > maxDim) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            }
+          } else {
+            if (height > maxDim) {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Compress to lightweight, high-quality JPEG data URL (~40-80KB)
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          setNewMed(prev => ({ ...prev, imageUrl: compressedDataUrl }));
+        } catch (canvasErr) {
+          // Fallback to raw data URL if canvas cannot process
+          setNewMed(prev => ({ ...prev, imageUrl: event.target.result }));
+        }
+      };
+      img.onerror = () => {
+        setNewMed(prev => ({ ...prev, imageUrl: event.target.result }));
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleRemoveImage = () => {

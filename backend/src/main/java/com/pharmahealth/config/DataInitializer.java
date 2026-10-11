@@ -44,10 +44,14 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+
     @Override
     @Transactional
     public void run(String... args) {
         try {
+            ensureSchemaUpdates();
             initRoles();
             initFixedAdminAccount();
             initCategories();
@@ -57,6 +61,15 @@ public class DataInitializer implements CommandLineRunner {
             initDemoSupportTickets();
         } catch (Exception e) {
             logger.error("Error during database demo data initialization: {}", e.getMessage(), e);
+        }
+    }
+
+    private void ensureSchemaUpdates() {
+        try {
+            jdbcTemplate.execute("ALTER TABLE medicines MODIFY COLUMN image_url LONGTEXT");
+            logger.info("Successfully ensured medicines.image_url column is LONGTEXT");
+        } catch (Exception e) {
+            logger.debug("Schema migration notice for medicines.image_url: {}", e.getMessage());
         }
     }
 
