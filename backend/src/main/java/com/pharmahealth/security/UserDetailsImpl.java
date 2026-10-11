@@ -14,15 +14,15 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
-    private String username;
-    private String email;
-    private Double phCoins;
+    private final Long id;
+    private final String username;
+    private final String email;
+    private final Double phCoins;
 
     @JsonIgnore
-    private String password;
+    private final String password;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl(Long id, String username, String email, String password, Double phCoins,
                            Collection<? extends GrantedAuthority> authorities) {
@@ -30,7 +30,7 @@ public class UserDetailsImpl implements UserDetails {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.phCoins = phCoins != null ? phCoins : 0.0;
+        this.phCoins = phCoins != null ? phCoins : Double.valueOf(0.0);
         this.authorities = authorities;
     }
 
@@ -62,7 +62,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public Double getPhCoins() {
-        return phCoins != null ? phCoins : 0.0;
+        return phCoins != null ? phCoins : Double.valueOf(0.0);
     }
 
     @Override
@@ -103,5 +103,10 @@ public class UserDetailsImpl implements UserDetails {
             return false;
         UserDetailsImpl user = (UserDetailsImpl) o;
         return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -147,10 +147,10 @@ public class User {
     }
 
     public Double getPhCoins() {
-        return phCoins != null ? phCoins : 0.0;
+        return phCoins != null ? phCoins : Double.valueOf(0.0);
     }
 
     public void setPhCoins(Double phCoins) {
-        this.phCoins = phCoins != null ? phCoins : 0.0;
+        this.phCoins = phCoins != null ? phCoins : Double.valueOf(0.0);
     }
 }
