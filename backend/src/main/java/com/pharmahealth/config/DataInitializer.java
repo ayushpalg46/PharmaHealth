@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,7 +69,7 @@ public class DataInitializer implements CommandLineRunner {
         try {
             jdbcTemplate.execute("ALTER TABLE medicines MODIFY COLUMN image_url LONGTEXT");
             logger.info("Successfully ensured medicines.image_url column is LONGTEXT");
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             logger.debug("Schema migration notice for medicines.image_url: {}", e.getMessage());
         }
     }
