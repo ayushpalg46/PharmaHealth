@@ -165,7 +165,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                   </div>
 
                   <div className="row g-2 mb-3">
-                    {/* 1. USP Mode: PH Coins Direct Payment */}
+                    {/* 1. PH Coins Direct Payment */}
                     <div className="col-md-6">
                       <div 
                         className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'PH_COINS' ? 'border-success' : 'border-secondary border-opacity-25'} ${!hasSufficientCoins ? 'opacity-75' : ''}`}
@@ -182,7 +182,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                         }}
                       >
                         <div className="fs-4 mb-1">🪙</div>
-                        <strong className="d-block text-white small">Pay with PH Coins (USP)</strong>
+                        <strong className="d-block text-white small">Pay with PH Coins</strong>
                         <div className={`small ${hasSufficientCoins ? 'text-success' : 'text-warning'}`} style={{ fontSize: '0.75rem' }}>
                           {hasSufficientCoins 
                             ? `✓ 100% Covered (Bal: 🪙${userCoins.toFixed(2)})` 
@@ -223,7 +223,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                     <div className="p-2 rounded mb-2 small d-flex align-items-center gap-2" style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
                       <span className="fs-5">🪙</span>
                       <span className="text-white">
-                        <strong>USP Loyalty Reward:</strong> You will earn <strong className="text-success">🪙 {cashbackCoins} PH Coins (12% Cashback)</strong> on this order!
+                        You will earn <strong className="text-success">🪙 {cashbackCoins} PH Coins (12% Cashback)</strong> on this order!
                       </span>
                     </div>
                   )}
