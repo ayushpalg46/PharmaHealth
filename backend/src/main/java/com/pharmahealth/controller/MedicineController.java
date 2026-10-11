@@ -13,9 +13,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -107,7 +107,7 @@ public class MedicineController {
         // 1. Ensure order_items.medicine_id column allows NULL in MySQL
         try {
             jdbcTemplate.execute("ALTER TABLE order_items MODIFY COLUMN medicine_id BIGINT NULL");
-        } catch (Exception ignored) {
+        } catch (DataAccessException ignored) {
         }
 
         // 2. Direct SQL update to decouple any order items while preserving medication names
@@ -116,7 +116,7 @@ public class MedicineController {
                     "UPDATE order_items SET medicine_id = NULL, medicine_name = COALESCE(medicine_name, ?) WHERE medicine_id = ?",
                     medicine.getName(), id
             );
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             // Fallback via JPA repository
             List<OrderItem> items = orderItemRepository.findByMedicineId(id);
             for (OrderItem item : items) {
