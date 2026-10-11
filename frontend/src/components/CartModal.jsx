@@ -24,6 +24,12 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
       alert(`Insufficient PH Coins balance. You need 🪙${totalAmount.toFixed(2)} PH Coins, but your current balance is 🪙${userCoins.toFixed(2)}.`);
       return;
     }
+    const exceedingItem = cart.find(item => item.quantity > (item.medicine.stockQuantity ?? 0));
+    if (exceedingItem) {
+      alert(`Insufficient stock! "${exceedingItem.medicine.name}" has only ${exceedingItem.medicine.stockQuantity} units available in stock, but you have ${exceedingItem.quantity} in your cart. Please reduce the quantity.`);
+      return;
+    }
+
     setLoading(true);
     try {
       await onCheckout({
@@ -92,40 +98,59 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                       <tr className="text-muted small">
                         <th>Medicine</th>
                         <th>Price</th>
-                        <th style={{ width: '120px' }}>Quantity</th>
+                        <th style={{ width: '135px' }}>Quantity</th>
                         <th>Subtotal</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {cart.map(item => (
-                        <tr key={item.medicine.id}>
-                          <td>
-                            <strong>{item.medicine.name}</strong>
-                            <div className="small text-muted">{item.medicine.strength}</div>
-                          </td>
-                          <td>₹{item.medicine.price.toFixed(2)}</td>
-                          <td>
-                            <div className="input-group input-group-sm">
-                              <button 
-                                className="btn btn-outline-secondary" 
-                                onClick={() => onUpdateQuantity(item.medicine.id, item.quantity - 1)}
-                              >-</button>
-                              <span className="form-control text-center">{item.quantity}</span>
-                              <button 
-                                className="btn btn-outline-secondary" 
-                                onClick={() => onUpdateQuantity(item.medicine.id, item.quantity + 1)}
-                              >+</button>
-                            </div>
-                          </td>
-                          <td className="fw-bold">₹{(item.medicine.price * item.quantity).toFixed(2)}</td>
-                          <td>
-                            <button className="btn btn-outline-danger btn-sm" onClick={() => onRemove(item.medicine.id)}>
-                              <i className="bi bi-trash"></i>
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {cart.map(item => {
+                        const maxStock = item.medicine.stockQuantity ?? 0;
+                        const isAtMax = item.quantity >= maxStock;
+
+                        return (
+                          <tr key={item.medicine.id}>
+                            <td>
+                              <strong>{item.medicine.name}</strong>
+                              <div className="small text-muted">
+                                {item.medicine.strength} • <span className={maxStock <= 5 ? 'text-warning' : 'text-info'}>In Stock: {maxStock}</span>
+                              </div>
+                            </td>
+                            <td>₹{item.medicine.price.toFixed(2)}</td>
+                            <td>
+                              <div className="input-group input-group-sm">
+                                <button 
+                                  className="btn btn-outline-secondary" 
+                                  onClick={() => onUpdateQuantity(item.medicine.id, item.quantity - 1)}
+                                >-</button>
+                                <span className="form-control text-center">{item.quantity}</span>
+                                <button 
+                                  className={`btn ${isAtMax ? 'btn-outline-warning' : 'btn-outline-secondary'}`}
+                                  onClick={() => {
+                                    if (isAtMax) {
+                                      alert(`Insufficient stock! Only ${maxStock} units of "${item.medicine.name}" are available in stock.`);
+                                    } else {
+                                      onUpdateQuantity(item.medicine.id, item.quantity + 1);
+                                    }
+                                  }}
+                                  title={isAtMax ? `Maximum available stock (${maxStock}) reached` : 'Add one more'}
+                                >+</button>
+                              </div>
+                              {isAtMax && (
+                                <div className="text-warning small mt-1" style={{ fontSize: '0.72rem' }}>
+                                  <i className="bi bi-exclamation-circle me-1"></i>Max stock reached ({maxStock})
+                                </div>
+                              )}
+                            </td>
+                            <td className="fw-bold">₹{(item.medicine.price * item.quantity).toFixed(2)}</td>
+                            <td>
+                              <button className="btn btn-outline-danger btn-sm" onClick={() => onRemove(item.medicine.id)}>
+                                <i className="bi bi-trash"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

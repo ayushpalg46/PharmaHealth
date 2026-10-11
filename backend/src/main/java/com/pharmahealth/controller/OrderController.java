@@ -90,7 +90,7 @@ public class OrderController {
                     .orElseThrow(() -> new IllegalArgumentException("Medicine ID not found: " + itemReq.getMedicineId()));
 
             if (medicine.getStockQuantity() < itemReq.getQuantity()) {
-                return ResponseEntity.badRequest().body(new MessageResponse("Insufficient stock for: " + medicine.getName()));
+                return ResponseEntity.badRequest().body(new MessageResponse("Insufficient stock for: " + medicine.getName() + " (Only " + medicine.getStockQuantity() + " units available)."));
             }
 
             // Decrement inventory stock

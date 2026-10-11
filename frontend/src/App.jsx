@@ -106,6 +106,14 @@ export default function App() {
   const handleAddToCart = (medicine) => {
     setCart((prev) => {
       const existing = prev.find(item => item.medicine.id === medicine.id);
+      const currentQty = existing ? existing.quantity : 0;
+      const maxStock = medicine.stockQuantity ?? 0;
+
+      if (currentQty >= maxStock) {
+        alert(`Insufficient stock! Only ${maxStock} units of "${medicine.name}" are available in dispensary stock.`);
+        return prev;
+      }
+
       if (existing) {
         return prev.map(item =>
           item.medicine.id === medicine.id
@@ -121,11 +129,19 @@ export default function App() {
     if (quantity <= 0) {
       handleRemoveFromCart(medicineId);
     } else {
-      setCart((prev) =>
-        prev.map(item =>
+      setCart((prev) => {
+        const item = prev.find(it => it.medicine.id === medicineId);
+        if (item) {
+          const maxStock = item.medicine.stockQuantity ?? 0;
+          if (quantity > maxStock) {
+            alert(`Insufficient stock! Only ${maxStock} units of "${item.medicine.name}" are available in dispensary stock.`);
+            return prev;
+          }
+        }
+        return prev.map(item =>
           item.medicine.id === medicineId ? { ...item, quantity } : item
-        )
-      );
+        );
+      });
     }
   };
 
