@@ -19,8 +19,10 @@ public class OrderItem {
     private Order order;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "medicine_id", nullable = false)
+    @JoinColumn(name = "medicine_id", nullable = true)
     private Medicine medicine;
+
+    private String medicineName;
 
     @NotNull
     private Integer quantity;
@@ -38,6 +40,7 @@ public class OrderItem {
     public OrderItem(Order order, Medicine medicine, Integer quantity, BigDecimal unitPrice, BigDecimal totalPrice) {
         this.order = order;
         this.medicine = medicine;
+        this.medicineName = medicine != null ? medicine.getName() : null;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
@@ -65,6 +68,14 @@ public class OrderItem {
 
     public void setMedicine(Medicine medicine) {
         this.medicine = medicine;
+    }
+
+    public String getMedicineName() {
+        return medicineName != null ? medicineName : (medicine != null ? medicine.getName() : null);
+    }
+
+    public void setMedicineName(String medicineName) {
+        this.medicineName = medicineName;
     }
 
     public Integer getQuantity() {

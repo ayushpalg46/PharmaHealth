@@ -149,6 +149,25 @@ export default function App() {
     setCart((prev) => prev.filter(item => item.medicine.id !== medicineId));
   };
 
+  const handleDeleteMedicine = async (medicine) => {
+    const medId = typeof medicine === 'object' ? medicine.id : medicine;
+    const medName = typeof medicine === 'object' ? medicine.name : 'this medicine';
+
+    if (!window.confirm(`Are you sure you want to permanently delete "${medName}" from listed medicines?`)) {
+      return;
+    }
+
+    try {
+      await medicineService.deleteMedicine(medId);
+      alert(`"${medName}" deleted successfully!`);
+      fetchCatalog(true);
+      setCart((prev) => prev.filter(item => item.medicine.id !== medId));
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to delete medicine.';
+      alert(msg);
+    }
+  };
+
   const refreshUserProfile = async () => {
     try {
       if (localStorage.getItem('pharma_token')) {
@@ -220,6 +239,8 @@ export default function App() {
               onAddToCart={handleAddToCart}
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
+              isAdmin={isAdmin}
+              onDeleteMedicine={handleDeleteMedicine}
             />
           </>
         )}

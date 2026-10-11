@@ -188,14 +188,18 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
     setNewMed(prev => ({ ...prev, imageUrl: '' }));
   };
 
-  const handleDeleteMedicine = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this medicine?')) return;
+  const handleDeleteMedicine = async (medicine) => {
+    const medId = typeof medicine === 'object' ? medicine.id : medicine;
+    const medName = typeof medicine === 'object' ? medicine.name : 'this medicine';
+    if (!window.confirm(`Are you sure you want to permanently delete "${medName}" from listed medicines?`)) return;
     try {
-      await medicineService.deleteMedicine(id);
-      loadData();
-      if (onRefreshMedicines) onRefreshMedicines();
+      await medicineService.deleteMedicine(medId);
+      alert(`"${medName}" deleted successfully!`);
+      loadData(true);
+      if (onRefreshMedicines) onRefreshMedicines(true);
     } catch (err) {
-      alert('Failed to delete medicine.');
+      const msg = err.response?.data?.message || 'Failed to delete medicine.';
+      alert(msg);
     }
   };
 
@@ -585,8 +589,12 @@ export default function AdminDashboard({ categories, onRefreshMedicines, activeT
                               </td>
                               <td>{m.prescriptionRequired ? 'Yes (Rx)' : 'No (OTC)'}</td>
                               <td>
-                                <button className="btn btn-outline-danger btn-sm" onClick={() => handleDeleteMedicine(m.id)}>
-                                  <i className="bi bi-trash"></i>
+                                <button 
+                                  className="btn btn-outline-danger btn-sm rounded-pill px-2" 
+                                  onClick={() => handleDeleteMedicine(m)}
+                                  title={`Delete ${m.name}`}
+                                >
+                                  <i className="bi bi-trash me-1"></i> Delete
                                 </button>
                               </td>
                             </tr>

@@ -1,6 +1,16 @@
 import React from 'react';
 
-export default function MedicineList({ medicines, categories, selectedCategory, onSelectCategory, onAddToCart, searchTerm, onSearchChange }) {
+export default function MedicineList({ 
+  medicines, 
+  categories, 
+  selectedCategory, 
+  onSelectCategory, 
+  onAddToCart, 
+  searchTerm, 
+  onSearchChange,
+  isAdmin = false,
+  onDeleteMedicine
+}) {
   return (
     <div className="container py-4">
       {/* Search and Filters Header */}
@@ -85,21 +95,37 @@ export default function MedicineList({ medicines, categories, selectedCategory, 
                   <p className="small text-secondary flex-grow-1 mb-3">
                     {med.description ? med.description.substring(0, 75) + '...' : 'Clinical pharmaceutical grade medication.'}
                   </p>
-                  <div className="d-flex align-items-center justify-content-between mt-auto pt-2 border-top border-secondary border-opacity-25">
+                  <div className="d-flex align-items-center justify-content-between mt-auto pt-2 border-top border-secondary border-opacity-25 gap-2">
                     <div>
                       <span className="fs-5 fw-bold text-white">₹{med.price.toFixed(2)}</span>
                     </div>
-                    <button 
-                      className="btn btn-primary btn-sm rounded-pill px-3"
-                      onClick={() => onAddToCart(med)}
-                      disabled={med.stockQuantity <= 0}
-                    >
-                      {med.stockQuantity > 0 ? (
-                        <>
-                          <i className="bi bi-cart-plus me-1"></i> Add
-                        </>
-                      ) : 'Out of Stock'}
-                    </button>
+                    <div className="d-flex align-items-center gap-2">
+                      {isAdmin && onDeleteMedicine && (
+                        <button 
+                          type="button"
+                          className="btn btn-outline-danger btn-sm rounded-pill px-2 py-1 d-flex align-items-center justify-content-center"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDeleteMedicine(med);
+                          }}
+                          title={`Delete ${med.name} from listing`}
+                        >
+                          <i className="bi bi-trash"></i>
+                        </button>
+                      )}
+                      <button 
+                        type="button"
+                        className="btn btn-primary btn-sm rounded-pill px-3"
+                        onClick={() => onAddToCart(med)}
+                        disabled={med.stockQuantity <= 0}
+                      >
+                        {med.stockQuantity > 0 ? (
+                          <>
+                            <i className="bi bi-cart-plus me-1"></i> Add
+                          </>
+                        ) : 'Out of Stock'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

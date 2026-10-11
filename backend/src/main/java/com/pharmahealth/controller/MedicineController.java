@@ -4,8 +4,10 @@ import com.pharmahealth.model.Category;
 import com.pharmahealth.model.Medicine;
 import com.pharmahealth.payload.request.MedicineRequest;
 import com.pharmahealth.payload.response.MessageResponse;
+import com.pharmahealth.model.OrderItem;
 import com.pharmahealth.repository.CategoryRepository;
 import com.pharmahealth.repository.MedicineRepository;
+import com.pharmahealth.repository.OrderItemRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,9 +15,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -29,6 +33,9 @@ public class MedicineController {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('PHARMACIST')")
@@ -87,12 +94,25 @@ public class MedicineController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Operation(summary = "Delete medicine from inventory (Admin only)")
     public ResponseEntity<?> deleteMedicine(@PathVariable Long id) {
-        if (!medicineRepository.existsById(id)) {
+        Medicine medicine = medicineRepository.findById(id).orElse(null);
+        if (medicine == null) {
             return ResponseEntity.notFound().build();
         }
-        medicineRepository.deleteById(id);
+
+        // Preserve medication name in past order records and decouple foreign key before deletion
+        List<OrderItem> items = orderItemRepository.findByMedicineId(id);
+        for (OrderItem item : items) {
+            if (item.getMedicineName() == null || item.getMedicineName().isBlank()) {
+                item.setMedicineName(medicine.getName());
+            }
+            item.setMedicine(null);
+            orderItemRepository.save(item);
+        }
+
+        medicineRepository.delete(medicine);
         return ResponseEntity.ok(new MessageResponse("Medicine deleted successfully!"));
     }
 }

@@ -110,7 +110,7 @@ export default function CustomerOrders({ currentUser, onOpenLogin }) {
                       <div className="list-group list-group-flush border rounded-3">
                         {order.items?.map(it => (
                           <div key={it.id} className="list-group-item py-2 d-flex justify-content-between small">
-                            <span className="text-white">{it.medicine?.name} <span className="text-muted">x{it.quantity}</span></span>
+                            <span className="text-white">{it.medicine?.name || it.medicineName || 'Medication'} <span className="text-muted">x{it.quantity}</span></span>
                             <span className="fw-semibold text-info">₹{it.totalPrice?.toFixed(2)}</span>
                           </div>
                         ))}
