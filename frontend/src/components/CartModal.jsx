@@ -6,6 +6,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
   const [paymentMethod, setPaymentMethod] = useState('UPI');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [lastOrderDetails, setLastOrderDetails] = useState(null);
 
   if (!isOpen) return null;
 
@@ -30,6 +31,10 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
       return;
     }
 
+    const placedAmount = totalAmount;
+    const placedCashback = cashbackCoins;
+    const placedMethod = paymentMethod;
+
     setLoading(true);
     try {
       await onCheckout({
@@ -41,12 +46,23 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
           quantity: item.quantity
         }))
       });
+      setLastOrderDetails({
+        totalAmount: placedAmount,
+        cashbackCoins: placedCashback,
+        paymentMethod: placedMethod
+      });
       setSuccess(true);
     } catch (err) {
       alert(err.response?.data?.message || 'Error processing order.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleModalClose = () => {
+    setSuccess(false);
+    setLastOrderDetails(null);
+    onClose();
   };
 
   return (
@@ -57,7 +73,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
             <h5 className="modal-title fw-bold">
               <i className="bi bi-cart3 me-2 text-info"></i>Your Pharmacy Basket
             </h5>
-            <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
+            <button type="button" className="btn-close btn-close-white" onClick={handleModalClose}></button>
           </div>
           <div className="modal-body p-4">
             {success ? (
@@ -65,19 +81,18 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                 <i className="bi bi-check-circle-fill text-success display-3 mb-3"></i>
                 <h4 className="text-white">Order Placed Successfully!</h4>
                 <p className="text-muted">
-                  {paymentMethod === 'PH_COINS'
-                    ? `Payment completed 100% using 🪙 ${totalAmount.toFixed(2)} PH Coins. Zero extra cash needed.`
-                    : `Your order has been placed. 🪙 ${cashbackCoins} PH Coins (12% Cashback) will be credited to your wallet!`}
+                  {(lastOrderDetails?.paymentMethod || paymentMethod) === 'PH_COINS'
+                    ? `Payment completed 100% using 🪙 ${Number(lastOrderDetails?.totalAmount ?? totalAmount).toFixed(2)} PH Coins. Zero extra cash needed.`
+                    : `Your order has been placed. 🪙 ${lastOrderDetails?.cashbackCoins ?? cashbackCoins} PH Coins (12% Cashback) has been credited to your wallet!`}
                 </p>
                 <div className="d-flex justify-content-center gap-2 mt-3">
-                  <button className="btn btn-outline-light" onClick={() => { setSuccess(false); onClose(); }}>
+                  <button className="btn btn-outline-light" onClick={handleModalClose}>
                     Continue Shopping
                   </button>
                   <button 
                     className="btn btn-primary fw-semibold" 
                     onClick={() => { 
-                      setSuccess(false); 
-                      onClose(); 
+                      handleModalClose();
                       if (onNavigateToOrders) onNavigateToOrders(); 
                     }}
                   >
