@@ -143,6 +143,59 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
         </div>
       </div>
 
+      {/* USP Feature: PH Coins Rewards & Wallet Card */}
+      {!isAdmin && (
+        <div 
+          className="card border-0 shadow-sm rounded-4 p-4 mb-4"
+          style={{
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(15, 28, 66, 0.95) 100%)',
+            border: '1px solid rgba(16, 185, 129, 0.4)'
+          }}
+        >
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
+            <div className="d-flex align-items-center gap-3">
+              <div 
+                className="rounded-circle d-flex align-items-center justify-content-center shadow"
+                style={{ width: '56px', height: '56px', backgroundColor: 'rgba(16, 185, 129, 0.25)', border: '2px solid #10b981', fontSize: '1.8rem' }}
+              >
+                🪙
+              </div>
+              <div>
+                <div className="d-flex align-items-center gap-2">
+                  <h5 className="fw-bold mb-0 text-white">PharmaHealth 'PH' Coins Wallet</h5>
+                  <span className="badge bg-success text-white small">USP Loyalty Reward</span>
+                </div>
+                <p className="text-secondary small mb-0 mt-1">
+                  1 PH Coin = ₹1.00 • Earn 12% cashback on every medicine purchase!
+                </p>
+              </div>
+            </div>
+
+            <div className="text-start text-md-end bg-dark bg-opacity-50 p-3 rounded-3 border border-success border-opacity-30">
+              <span className="small text-secondary d-block">Available Coin Balance</span>
+              <span className="fs-3 fw-bold text-success">
+                🪙 {(profile?.phCoins ?? currentUser.phCoins ?? 0).toFixed(2)} <span className="fs-6 text-white fw-normal">PH Coins</span>
+              </span>
+            </div>
+          </div>
+
+          <div className="row g-2 mt-1 pt-3 border-top border-secondary border-opacity-25 small text-secondary">
+            <div className="col-sm-4 d-flex align-items-center gap-2">
+              <i className="bi bi-gift-fill text-success fs-6"></i>
+              <span><strong>10%-15% Cashback</strong> credited automatically.</span>
+            </div>
+            <div className="col-sm-4 d-flex align-items-center gap-2">
+              <i className="bi bi-wallet2 text-info fs-6"></i>
+              <span><strong>Direct Payment:</strong> Pay 100% of your cart with coins.</span>
+            </div>
+            <div className="col-sm-4 d-flex align-items-center gap-2">
+              <i className="bi bi-shield-check text-success fs-6"></i>
+              <span><strong>Zero Expiry:</strong> Coins never expire in your account.</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content Card (Overview Mode or Edit Mode) */}
       <div 
         className="card border-0 shadow-sm rounded-4 p-4 p-md-5" 

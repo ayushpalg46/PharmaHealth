@@ -61,6 +61,7 @@ export default function App() {
 
   useEffect(() => {
     fetchUserOrders();
+    if (currentUser) refreshUserProfile();
   }, [currentUser]);
 
   // Periodic Auto-Refresh: Keep store inventory and active orders freshly synced every 15 seconds
@@ -132,11 +133,29 @@ export default function App() {
     setCart((prev) => prev.filter(item => item.medicine.id !== medicineId));
   };
 
+  const refreshUserProfile = async () => {
+    try {
+      if (localStorage.getItem('pharma_token')) {
+        const res = await userService.getMyProfile();
+        if (res.data) {
+          setCurrentUser(prev => {
+            const updated = { ...prev, ...res.data };
+            localStorage.setItem('pharma_user', JSON.stringify(updated));
+            return updated;
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Failed to sync profile:', err);
+    }
+  };
+
   const handleCheckout = async (orderPayload) => {
     await orderService.placeOrder(orderPayload);
     setCart([]);
     fetchCatalog(); // refresh stock
     fetchUserOrders();
+    refreshUserProfile(); // refresh PH Coins balance
     // Navigate to orders history view
     setCurrentView('orders');
   };

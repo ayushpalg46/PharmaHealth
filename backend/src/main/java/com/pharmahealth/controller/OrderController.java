@@ -82,39 +82,6 @@ public class OrderController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User user = userRepository.findById(userDetails.getId()).orElseThrow();
 
-        String rawMethod = req.getPaymentMethod() != null ? req.getPaymentMethod().trim().toUpperCase() : "CARD";
-        String normalizedMethod;
-        boolean isPaid;
-
-        if (rawMethod.contains("COD") || rawMethod.contains("CASH") || rawMethod.contains("DELIVERY")) {
-            normalizedMethod = "CASH_ON_DELIVERY";
-            isPaid = false;
-        } else if (rawMethod.contains("UPI")) {
-            normalizedMethod = "UPI";
-            isPaid = true;
-        } else {
-            normalizedMethod = "CARD";
-            isPaid = true;
-        }
-
-        Order order = new Order();
-        order.setUser(user);
-        order.setShippingAddress(req.getShippingAddress());
-        order.setContactPhone(req.getContactPhone());
-        order.setPaymentMethod(normalizedMethod);
-        order.setStatus(Order.OrderStatus.PENDING);
-        order.setPaymentStatus(isPaid ? Order.PaymentStatus.PAID : Order.PaymentStatus.PENDING);
-        order.setTrackingNumber("PH-TRK-" + (100000 + new Random().nextInt(900000)));
-        order.setEstimatedDeliveryDate(LocalDateTime.now().plusDays(2));
-        order.setDeliveryNotes(isPaid 
-            ? "Payment confirmed via " + normalizedMethod + ". Preparing for dispensary packing." 
-            : "Cash on Delivery (COD) mode selected. Payment pending on order arrival.");
-
-        if (req.getPrescriptionId() != null) {
-            Prescription prescription = prescriptionRepository.findById(req.getPrescriptionId()).orElse(null);
-            order.setPrescription(prescription);
-        }
-
         BigDecimal calculatedTotal = BigDecimal.ZERO;
         List<OrderItem> items = new ArrayList<>();
 
@@ -133,11 +100,68 @@ public class OrderController {
             BigDecimal lineTotal = medicine.getPrice().multiply(BigDecimal.valueOf(itemReq.getQuantity()));
             calculatedTotal = calculatedTotal.add(lineTotal);
 
-            OrderItem orderItem = new OrderItem(order, medicine, itemReq.getQuantity(), medicine.getPrice(), lineTotal);
+            OrderItem orderItem = new OrderItem(null, medicine, itemReq.getQuantity(), medicine.getPrice(), lineTotal);
             items.add(orderItem);
         }
 
+        String rawMethod = req.getPaymentMethod() != null ? req.getPaymentMethod().trim().toUpperCase() : "CARD";
+        String normalizedMethod;
+        boolean isPaid;
+        double rewardCoins = Math.round((calculatedTotal.doubleValue() * 0.12) * 100.0) / 100.0; // 12% PH Coin reward
+
+        if (rawMethod.contains("PH_COIN") || rawMethod.contains("COIN")) {
+            normalizedMethod = "PH_COINS";
+            double requiredCoins = calculatedTotal.doubleValue();
+            if (user.getPhCoins() < requiredCoins) {
+                return ResponseEntity.badRequest().body(new MessageResponse(
+                    String.format("Insufficient PH Coins balance. Cart total requires %.2f PH Coins, but your current balance is %.2f PH Coins.",
+                        requiredCoins, user.getPhCoins())));
+            }
+            // Deduct PH Coins from wallet
+            user.setPhCoins(Math.round((user.getPhCoins() - requiredCoins) * 100.0) / 100.0);
+            userRepository.save(user);
+            isPaid = true;
+        } else {
+            // Reward 12% PH Coins on purchase
+            user.setPhCoins(Math.round((user.getPhCoins() + rewardCoins) * 100.0) / 100.0);
+            userRepository.save(user);
+
+            if (rawMethod.contains("COD") || rawMethod.contains("CASH") || rawMethod.contains("DELIVERY")) {
+                normalizedMethod = "CASH_ON_DELIVERY";
+                isPaid = false;
+            } else if (rawMethod.contains("UPI")) {
+                normalizedMethod = "UPI";
+                isPaid = true;
+            } else {
+                normalizedMethod = "CARD";
+                isPaid = true;
+            }
+        }
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setShippingAddress(req.getShippingAddress());
+        order.setContactPhone(req.getContactPhone());
+        order.setPaymentMethod(normalizedMethod);
+        order.setStatus(Order.OrderStatus.PENDING);
+        order.setPaymentStatus(isPaid ? Order.PaymentStatus.PAID : Order.PaymentStatus.PENDING);
+        order.setTrackingNumber("PH-TRK-" + (100000 + new Random().nextInt(900000)));
+        order.setEstimatedDeliveryDate(LocalDateTime.now().plusDays(2));
+        order.setDeliveryNotes(normalizedMethod.equals("PH_COINS")
+            ? "Paid 100% using " + calculatedTotal + " PH Coins. Dispensary packing in progress."
+            : isPaid 
+                ? "Payment confirmed via " + normalizedMethod + ". Earned +" + rewardCoins + " PH Coins (12% Cashback)."
+                : "Cash on Delivery (COD) selected. Earned +" + rewardCoins + " PH Coins upon receipt.");
+
+        if (req.getPrescriptionId() != null) {
+            Prescription prescription = prescriptionRepository.findById(req.getPrescriptionId()).orElse(null);
+            order.setPrescription(prescription);
+        }
+
         order.setTotalAmount(calculatedTotal);
+        for (OrderItem it : items) {
+            it.setOrder(order);
+        }
         order.setItems(items);
 
         Order saved = orderRepository.save(order);
@@ -153,7 +177,9 @@ public class OrderController {
         bill.setTotalAmount(calculatedTotal.add(bill.getTaxAmount()));
         bill.setPaymentStatus(isPaid ? Bill.PaymentStatus.PAID : Bill.PaymentStatus.PENDING);
         bill.setPaymentMethod(normalizedMethod);
-        bill.setTransactionId(isPaid ? "TXN-" + System.currentTimeMillis() : "COD-PENDING-" + (1000 + new Random().nextInt(9000)));
+        bill.setTransactionId(normalizedMethod.equals("PH_COINS") 
+            ? "PH-COIN-TXN-" + System.currentTimeMillis() 
+            : isPaid ? "TXN-" + System.currentTimeMillis() : "COD-PENDING-" + (1000 + new Random().nextInt(9000)));
         bill.setBillDate(LocalDateTime.now());
         billRepository.save(bill);
 

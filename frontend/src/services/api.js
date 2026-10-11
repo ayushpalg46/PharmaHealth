@@ -78,6 +78,7 @@ export const userService = {
   },
   getActiveCustomers: (forceFresh = false) => cachedGet('/users/customers', {}, forceFresh),
   getStaffMembers: (forceFresh = false) => cachedGet('/users/staff', {}, forceFresh),
+  getPhCoins: () => api.get('/users/ph-coins'),
   createAdminUser: (userData) => {
     invalidateCache('users');
     return api.post('/users/create-admin', userData);

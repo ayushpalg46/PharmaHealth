@@ -11,9 +11,17 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
 
   const totalAmount = cart.reduce((sum, item) => sum + (item.medicine.price * item.quantity), 0);
 
+  const userCoins = currentUser?.phCoins ?? 0;
+  const hasSufficientCoins = userCoins >= totalAmount && totalAmount > 0;
+  const cashbackCoins = (totalAmount * 0.12).toFixed(2);
+
   const handlePlaceOrder = async () => {
     if (!currentUser) {
       alert('Please sign in first to place your order.');
+      return;
+    }
+    if (paymentMethod === 'PH_COINS' && !hasSufficientCoins) {
+      alert(`Insufficient PH Coins balance. You need 🪙${totalAmount.toFixed(2)} PH Coins, but your current balance is 🪙${userCoins.toFixed(2)}.`);
       return;
     }
     setLoading(true);
@@ -50,7 +58,11 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
               <div className="text-center py-4">
                 <i className="bi bi-check-circle-fill text-success display-3 mb-3"></i>
                 <h4 className="text-white">Order Placed Successfully!</h4>
-                <p className="text-muted">Your order and invoice have been generated and sent to fulfillment.</p>
+                <p className="text-muted">
+                  {paymentMethod === 'PH_COINS'
+                    ? `Payment completed 100% using 🪙 ${totalAmount.toFixed(2)} PH Coins. Zero extra cash needed.`
+                    : `Your order has been placed. 🪙 ${cashbackCoins} PH Coins (12% Cashback) will be credited to your wallet!`}
+                </p>
                 <div className="d-flex justify-content-center gap-2 mt-3">
                   <button className="btn btn-outline-light" onClick={() => { setSuccess(false); onClose(); }}>
                     Continue Shopping
@@ -143,17 +155,52 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                 </div>
 
                 <div className="border-top pt-3 mb-3">
-                  <h6 className="fw-bold mb-3 text-white">Select Payment Mode</h6>
-                  <div className="row g-2">
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h6 className="fw-bold mb-0 text-white">Select Payment Mode</h6>
+                    {currentUser && (
+                      <span className="small text-secondary">
+                        Wallet: <strong className="text-success">🪙 {userCoins.toFixed(2)} PH Coins</strong>
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="row g-2 mb-3">
+                    {/* 1. USP Mode: PH Coins Direct Payment */}
+                    <div className="col-md-6">
+                      <div 
+                        className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === 'PH_COINS' ? 'border-success' : 'border-secondary border-opacity-25'} ${!hasSufficientCoins ? 'opacity-75' : ''}`}
+                        style={{ 
+                          cursor: 'pointer', 
+                          backgroundColor: paymentMethod === 'PH_COINS' ? 'rgba(16, 185, 129, 0.25)' : 'rgba(2, 132, 199, 0.25)' 
+                        }}
+                        onClick={() => {
+                          if (hasSufficientCoins) {
+                            setPaymentMethod('PH_COINS');
+                          } else {
+                            alert(`Insufficient PH Coins! You have 🪙 ${userCoins.toFixed(2)} PH Coins, but your cart total is ₹${totalAmount.toFixed(2)} (🪙 ${totalAmount.toFixed(2)} PH Coins required).`);
+                          }
+                        }}
+                      >
+                        <div className="fs-4 mb-1">🪙</div>
+                        <strong className="d-block text-white small">Pay with PH Coins (USP)</strong>
+                        <div className={`small ${hasSufficientCoins ? 'text-success' : 'text-warning'}`} style={{ fontSize: '0.75rem' }}>
+                          {hasSufficientCoins 
+                            ? `✓ 100% Covered (Bal: 🪙${userCoins.toFixed(2)})` 
+                            : `Short by 🪙${(totalAmount - userCoins).toFixed(2)} (Bal: 🪙${userCoins.toFixed(2)})`}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Standard Payment Modes */}
                     {[
                       { id: 'UPI', icon: 'bi-qr-code-scan', label: 'UPI / QR', sub: 'Google Pay, PhonePe, Paytm' },
                       { id: 'CARD', icon: 'bi-credit-card-2-front', label: 'Card Payment', sub: 'Visa, MasterCard, RuPay' },
                       { id: 'CASH_ON_DELIVERY', icon: 'bi-cash-stack', label: 'Cash on Delivery', sub: 'Pay cash on receipt' }
                     ].map(m => (
-                      <div key={m.id} className="col-md-4">
+                      <div key={m.id} className="col-md-6 col-lg-2 flex-fill">
                         <div 
                           className={`p-3 rounded-3 border text-center h-100 ${paymentMethod === m.id ? 'border-info' : 'border-secondary border-opacity-25'}`}
-                          style={{ cursor: 'pointer', backgroundColor: paymentMethod === m.id ? 'rgba(56, 189, 248, 0.25)' : 'rgba(2, 132, 199, 0.35)' }}
+                          style={{ cursor: 'pointer', backgroundColor: paymentMethod === m.id ? 'rgba(56, 189, 248, 0.25)' : 'rgba(2, 132, 199, 0.25)' }}
                           onClick={() => setPaymentMethod(m.id)}
                         >
                           <div className={`fs-4 ${m.id === 'CASH_ON_DELIVERY' ? 'text-warning' : 'text-info'} mb-1`}><i className={`bi ${m.icon}`}></i></div>
@@ -163,6 +210,23 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                       </div>
                     ))}
                   </div>
+
+                  {/* Payment Mode Highlight / Reward Notice */}
+                  {paymentMethod === 'PH_COINS' ? (
+                    <div className="p-2 rounded mb-2 small d-flex align-items-center gap-2" style={{ backgroundColor: 'rgba(16, 185, 129, 0.2)', border: '1px solid #10b981' }}>
+                      <i className="bi bi-check-circle-fill text-success fs-5"></i>
+                      <span className="text-white">
+                        <strong>PH Coin Direct Payment:</strong> 🪙 {totalAmount.toFixed(2)} will be deducted from your wallet. <strong>Zero extra cash needed!</strong>
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="p-2 rounded mb-2 small d-flex align-items-center gap-2" style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
+                      <span className="fs-5">🪙</span>
+                      <span className="text-white">
+                        <strong>USP Loyalty Reward:</strong> You will earn <strong className="text-success">🪙 {cashbackCoins} PH Coins (12% Cashback)</strong> on this order!
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center p-3 rounded mb-3" style={{ backgroundColor: 'rgba(2, 132, 199, 0.45)', border: '1px solid rgba(52, 211, 153, 0.4)' }}>
@@ -176,7 +240,7 @@ export default function CartModal({ isOpen, onClose, cart, onUpdateQuantity, onR
                     onClick={handlePlaceOrder}
                     disabled={loading}
                   >
-                    {loading ? 'Processing Order...' : 'Confirm & Place Order'}
+                    {loading ? 'Processing Order...' : paymentMethod === 'PH_COINS' ? `Pay 🪙 ${totalAmount.toFixed(2)} PH Coins` : 'Confirm & Place Order'}
                   </button>
                 </div>
               </div>

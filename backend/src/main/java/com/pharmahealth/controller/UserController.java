@@ -54,6 +54,16 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/ph-coins")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get current user PH Coins balance")
+    public ResponseEntity<?> getPhCoins(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        return userRepository.findById(userDetails.getId())
+                .map(u -> ResponseEntity.ok(Map.of("phCoins", u.getPhCoins())))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/profile")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Update current user profile (fullName, phone, address)")

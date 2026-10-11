@@ -286,33 +286,51 @@ public class DataInitializer implements CommandLineRunner {
         Role customerRole = roleRepository.findByName(ERole.ROLE_CUSTOMER).orElse(null);
         Set<Role> customerRoles = customerRole != null ? Set.of(customerRole) : Collections.emptySet();
 
-        // Customer 1
-        if (!userRepository.existsByUsername("rohit.sharma")) {
+        // Customer 1: Rohit Sharma - 250 PH Coins
+        userRepository.findByUsername("rohit.sharma").ifPresentOrElse(c -> {
+            if (c.getPhCoins() == null || c.getPhCoins() == 0.0) {
+                c.setPhCoins(250.0);
+                userRepository.save(c);
+            }
+        }, () -> {
             User c1 = new User("rohit.sharma", "rohit.sharma@example.com", passwordEncoder.encode("password123"), "Rohit Sharma");
             c1.setPhone("+91 98765 43210");
             c1.setAddress("Flat 402, Green Valley Apartments, Mumbai, MH");
             c1.setRoles(customerRoles);
+            c1.setPhCoins(250.0);
             userRepository.save(c1);
-        }
+        });
 
-        // Customer 2
-        if (!userRepository.existsByUsername("ananya.verma")) {
+        // Customer 2: Dr. Ananya Verma - 180 PH Coins
+        userRepository.findByUsername("ananya.verma").ifPresentOrElse(c -> {
+            if (c.getPhCoins() == null || c.getPhCoins() == 0.0) {
+                c.setPhCoins(180.0);
+                userRepository.save(c);
+            }
+        }, () -> {
             User c2 = new User("ananya.verma", "ananya.verma@example.com", passwordEncoder.encode("password123"), "Dr. Ananya Verma");
             c2.setPhone("+91 98123 45678");
             c2.setAddress("12B Park Street, Kolkata, WB");
             c2.setRoles(customerRoles);
+            c2.setPhCoins(180.0);
             userRepository.save(c2);
-        }
+        });
 
-        // Customer 3
-        if (!userRepository.existsByUsername("rahul.mehta")) {
+        // Customer 3: Rahul Mehta - 320 PH Coins
+        userRepository.findByUsername("rahul.mehta").ifPresentOrElse(c -> {
+            if (c.getPhCoins() == null || c.getPhCoins() == 0.0) {
+                c.setPhCoins(320.0);
+                userRepository.save(c);
+            }
+        }, () -> {
             User c3 = new User("rahul.mehta", "rahul.mehta@example.com", passwordEncoder.encode("password123"), "Rahul Mehta");
             c3.setPhone("+91 97654 32109");
             c3.setAddress("Plot 55, Sector 14, Gurugram, HR");
             c3.setRoles(customerRoles);
+            c3.setPhCoins(320.0);
             userRepository.save(c3);
-        }
-        logger.info("Initialized demo customer accounts.");
+        });
+        logger.info("Initialized demo customer accounts with PH Coins.");
     }
 
     private void initDemoOrdersAndBills() {

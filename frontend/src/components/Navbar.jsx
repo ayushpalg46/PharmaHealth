@@ -155,6 +155,20 @@ export default function Navbar({
 
           {/* Right Action Items */}
           <div className="d-flex align-items-center gap-3">
+            {/* Customer PH Coins Wallet Badge (Hidden for Admin) */}
+            {currentUser && !isAdmin && (
+              <button 
+                className="btn btn-sm d-flex align-items-center gap-1 px-2 py-1 text-white" 
+                style={{ backgroundColor: 'rgba(16, 185, 129, 0.2)', border: '1px solid rgba(16, 185, 129, 0.5)', borderRadius: '20px' }}
+                onClick={() => onViewChange('profile')}
+                title="Your PharmaHealth Coins Wallet (1 PH Coin = ₹1)"
+              >
+                <span>🪙</span>
+                <strong className="text-success small">{(currentUser.phCoins ?? 0).toFixed(0)}</strong>
+                <span className="text-white-50 small" style={{ fontSize: '0.75rem' }}>Coins</span>
+              </button>
+            )}
+
             {/* Customer Cart Button (Hidden for Admin) */}
             {!isAdmin && (
               <button className="btn btn-outline-light position-relative" onClick={onOpenCart} title="Shopping Basket">
