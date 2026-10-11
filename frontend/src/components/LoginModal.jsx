@@ -45,7 +45,8 @@ export default function LoginModal({ isOpen, onClose, onLogin, onSwitchToRegiste
                   required 
                   value={username} 
                   onChange={(e) => setUsername(e.target.value)} 
-                  placeholder="Enter your username"
+                  placeholder="Enter your username or email"
+                  autoComplete="username"
                 />
               </div>
 
