@@ -37,6 +37,9 @@ public class MedicineController {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
+    @Autowired
+    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('PHARMACIST')")
     @Operation(summary = "Add a new medicine to inventory")
@@ -94,7 +97,6 @@ public class MedicineController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    @Transactional
     @Operation(summary = "Delete medicine from inventory (Admin only)")
     public ResponseEntity<?> deleteMedicine(@PathVariable Long id) {
         Medicine medicine = medicineRepository.findById(id).orElse(null);
@@ -102,14 +104,28 @@ public class MedicineController {
             return ResponseEntity.notFound().build();
         }
 
-        // Preserve medication name in past order records and decouple foreign key before deletion
-        List<OrderItem> items = orderItemRepository.findByMedicineId(id);
-        for (OrderItem item : items) {
-            if (item.getMedicineName() == null || item.getMedicineName().isBlank()) {
-                item.setMedicineName(medicine.getName());
+        // 1. Ensure order_items.medicine_id column allows NULL in MySQL
+        try {
+            jdbcTemplate.execute("ALTER TABLE order_items MODIFY COLUMN medicine_id BIGINT NULL");
+        } catch (Exception ignored) {
+        }
+
+        // 2. Direct SQL update to decouple any order items while preserving medication names
+        try {
+            jdbcTemplate.update(
+                    "UPDATE order_items SET medicine_id = NULL, medicine_name = COALESCE(medicine_name, ?) WHERE medicine_id = ?",
+                    medicine.getName(), id
+            );
+        } catch (Exception e) {
+            // Fallback via JPA repository
+            List<OrderItem> items = orderItemRepository.findByMedicineId(id);
+            for (OrderItem item : items) {
+                if (item.getMedicineName() == null || item.getMedicineName().isBlank()) {
+                    item.setMedicineName(medicine.getName());
+                }
+                item.setMedicine(null);
+                orderItemRepository.save(item);
             }
-            item.setMedicine(null);
-            orderItemRepository.save(item);
         }
 
         medicineRepository.delete(medicine);

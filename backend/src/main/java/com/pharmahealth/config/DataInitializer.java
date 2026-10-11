@@ -49,7 +49,6 @@ public class DataInitializer implements CommandLineRunner {
     private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
     @Override
-    @Transactional
     public void run(String... args) {
         try {
             ensureSchemaUpdates();
@@ -71,6 +70,13 @@ public class DataInitializer implements CommandLineRunner {
             logger.info("Successfully ensured medicines.image_url column is LONGTEXT");
         } catch (DataAccessException e) {
             logger.debug("Schema migration notice for medicines.image_url: {}", e.getMessage());
+        }
+
+        try {
+            jdbcTemplate.execute("ALTER TABLE order_items MODIFY COLUMN medicine_id BIGINT NULL");
+            logger.info("Successfully ensured order_items.medicine_id column is nullable");
+        } catch (DataAccessException e) {
+            logger.debug("Schema migration notice for order_items.medicine_id: {}", e.getMessage());
         }
     }
 
