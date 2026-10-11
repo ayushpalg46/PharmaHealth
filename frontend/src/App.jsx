@@ -9,7 +9,7 @@ import LoginModal from './components/LoginModal';
 import RegisterModal from './components/RegisterModal';
 import CartModal from './components/CartModal';
 import PrescriptionUploadModal from './components/PrescriptionUploadModal';
-import { authService, medicineService, orderService, prescriptionService } from './services/api';
+import { authService, medicineService, orderService, prescriptionService, userService } from './services/api';
 import useAutoRefresh from './hooks/useAutoRefresh';
 
 export default function App() {
@@ -60,19 +60,28 @@ export default function App() {
   }, [selectedCategory, searchTerm]);
 
   useEffect(() => {
-    fetchUserOrders();
-    if (currentUser) refreshUserProfile();
-  }, [currentUser]);
+    if (currentUser?.id) {
+      fetchUserOrders();
+      refreshUserProfile();
+    }
+  }, [currentUser?.id]);
 
-  // Periodic Auto-Refresh: Keep store inventory and active orders freshly synced every 15 seconds
+  useEffect(() => {
+    if (localStorage.getItem('pharma_token')) {
+      refreshUserProfile();
+    }
+  }, []);
+
+  // Periodic Auto-Refresh: Keep store inventory, user coins, and active orders freshly synced every 10 seconds
   useAutoRefresh(() => {
     if (currentView === 'store') {
       fetchCatalog(true);
     }
     if (currentUser) {
       fetchUserOrders(true);
+      refreshUserProfile();
     }
-  }, 15000);
+  }, 10000);
 
 
   // Auth Handlers
@@ -89,6 +98,7 @@ export default function App() {
     } else {
       setCurrentView('store');
     }
+    refreshUserProfile();
   };
 
   const handleRegister = async (formData) => {
@@ -174,6 +184,18 @@ export default function App() {
         const res = await userService.getMyProfile();
         if (res.data) {
           setCurrentUser(prev => {
+            if (!prev) {
+              localStorage.setItem('pharma_user', JSON.stringify(res.data));
+              return res.data;
+            }
+            if (
+              prev.phCoins === res.data.phCoins &&
+              prev.fullName === res.data.fullName &&
+              prev.phone === res.data.phone &&
+              prev.address === res.data.address
+            ) {
+              return prev;
+            }
             const updated = { ...prev, ...res.data };
             localStorage.setItem('pharma_user', JSON.stringify(updated));
             return updated;
@@ -188,9 +210,9 @@ export default function App() {
   const handleCheckout = async (orderPayload) => {
     await orderService.placeOrder(orderPayload);
     setCart([]);
-    fetchCatalog(); // refresh stock
-    fetchUserOrders();
-    refreshUserProfile(); // refresh PH Coins balance
+    fetchCatalog(true); // refresh stock
+    fetchUserOrders(true);
+    await refreshUserProfile(); // refresh PH Coins balance immediately
     // Navigate to orders history view
     setCurrentView('orders');
   };
@@ -208,7 +230,10 @@ export default function App() {
         onLogout={handleLogout}
         onOpenLogin={() => setIsLoginOpen(true)}
         onOpenRegister={() => setIsRegisterOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
+        onOpenCart={() => {
+          refreshUserProfile();
+          setIsCartOpen(true);
+        }}
         cartCount={cartTotalCount}
         onOpenPrescription={() => setIsPrescriptionOpen(true)}
         onViewChange={setCurrentView}
@@ -265,6 +290,14 @@ export default function App() {
         {currentView === 'profile' && (
           <UserProfile
             currentUser={currentUser}
+            onUpdateUser={(updatedData) => {
+              setCurrentUser(prev => {
+                if (!prev) return updatedData;
+                const merged = { ...prev, ...updatedData };
+                localStorage.setItem('pharma_user', JSON.stringify(merged));
+                return merged;
+              });
+            }}
             onLogout={handleLogout}
           />
         )}

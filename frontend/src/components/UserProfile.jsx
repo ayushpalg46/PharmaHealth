@@ -20,6 +20,9 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
         setLoading(true);
         const res = await userService.getMyProfile();
         setProfile(res.data);
+        if (onUpdateUser) {
+          onUpdateUser(res.data);
+        }
         setFullName(res.data.fullName || '');
         setPhone(res.data.phone || '');
         setAddress(res.data.address || '');
@@ -29,10 +32,10 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
         setLoading(false);
       }
     };
-    if (currentUser) {
+    if (currentUser?.id) {
       fetchProfile();
     }
-  }, [currentUser]);
+  }, [currentUser?.id]);
 
   const handleStartEdit = () => {
     setFullName(profile?.fullName || '');

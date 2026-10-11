@@ -164,7 +164,7 @@ export default function Navbar({
                 title="Your PharmaHealth Coins Wallet (1 PH Coin = ₹1)"
               >
                 <span>🪙</span>
-                <strong className="text-success small">{(currentUser.phCoins ?? 0).toFixed(0)}</strong>
+                <strong className="text-success small">{Number(currentUser.phCoins ?? 0).toFixed(2)}</strong>
                 <span className="text-white-50 small" style={{ fontSize: '0.75rem' }}>Coins</span>
               </button>
             )}
