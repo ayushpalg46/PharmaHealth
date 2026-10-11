@@ -8,15 +8,15 @@ public class JwtResponse {
     private Long id;
     private String username;
     private String email;
-    private Double phCoins;
+    private double phCoins;
     private final List<String> roles;
 
-    public JwtResponse(String accessToken, Long id, String username, String email, Double phCoins, List<String> roles) {
+    public JwtResponse(String accessToken, Long id, String username, String email, double phCoins, List<String> roles) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
         this.email = email;
-        this.phCoins = phCoins != null ? phCoins : 0.0;
+        this.phCoins = phCoins;
         this.roles = roles;
     }
 
@@ -60,12 +60,12 @@ public class JwtResponse {
         this.username = username;
     }
 
-    public Double getPhCoins() {
-        return phCoins != null ? phCoins : Double.valueOf(0.0);
+    public double getPhCoins() {
+        return phCoins;
     }
 
-    public void setPhCoins(Double phCoins) {
-        this.phCoins = phCoins != null ? phCoins : Double.valueOf(0.0);
+    public void setPhCoins(double phCoins) {
+        this.phCoins = phCoins;
     }
 
     public List<String> getRoles() {

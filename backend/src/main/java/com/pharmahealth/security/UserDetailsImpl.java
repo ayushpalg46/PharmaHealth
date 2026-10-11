@@ -17,20 +17,20 @@ public class UserDetailsImpl implements UserDetails {
     private final Long id;
     private final String username;
     private final String email;
-    private final Double phCoins;
+    private final double phCoins;
 
     @JsonIgnore
     private final String password;
 
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, String password, Double phCoins,
+    public UserDetailsImpl(Long id, String username, String email, String password, double phCoins,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.phCoins = phCoins != null ? phCoins : Double.valueOf(0.0);
+        this.phCoins = phCoins;
         this.authorities = authorities;
     }
 
@@ -61,8 +61,8 @@ public class UserDetailsImpl implements UserDetails {
         return email;
     }
 
-    public Double getPhCoins() {
-        return phCoins != null ? phCoins : Double.valueOf(0.0);
+    public double getPhCoins() {
+        return phCoins;
     }
 
     @Override

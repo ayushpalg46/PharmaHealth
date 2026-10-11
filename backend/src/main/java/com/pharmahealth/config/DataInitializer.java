@@ -288,7 +288,7 @@ public class DataInitializer implements CommandLineRunner {
 
         // Customer 1: Rohit Sharma - 250 PH Coins
         userRepository.findByUsername("rohit.sharma").ifPresentOrElse(c -> {
-            if (c.getPhCoins() == null || c.getPhCoins() == 0.0) {
+            if (c.getPhCoins() == 0.0) {
                 c.setPhCoins(250.0);
                 userRepository.save(c);
             }
@@ -303,7 +303,7 @@ public class DataInitializer implements CommandLineRunner {
 
         // Customer 2: Dr. Ananya Verma - 180 PH Coins
         userRepository.findByUsername("ananya.verma").ifPresentOrElse(c -> {
-            if (c.getPhCoins() == null || c.getPhCoins() == 0.0) {
+            if (c.getPhCoins() == 0.0) {
                 c.setPhCoins(180.0);
                 userRepository.save(c);
             }
@@ -318,7 +318,7 @@ public class DataInitializer implements CommandLineRunner {
 
         // Customer 3: Rahul Mehta - 320 PH Coins
         userRepository.findByUsername("rahul.mehta").ifPresentOrElse(c -> {
-            if (c.getPhCoins() == null || c.getPhCoins() == 0.0) {
+            if (c.getPhCoins() == 0.0) {
                 c.setPhCoins(320.0);
                 userRepository.save(c);
             }

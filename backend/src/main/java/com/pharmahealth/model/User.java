@@ -45,7 +45,7 @@ public class User {
     private String address;
 
     @Column(nullable = false)
-    private Double phCoins = 0.0;
+    private double phCoins = 0.0;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -146,11 +146,11 @@ public class User {
         this.roles = roles;
     }
 
-    public Double getPhCoins() {
-        return phCoins != null ? phCoins : Double.valueOf(0.0);
+    public double getPhCoins() {
+        return phCoins;
     }
 
-    public void setPhCoins(Double phCoins) {
-        this.phCoins = phCoins != null ? phCoins : Double.valueOf(0.0);
+    public void setPhCoins(double phCoins) {
+        this.phCoins = phCoins;
     }
 }
