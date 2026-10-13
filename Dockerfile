@@ -13,12 +13,13 @@ WORKDIR /app/backend
 COPY backend/pom.xml ./
 RUN mvn dependency:go-offline -B
 COPY backend/src ./src
-RUN mvn clean package -DskipTests
+COPY --from=frontend-builder /app/frontend/dist ./src/main/resources/static
+RUN mvn clean package -DskipTests && cp target/*.jar app.jar
 
 # Stage 3: Runtime
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY --from=backend-builder /app/backend/target/*.jar app.jar
+COPY --from=backend-builder /app/backend/app.jar app.jar
 
 ENV SPRING_PROFILES_ACTIVE=prod
 EXPOSE 8080

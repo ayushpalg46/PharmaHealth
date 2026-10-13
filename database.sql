@@ -33,6 +33,7 @@ CREATE TABLE users (
     full_name VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
     address TEXT,
+    ph_coins DOUBLE NOT NULL DEFAULT 0.0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -66,9 +67,10 @@ CREATE TABLE medicines (
     dosage_form VARCHAR(50),
     strength VARCHAR(50),
     prescription_required BOOLEAN DEFAULT FALSE,
+    manufacture_date DATE,
     expiry_date DATE,
     description TEXT,
-    image_url VARCHAR(255),
+    image_url LONGTEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_medicine_category FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE SET NULL
@@ -110,12 +112,13 @@ CREATE TABLE orders (
 CREATE TABLE order_items (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     order_id BIGINT NOT NULL,
-    medicine_id BIGINT NOT NULL,
+    medicine_id BIGINT NULL,
+    medicine_name VARCHAR(150),
     quantity INT NOT NULL,
     unit_price DECIMAL(10, 2) NOT NULL,
     total_price DECIMAL(10, 2) NOT NULL,
     CONSTRAINT fk_items_order FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
-    CONSTRAINT fk_items_medicine FOREIGN KEY (medicine_id) REFERENCES medicines (id) ON DELETE RESTRICT
+    CONSTRAINT fk_items_medicine FOREIGN KEY (medicine_id) REFERENCES medicines (id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 9. Bills & Invoices Table
