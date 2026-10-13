@@ -9,13 +9,13 @@ import LoginModal from './components/LoginModal';
 import RegisterModal from './components/RegisterModal';
 import CartModal from './components/CartModal';
 import PrescriptionUploadModal from './components/PrescriptionUploadModal';
-import { authService, medicineService, orderService, prescriptionService, userService } from './services/api';
+import { authService, medicineService, orderService, prescriptionService, userService, isUserAdmin, normalizeUser } from './services/api';
 import useAutoRefresh from './hooks/useAutoRefresh';
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
-  const isAdmin = currentUser?.roles?.includes('ROLE_ADMIN') || currentUser?.roles?.includes('ROLE_PHARMACIST');
-  const [currentView, setCurrentView] = useState(isAdmin ? 'admin' : 'store'); // 'store' | 'orders' | 'support' | 'admin' | 'profile'
+  const [currentUser, setCurrentUser] = useState(() => authService.getCurrentUser());
+  const isAdmin = isUserAdmin(currentUser);
+  const [currentView, setCurrentView] = useState(() => (isUserAdmin(authService.getCurrentUser()) ? 'admin' : 'store')); // 'store' | 'orders' | 'support' | 'admin' | 'profile'
   const [adminTab, setAdminTab] = useState('customers');
   const [medicines, setMedicines] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -87,14 +87,15 @@ export default function App() {
   // Auth Handlers
   const handleLogin = async (username, password) => {
     const res = await authService.login(username, password);
-    const data = res.data;
-    localStorage.setItem('pharma_token', data.accessToken);
+    const data = normalizeUser(res.data);
+    localStorage.setItem('pharma_token', data.accessToken || data.token);
     localStorage.setItem('pharma_user', JSON.stringify(data));
     setCurrentUser(data);
 
     // Auto-navigate to respective POV
-    if (data.roles?.includes('ROLE_ADMIN') || data.roles?.includes('ROLE_PHARMACIST')) {
+    if (isUserAdmin(data)) {
       setCurrentView('admin');
+      setAdminTab('customers');
     } else {
       setCurrentView('store');
     }
@@ -183,20 +184,28 @@ export default function App() {
       if (localStorage.getItem('pharma_token')) {
         const res = await userService.getMyProfile();
         if (res.data) {
+          const profile = normalizeUser(res.data);
           setCurrentUser(prev => {
             if (!prev) {
-              localStorage.setItem('pharma_user', JSON.stringify(res.data));
-              return res.data;
+              localStorage.setItem('pharma_user', JSON.stringify(profile));
+              return profile;
             }
             if (
-              prev.phCoins === res.data.phCoins &&
-              prev.fullName === res.data.fullName &&
-              prev.phone === res.data.phone &&
-              prev.address === res.data.address
+              prev.phCoins === profile.phCoins &&
+              prev.fullName === profile.fullName &&
+              prev.phone === profile.phone &&
+              prev.address === profile.address &&
+              JSON.stringify(prev.roles) === JSON.stringify(profile.roles)
             ) {
               return prev;
             }
-            const updated = { ...prev, ...res.data };
+            const updated = {
+              ...prev,
+              ...profile,
+              accessToken: prev.accessToken || prev.token || localStorage.getItem('pharma_token'),
+              token: prev.token || prev.accessToken || localStorage.getItem('pharma_token'),
+              roles: (profile.roles && profile.roles.length > 0) ? profile.roles : prev.roles
+            };
             localStorage.setItem('pharma_user', JSON.stringify(updated));
             return updated;
           });
@@ -247,6 +256,26 @@ export default function App() {
         {/* VIEW 1: MEDICINES STORE */}
         {currentView === 'store' && (
           <>
+            {isAdmin && (
+              <div className="bg-dark text-white py-2 px-3 border-bottom border-secondary d-flex flex-wrap align-items-center justify-content-between gap-2 shadow-sm">
+                <div className="d-flex align-items-center gap-2 small">
+                  <span className="badge bg-success px-2 py-1">Admin Mode</span>
+                  <span className="text-white-70">
+                    You are browsing the Storefront in customer preview mode. You have admin deletion and management privileges.
+                  </span>
+                </div>
+                <button 
+                  className="btn btn-sm btn-outline-info py-1 px-3 d-flex align-items-center gap-1 fw-semibold"
+                  onClick={() => {
+                    setCurrentView('admin');
+                    setAdminTab('customers');
+                  }}
+                >
+                  <i className="bi bi-shield-lock-fill"></i>
+                  <span>Return to Admin Control Center</span>
+                </button>
+              </div>
+            )}
             <div className="bg-primary text-white py-5 text-center shadow-sm">
               <div className="container">
                 <h1 className="fw-bolder display-5 mb-2">Authentic Medicines & Clinical Care</h1>
@@ -291,9 +320,10 @@ export default function App() {
           <UserProfile
             currentUser={currentUser}
             onUpdateUser={(updatedData) => {
+              const normalized = normalizeUser(updatedData);
               setCurrentUser(prev => {
-                if (!prev) return updatedData;
-                const merged = { ...prev, ...updatedData };
+                if (!prev) return normalized;
+                const merged = { ...prev, ...normalized };
                 localStorage.setItem('pharma_user', JSON.stringify(merged));
                 return merged;
               });

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -51,7 +52,20 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(user);
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("username", user.getUsername());
+        response.put("email", user.getEmail());
+        response.put("fullName", user.getFullName());
+        response.put("phone", user.getPhone());
+        response.put("address", user.getAddress());
+        response.put("phCoins", user.getPhCoins());
+        response.put("roles", user.getRoles().stream()
+                .map(r -> r.getName().name())
+                .collect(Collectors.toList()));
+        response.put("createdAt", user.getCreatedAt());
+        response.put("updatedAt", user.getUpdatedAt());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/ph-coins")
@@ -80,7 +94,21 @@ public class UserController {
             if (address != null) user.setAddress(address.trim());
             user.setUpdatedAt(LocalDateTime.now());
             User saved = userRepository.save(user);
-            return ResponseEntity.ok(saved);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", saved.getId());
+            response.put("username", saved.getUsername());
+            response.put("email", saved.getEmail());
+            response.put("fullName", saved.getFullName());
+            response.put("phone", saved.getPhone());
+            response.put("address", saved.getAddress());
+            response.put("phCoins", saved.getPhCoins());
+            response.put("roles", saved.getRoles().stream()
+                    .map(r -> r.getName().name())
+                    .collect(Collectors.toList()));
+            response.put("createdAt", saved.getCreatedAt());
+            response.put("updatedAt", saved.getUpdatedAt());
+            return ResponseEntity.ok(response);
         }).orElse(ResponseEntity.notFound().build());
     }
 

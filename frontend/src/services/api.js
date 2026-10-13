@@ -50,6 +50,31 @@ export function invalidateCache(pattern = '') {
   }
 }
 
+export const normalizeUser = (user) => {
+  if (!user) return null;
+  const rawRoles = Array.isArray(user.roles) ? user.roles : (user.roles ? [user.roles] : []);
+  const normalizedRoles = rawRoles.map(r => {
+    if (typeof r === 'string') return r.toUpperCase().trim();
+    if (r && typeof r.name === 'string') return r.name.toUpperCase().trim();
+    if (r && typeof r.authority === 'string') return r.authority.toUpperCase().trim();
+    return String(r).toUpperCase().trim();
+  });
+  return {
+    ...user,
+    roles: normalizedRoles
+  };
+};
+
+export const isUserAdmin = (user) => {
+  if (!user || !user.roles) return false;
+  const roles = Array.isArray(user.roles) ? user.roles : [user.roles];
+  return roles.some(role => {
+    const name = typeof role === 'string' ? role : (role?.name || role?.authority || '');
+    const clean = String(name).toUpperCase().trim();
+    return clean === 'ROLE_ADMIN' || clean === 'ROLE_PHARMACIST' || clean === 'ADMIN' || clean === 'PHARMACIST';
+  });
+};
+
 export const authService = {
   login: (username, password) => {
     invalidateCache();
@@ -66,7 +91,13 @@ export const authService = {
   },
   getCurrentUser: () => {
     const userStr = localStorage.getItem('pharma_user');
-    return userStr ? JSON.parse(userStr) : null;
+    if (!userStr) return null;
+    try {
+      const parsed = JSON.parse(userStr);
+      return normalizeUser(parsed);
+    } catch {
+      return null;
+    }
   }
 };
 

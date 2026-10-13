@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { userService } from '../services/api';
+import { userService, isUserAdmin, normalizeUser } from '../services/api';
 
 export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
   const [profile, setProfile] = useState(null);
@@ -12,16 +12,17 @@ export default function UserProfile({ currentUser, onUpdateUser, onLogout }) {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const isAdmin = currentUser?.roles?.includes('ROLE_ADMIN') || currentUser?.roles?.includes('ROLE_PHARMACIST');
+  const isAdmin = isUserAdmin(profile || currentUser);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
         const res = await userService.getMyProfile();
-        setProfile(res.data);
+        const normalized = normalizeUser(res.data);
+        setProfile(normalized);
         if (onUpdateUser) {
-          onUpdateUser(res.data);
+          onUpdateUser(normalized);
         }
         setFullName(res.data.fullName || '');
         setPhone(res.data.phone || '');

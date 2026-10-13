@@ -1,4 +1,5 @@
 import React from 'react';
+import { isUserAdmin } from '../services/api';
 
 export default function Navbar({ 
   currentUser, 
@@ -13,7 +14,7 @@ export default function Navbar({
   adminTab,
   onAdminTabChange
 }) {
-  const isAdmin = currentUser?.roles?.includes('ROLE_ADMIN') || currentUser?.roles?.includes('ROLE_PHARMACIST');
+  const isAdmin = isUserAdmin(currentUser);
 
   const handleAdminNav = (tabKey) => {
     if (onAdminTabChange) onAdminTabChange(tabKey);
@@ -110,6 +111,14 @@ export default function Navbar({
                   >
                     <i className="bi bi-bell-fill text-info"></i>
                     <span>Notifications</span>
+                  </button>
+                  <button 
+                    className={`nav-pill-btn ${currentView === 'store' ? 'active' : ''}`}
+                    onClick={() => onViewChange('store')}
+                    title="Preview customer storefront"
+                  >
+                    <i className="bi bi-shop text-info"></i>
+                    <span>Store View</span>
                   </button>
                 </>
               ) : (
